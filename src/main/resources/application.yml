@@ -1,0 +1,16 @@
+server:
+  # 后端服务运行端口号
+  port: 8088
+
+spring:
+  profiles:
+    active: dev
+
+mybatis-plus:
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  typeAliasesPackage: com.lcx.domain
+
+# Redis配置(已放入application-dev.yml)
+# MySQL配置(已放入application-dev.yml)
+# 文件存储配置(已放入application-dev.yml)
+# Token配置(已放入application-dev.yml)

@@ -1,0 +1,110 @@
+package com.lcx.campus.domain;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
+import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.TableId;
+import java.io.Serializable;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
+/**
+ * <p>
+ * 教师表
+ * </p>
+ *
+ * @author 刘传星
+ * @since 2025-03-04
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@TableName("teacher")
+public class Teacher implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 用户ID,逻辑外键
+     */
+    @TableId(value = "user_id", type = IdType.NONE)
+    private Long userId;
+
+    /**
+     * 身份证号
+     */
+    private String identity;
+
+    /**
+     * 教师工号
+     */
+    private String teacherId;
+
+    /**
+     * 姓名
+     */
+    private String teacherName;
+
+    /**
+     * 学校代码
+     */
+    private String universityId;
+
+    /**
+     * 学院代码
+     */
+    private String instituteId;
+
+    /**
+     * 专业代码
+     */
+    private String majorId;
+
+    /**
+     * 职称
+     */
+    private String title;
+
+    /**
+     * 办公室
+     */
+    private String office;
+
+    /**
+     * 入职时间
+     */
+    private LocalDateTime admitTime;
+
+    /**
+     * 职位状态（0在职、1停职、2离职） 数据字典
+     */
+    private String positionStatus;
+
+    /**
+     * 创建者
+     */
+    private String createBy;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
+
+    /**
+     * 更新者
+     */
+    private String updateBy;
+
+    /**
+     * 更新时间
+     */
+    private LocalDateTime updateTime;
+
+    /**
+     * 备注
+     */
+    private String remark;
+
+
+}
