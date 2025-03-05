@@ -28,13 +28,8 @@ public class Teacher implements Serializable {
     /**
      * 用户ID,逻辑外键
      */
-    @TableId(value = "user_id", type = IdType.NONE)
+    @TableId(value = "user_id", type = IdType.INPUT)
     private Long userId;
-
-    /**
-     * 身份证号
-     */
-    private String identity;
 
     /**
      * 教师工号

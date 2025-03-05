@@ -2,6 +2,7 @@ package com.lcx.campus.service;
 
 import com.lcx.campus.domain.LoginInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lcx.campus.domain.dto.Result;
 
 /**
  * <p>
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ILoginInfoService extends IService<LoginInfo> {
 
+    Result insertLoginInfo(LoginInfo loginInfo);
 }

@@ -32,11 +32,6 @@ public class Student implements Serializable {
     private Long userId;
 
     /**
-     * 身份证号
-     */
-    private String identity;
-
-    /**
      * 学号
      */
     private String studentId;

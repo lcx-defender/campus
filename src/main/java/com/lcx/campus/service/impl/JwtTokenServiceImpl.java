@@ -1,8 +1,7 @@
-package com.lcx.campus.service;
+package com.lcx.campus.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
-import com.lcx.campus.constant.RedisConstants;
 import com.lcx.campus.domain.dto.LoginUser;
 import com.lcx.campus.utils.AddressUtils;
 import com.lcx.campus.utils.IpUtils;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +30,7 @@ import static com.lcx.campus.constant.RedisConstants.LOGIN_KEY;
  * @since 2025-03-04
  */
 @Component
-public class JwtTokenService {
+public class JwtTokenServiceImpl {
 
     @Value("${token.header}")
     private String header;

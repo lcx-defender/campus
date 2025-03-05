@@ -23,6 +23,11 @@ public class LoginUser implements UserDetails {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 用户信息
+     */
+    private User user;
+
+    /**
      * 用户ID
      */
     private Long userId;
@@ -67,10 +72,10 @@ public class LoginUser implements UserDetails {
      */
     private Set<String> permissions;
 
-    /**
-     * 用户信息
-     */
-    private User user;
+    public LoginUser(User user) {
+        this.user = user;
+        this.userId = user.getUserId();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

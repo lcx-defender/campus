@@ -2,6 +2,7 @@ package com.lcx.campus.service;
 
 import com.lcx.campus.domain.OperateLog;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lcx.campus.domain.dto.Result;
 
 /**
  * <p>
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IOperateLogService extends IService<OperateLog> {
 
+    Result insertOperateLog(OperateLog operLog);
 }

@@ -1,10 +1,14 @@
 package com.lcx.campus.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -40,6 +44,11 @@ public class User implements Serializable {
      * 用户类型（0系统管理&程序员;1教师;2学生） 数据字典
      */
     private Integer userType;
+
+    /**
+     * 身份证号
+     */
+    private String identity;
 
     /**
      * 用户邮箱
@@ -106,5 +115,10 @@ public class User implements Serializable {
      */
     private String remark;
 
+    @TableField(exist = false)
+    private List<Role> roles;
+
+    @TableField(exist = false)
+    private Set<Menu> menus;
 
 }

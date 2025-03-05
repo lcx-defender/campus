@@ -31,6 +31,9 @@ public class OperateLog implements Serializable {
     @TableId(value = "operate_id", type = IdType.AUTO)
     private Long operateId;
 
+    /** 操作模块 */
+    private String title;
+
     /**
      * 业务类型（0其它 1新增 2修改 3删除 4查询 5授权 6导出 7导入 8强退）数据字典
      */

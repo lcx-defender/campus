@@ -1,6 +1,13 @@
 package com.lcx.campus.controller;
 
 
+import com.lcx.campus.domain.User;
+import com.lcx.campus.domain.dto.LoginForm;
+import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.service.IUserService;
+import jakarta.annotation.Resource;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -17,4 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class UserController {
 
+    @Resource
+    private IUserService userService;
+
+    @PostMapping("/login")
+    public Result login(@RequestBody LoginForm loginForm) {
+        return userService.login(loginForm);
+    }
 }

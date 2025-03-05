@@ -2,6 +2,8 @@ package com.lcx.campus.service;
 
 import com.lcx.campus.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lcx.campus.domain.dto.LoginForm;
+import com.lcx.campus.domain.dto.Result;
 
 /**
  * <p>
@@ -12,5 +14,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2025-03-04
  */
 public interface IUserService extends IService<User> {
+    User selectUserByUserName(String userName);
 
+    Result login(LoginForm user);
 }
