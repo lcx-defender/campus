@@ -103,10 +103,12 @@ public class Constants {
      */
     public static final String TOKEN = "token";
 
+
+
     /**
      * 令牌前缀
      */
-    public static final String TOKEN_PREFIX = "Bearer ";
+    public static final String JWT_CLAIMS = "JWT_CLAIMS";
 
     /**
      * 令牌前缀

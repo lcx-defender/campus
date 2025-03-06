@@ -13,5 +13,11 @@ public class RedisConstants {
     /**
      * 登录token前缀
      */
-    public static final String LOGIN_KEY = "login_tokens:tokenUUID:";
+    public static final String LOGIN_KEY = "login_tokenUUID:";
+
+    /**
+     * 验证码前缀
+     */
+    public static final String CAPTCHA_CODE_KEY = "captcha_code:";
+
 }

@@ -14,11 +14,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.lcx.campus.constant.Constants.JWT_CLAIMS;
 import static com.lcx.campus.constant.RedisConstants.LOGIN_KEY;
 
 /**
@@ -29,7 +31,7 @@ import static com.lcx.campus.constant.RedisConstants.LOGIN_KEY;
  * @author 刘传星
  * @since 2025-03-04
  */
-@Component
+@Service
 public class JwtTokenServiceImpl {
 
     @Value("${token.header}")
@@ -63,7 +65,7 @@ public class JwtTokenServiceImpl {
         refreshToken(loginUser);
 
         Map<String, Object> claims = new HashMap<>();
-        claims.put(LOGIN_KEY, tokenUUID);
+        claims.put(JWT_CLAIMS, tokenUUID);
         return createToken(claims);
     }
 
@@ -74,11 +76,10 @@ public class JwtTokenServiceImpl {
      * @return 令牌
      */
     public String createToken(Map<String, Object> claims) {
-        String token = Jwts.builder()
+        return Jwts.builder()
                 .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
-        return token;
     }
 
     public void refreshToken(LoginUser loginUser) {
@@ -93,8 +94,7 @@ public class JwtTokenServiceImpl {
         return LOGIN_KEY + tokenUUID;
     }
 
-    public void setUserAgent(LoginUser loginUser)
-    {
+    public void setUserAgent(LoginUser loginUser) {
         UserAgent userAgent = UserAgent.parseUserAgentString(ServletUtils.getRequest().getHeader("User-Agent"));
         String ip = IpUtils.getIpAddr();
         loginUser.setIpAddress(ip);
@@ -104,7 +104,6 @@ public class JwtTokenServiceImpl {
     }
 
 
-
     // 接收token,验证token,并返回业务数据
     public Map<String, Object> parseToken(HttpServletRequest request) {
         String token = request.getHeader(header);
@@ -112,6 +111,18 @@ public class JwtTokenServiceImpl {
             return null;
         }
         return parseToken(token);
+    }
+
+    /**
+     * @param request
+     * @return 解析token获取UUID，方便从Redis中获取LoginUser
+     */
+    public String parseTokenToUUID(HttpServletRequest request) {
+        String token = request.getHeader(header);
+        if (StrUtil.isEmpty(token)) {
+            return null;
+        }
+        return parseToken(token).get(JWT_CLAIMS).toString();
     }
 
     public Map<String, Object> parseToken(String token) {

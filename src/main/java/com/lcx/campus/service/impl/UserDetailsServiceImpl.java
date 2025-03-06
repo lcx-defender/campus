@@ -48,6 +48,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             log.info("登录用户：{} 已注销.", username);
             throw new UsernameNotFoundException("用户已注销");
         }
+
         return new LoginUser(user);
     }
 }
