@@ -13,6 +13,9 @@ import java.util.Locale;
  * @since 2025-03-04
  */
 public class Constants {
+
+    public static final String DEFAULT_USER_AVATAR = "https://greet-freshman.oss-cn-shanghai.aliyuncs.com/default-avatar.png";
+
     /**
      * UTF-8 字符集
      */

@@ -11,7 +11,7 @@
  Target Server Version : 90100
  File Encoding         : 65001
 
- Date: 05/03/2025 19:36:15
+ Date: 07/03/2025 23:18:51
 */
 
 SET NAMES utf8mb4;
@@ -165,6 +165,8 @@ CREATE TABLE `sys_login_info`  (
 -- ----------------------------
 -- Records of sys_login_info
 -- ----------------------------
+INSERT INTO `sys_login_info` VALUES (1, 1, '127.0.0.1', '内网IP', 'Unknown', 'Unknown', '0', '登录成功', NULL);
+INSERT INTO `sys_login_info` VALUES (2, 1, '127.0.0.1', '内网IP', 'Unknown', 'Unknown', '0', '退出成功', NULL);
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -196,6 +198,8 @@ CREATE TABLE `sys_menu`  (
 -- ----------------------------
 -- Records of sys_menu
 -- ----------------------------
+INSERT INTO `sys_menu` VALUES (1, '全部权限', 0, 0, '', NULL, NULL, '', 1, 0, '', '0', '*:*:*', '#', '', NULL, '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2, 'Hello测试', 0, 0, '', NULL, NULL, '', 1, 0, '', '0', 'sys:hello:hello', '#', '', '2025-03-07 16:22:11', '', '2025-03-07 16:22:19', '');
 
 -- ----------------------------
 -- Table structure for sys_operate_log
@@ -248,6 +252,7 @@ CREATE TABLE `sys_role`  (
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
+INSERT INTO `sys_role` VALUES (1, '超级管理员', 'admin', '0', '', '2025-03-07 16:06:33', '', '2025-03-07 16:06:36', NULL);
 
 -- ----------------------------
 -- Table structure for sys_role_menu
@@ -288,14 +293,13 @@ CREATE TABLE `sys_user`  (
   PRIMARY KEY (`user_id`) USING BTREE,
   UNIQUE INDEX `unique_identity`(`identity`) USING BTREE,
   UNIQUE INDEX `unique_email`(`email`) USING BTREE,
-  UNIQUE INDEX `unique_phone`(`phone`) USING BTREE,
-  INDEX `idx_email`(`email`) USING BTREE,
-  INDEX `idx_phone`(`phone`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户信息表' ROW_FORMAT = Dynamic;
+  UNIQUE INDEX `unique_phone`(`phone`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
+INSERT INTO `sys_user` VALUES (1, '360123', 'admin_lcx', 0, '', '', '0', 'https://greet-freshman.oss-cn-shanghai.aliyuncs.com/default-avatar.png', '$2a$10$SGoPUqmcd56FzbzsjYScCOMlPsnA1.4L0rjxl3GQpCZLid9yOmiKi', '0', '', '', '', '2025-03-05 22:03:23', '', '2025-03-05 22:03:28', '');
 
 -- ----------------------------
 -- Table structure for sys_user_role
