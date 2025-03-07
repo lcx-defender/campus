@@ -11,9 +11,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -32,6 +32,7 @@ import static com.lcx.campus.constant.RedisConstants.LOGIN_KEY;
  * @since 2025-03-04
  */
 @Service
+@Slf4j
 public class JwtTokenServiceImpl {
 
     @Value("${token.header}")
@@ -53,6 +54,16 @@ public class JwtTokenServiceImpl {
     private StringRedisTemplate stringRedisTemplate;
 
     /**
+     * 获取存储到Redis中的键值
+     *
+     * @param tokenUUID
+     * @return
+     */
+    private String getTokenKey(String tokenUUID) {
+        return LOGIN_KEY + tokenUUID;
+    }
+
+    /**
      * 创建令牌
      *
      * @param loginUser 用户信息
@@ -72,7 +83,7 @@ public class JwtTokenServiceImpl {
     /**
      * 从数据声明生成令牌
      *
-     * @param claims 数据声明
+     * @param claims 令牌载荷
      * @return 令牌
      */
     public String createToken(Map<String, Object> claims) {
@@ -90,10 +101,11 @@ public class JwtTokenServiceImpl {
         stringRedisTemplate.opsForValue().set(tokenKey, JSON.toJSONString(loginUser), expireTime, TimeUnit.MINUTES);
     }
 
-    private String getTokenKey(String tokenUUID) {
-        return LOGIN_KEY + tokenUUID;
-    }
-
+    /**
+     * 设置登录用户的设备信息
+     *
+     * @param loginUser
+     */
     public void setUserAgent(LoginUser loginUser) {
         UserAgent userAgent = UserAgent.parseUserAgentString(ServletUtils.getRequest().getHeader("User-Agent"));
         String ip = IpUtils.getIpAddr();
@@ -103,6 +115,19 @@ public class JwtTokenServiceImpl {
         loginUser.setOs(userAgent.getOperatingSystem().getName());
     }
 
+    /**
+     * 验证令牌有效期，相差不足20分钟，自动刷新缓存
+     *
+     * @param loginUser
+     * @return 令牌
+     */
+    public void verifyToken(LoginUser loginUser) {
+        long expireTime = loginUser.getExpireTime();
+        long currentTime = System.currentTimeMillis();
+        if (expireTime - currentTime <= MILLIS_MINUTE_TEN) {
+            refreshToken(loginUser);
+        }
+    }
 
     // 接收token,验证token,并返回业务数据
     public Map<String, Object> parseToken(HttpServletRequest request) {
@@ -111,6 +136,25 @@ public class JwtTokenServiceImpl {
             return null;
         }
         return parseToken(token);
+    }
+
+    /**
+     * 获取用户身份信息
+     *
+     * @return 用户信息
+     */
+    public LoginUser getLoginUser(HttpServletRequest request) {
+        String uuid = parseTokenToUUID(request);
+        if (StrUtil.isEmpty(uuid)) {
+            return null;
+        }
+        String userKey = getTokenKey(uuid);
+        String JsonStr = stringRedisTemplate.opsForValue().get(userKey);
+        if (StrUtil.isEmpty(JsonStr)) {
+
+            return null;
+        }
+        return JSON.parseObject(JsonStr, LoginUser.class);
     }
 
     /**
@@ -125,6 +169,12 @@ public class JwtTokenServiceImpl {
         return parseToken(token).get(JWT_CLAIMS).toString();
     }
 
+    /**
+     * 解析token，获取token载荷数据
+     *
+     * @param token
+     * @return
+     */
     public Map<String, Object> parseToken(String token) {
         if (StrUtil.isEmpty(token)) {
             return null;
@@ -133,5 +183,15 @@ public class JwtTokenServiceImpl {
                 .setSigningKey(secret)
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    /**
+     * 删除用户身份信息
+     */
+    public void delLoginUser(String tokenUUID) {
+        if (StrUtil.isNotEmpty(tokenUUID)) {
+            String userKey = getTokenKey(tokenUUID);
+            stringRedisTemplate.delete(userKey);
+        }
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.util.FastByteArrayOutputStream;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import static com.lcx.campus.constant.Constants.CAPTCHA_EXPIRATION;
 import static com.lcx.campus.constant.RedisConstants.CAPTCHA_CODE_KEY;
@@ -44,7 +45,8 @@ public class CaptchaServiceImpl {
         result.put("img", Base64.encode(os.toByteArray()));
         // 保存验证码信息
         String key = CAPTCHA_CODE_KEY + uuid;
-        stringRedisTemplate.opsForValue().set(key, code, CAPTCHA_EXPIRATION);
+        stringRedisTemplate.opsForValue().set(key, code, CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
+        System.out.println("验证码：" + code);
         return Result.success(result);
     }
 }

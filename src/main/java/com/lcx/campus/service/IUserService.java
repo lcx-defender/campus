@@ -16,5 +16,5 @@ import com.lcx.campus.domain.dto.Result;
 public interface IUserService extends IService<User> {
     User selectUserByUserName(String userName);
 
-    Result login(LoginForm user);
+    Result loginByUsername(LoginForm user);
 }

@@ -27,8 +27,8 @@ public class UserController {
     @Resource
     private IUserService userService;
 
-    @PostMapping("/login")
-    public Result login(@RequestBody LoginForm loginForm) {
-        return userService.login(loginForm);
+    @PostMapping("/login/username")
+    public Result loginByUsername(@RequestBody LoginForm loginForm) {
+        return userService.loginByUsername(loginForm);
     }
 }

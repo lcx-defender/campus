@@ -4,10 +4,12 @@ import com.alibaba.fastjson2.annotation.JSONField;
 import com.lcx.campus.domain.User;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -77,9 +79,17 @@ public class LoginUser implements UserDetails {
         this.userId = user.getUserId();
     }
 
+    public LoginUser(User user, Set<String> permissions) {
+        this.user = user;
+        this.userId = user.getUserId();
+        this.permissions = permissions;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return permissions.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toSet());
     }
 
     @JSONField(serialize = false)

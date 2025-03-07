@@ -59,21 +59,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      */
     @Override
     public User selectUserByUserName(String username) {
-        // 查询规则，通过userId、phone、email、identity进行精确查询
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("identity", username).or().eq("phone", username).or().eq("email", username);
-        return userMapper.selectOne(queryWrapper);
+        return userMapper.selectUserByUserName(username);
     }
 
     @Override
-    public Result login(LoginForm loginForm) {
+    public Result loginByUsername(LoginForm loginForm) {
         LoginUser loginUser = (LoginUser) userDetailsService.loadUserByUsername(loginForm.getUsername());
+        // 验证码校验
         validateCaptcha(loginUser.getUserId(), loginForm.getCode(), loginForm.getUuid());
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginForm.getUsername(), loginForm.getPassword());
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        if (authentication.isAuthenticated()) {
-
-        }
         loginUser = (LoginUser) authentication.getPrincipal();
         AsyncManager.me().execute(AsyncFactory.recordLoginInfo(loginUser.getUserId(), Constants.LOGIN_SUCCESS, "登录成功"));
         return Result.success(jwtTokenService.createToken(loginUser));
