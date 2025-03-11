@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginForm {
+public class LoginBody {
 
     // 登录账户名
     private String username;

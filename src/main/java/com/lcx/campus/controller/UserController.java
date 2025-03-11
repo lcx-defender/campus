@@ -1,8 +1,7 @@
 package com.lcx.campus.controller;
 
 
-import com.lcx.campus.domain.User;
-import com.lcx.campus.domain.dto.LoginForm;
+import com.lcx.campus.domain.dto.LoginBody;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.service.IUserService;
 import jakarta.annotation.Resource;
@@ -28,7 +27,7 @@ public class UserController {
     private IUserService userService;
 
     @PostMapping("/login/username")
-    public Result loginByUsername(@RequestBody LoginForm loginForm) {
-        return userService.loginByUsername(loginForm);
+    public Result loginByUsername(@RequestBody LoginBody loginBody) {
+        return userService.loginByUsername(loginBody);
     }
 }

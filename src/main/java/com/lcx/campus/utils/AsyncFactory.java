@@ -6,8 +6,6 @@ import com.lcx.campus.domain.OperateLog;
 import com.lcx.campus.service.ILoginInfoService;
 import com.lcx.campus.service.IOperateLogService;
 import eu.bitwalker.useragentutils.UserAgent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.TimerTask;
 
@@ -18,8 +16,6 @@ import java.util.TimerTask;
  * @since 2025-03-05
  */
 public class AsyncFactory {
-    private static final Logger sys_user_logger = LoggerFactory.getLogger("sys-user");
-
     /**
      * 记录登录信息
      *
