@@ -4,7 +4,6 @@
  Source Server         : 字节云服务器数据库
  Source Server Type    : MySQL
  Source Server Version : 90100
- Source Host           : 14.103.226.91:3306
  Source Schema         : campus
 
  Target Server Type    : MySQL
@@ -158,8 +157,8 @@ CREATE TABLE `sys_login_info`  (
   `msg` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '提示消息',
   `login_time` datetime(0) NULL DEFAULT NULL COMMENT '访问时间',
   PRIMARY KEY (`info_id`) USING BTREE,
-  INDEX `idx_login_info_s`(`login_status`) USING BTREE,
-  INDEX `idx_login_info_lt`(`login_time`) USING BTREE
+  INDEX `idx_user_id`(`user_id`) USING BTREE,
+  INDEX `idx_login_time`(`login_time`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统登录记录' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -323,9 +322,7 @@ CREATE TABLE `teacher`  (
   `user_id` bigint(0) NOT NULL COMMENT '用户ID,逻辑外键',
   `teacher_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '教师工号',
   `teacher_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '姓名',
-  `university_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '学校代码',
-  `institute_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '学院代码',
-  `major_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '专业代码',
+  `dept_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '部门代码-直接显示最低单位',
   `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '职称',
   `office` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '办公室',
   `admit_time` datetime(0) NULL DEFAULT NULL COMMENT '入职时间',
@@ -338,9 +335,7 @@ CREATE TABLE `teacher`  (
   PRIMARY KEY (`user_id`) USING BTREE,
   INDEX `idx_teacher_id`(`teacher_id`) USING BTREE,
   INDEX `idx_teacher_name`(`teacher_name`) USING BTREE,
-  INDEX `idx_university_id`(`university_id`) USING BTREE,
-  INDEX `idx_institute_id`(`institute_id`) USING BTREE,
-  INDEX `idx_major_id`(`major_id`) USING BTREE,
+  INDEX `idx_university_id`(`dept_id`) USING BTREE,
   INDEX `idx_title`(`title`) USING BTREE,
   INDEX `idx_position_status`(`position_status`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '教师表' ROW_FORMAT = Dynamic;

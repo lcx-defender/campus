@@ -1,10 +1,14 @@
 package com.lcx.campus.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -95,6 +99,9 @@ public class Menu implements Serializable {
      * 菜单图标
      */
     private String icon;
+
+    @TableField(exist = false)
+    private List<Menu> children = new ArrayList<Menu>();
 
     /**
      * 创建者

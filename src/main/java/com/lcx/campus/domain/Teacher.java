@@ -42,19 +42,10 @@ public class Teacher implements Serializable {
     private String teacherName;
 
     /**
-     * 学校代码
+     * 部门代码
+     * 直接显示最低单位,校级老师显示校级id,院级老师显示院级id
      */
-    private String universityId;
-
-    /**
-     * 学院代码
-     */
-    private String instituteId;
-
-    /**
-     * 专业代码
-     */
-    private String majorId;
+    private String deptId;
 
     /**
      * 职称
