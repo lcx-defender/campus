@@ -19,4 +19,6 @@ public interface IUserService extends IService<User> {
     Result loginByUsername(LoginBody user);
 
     Result updateUserProfile(User user);
+
+    Result getSelfInfo();
 }

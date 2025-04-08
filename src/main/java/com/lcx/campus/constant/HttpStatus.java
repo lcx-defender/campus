@@ -9,6 +9,12 @@ package com.lcx.campus.constant;
  * @since 2025-03-04
  */
 public class HttpStatus {
+
+    /**
+     * 操作失败,返回体代码
+     */
+    public static final int FAIL = 0;
+
     /**
      * 操作成功
      */

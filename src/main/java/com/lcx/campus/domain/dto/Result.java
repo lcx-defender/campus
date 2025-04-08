@@ -37,14 +37,10 @@ public class Result {
     }
 
     public static Result fail() {
-        return new Result(400, "fail", null, null);
+        return new Result(HttpStatus.FAIL, "fail", null, null);
     }
 
     public static Result fail(String message) {
-        return new Result(HttpStatus.ERROR, message, null, null);
-    }
-
-    public static Result fail(Integer code, String message) {
-        return new Result(code, message, null, null);
+        return new Result(HttpStatus.FAIL, message, null, null);
     }
 }

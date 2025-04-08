@@ -5,11 +5,7 @@ import com.lcx.campus.domain.dto.LoginBody;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.service.IUserService;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -22,12 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-
     @Resource
     private IUserService userService;
 
-    @PostMapping("/login/username")
-    public Result loginByUsername(@RequestBody LoginBody loginBody) {
-        return userService.loginByUsername(loginBody);
+    /**
+     * 获取当前登录用户个人信息
+     */
+    @GetMapping("/getSelfInfo")
+    public Result getSelfInfo() {
+        return userService.getSelfInfo();
     }
 }

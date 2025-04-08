@@ -10,10 +10,7 @@ import com.lcx.campus.exception.BaseException;
 import com.lcx.campus.mapper.UserMapper;
 import com.lcx.campus.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lcx.campus.utils.AddressUtils;
-import com.lcx.campus.utils.AsyncFactory;
-import com.lcx.campus.utils.AsyncManager;
-import com.lcx.campus.utils.IpUtils;
+import com.lcx.campus.utils.*;
 import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import static com.lcx.campus.constant.RedisConstants.CAPTCHA_CODE_KEY;
 
@@ -91,7 +89,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         stringRedisTemplate.delete(key);
         if (!StrUtil.equals(cacheCode, code)) {
-            AsyncManager.me().execute(AsyncFactory.recordLoginInfo(userId, Constants.LOGIN_FAIL, "验证码错误"));
+            AsyncManager.me().execute(AsyncFactory.recordLoginInfo(userId, Constants.LOGIN_FAIL, "验证码错误,应为" + cacheCode + "提交为" + code));
             throw new BaseException("验证码错误");
         }
     }
@@ -114,5 +112,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public Result updateUserProfile(User user) {
         boolean isSuccess = updateById(user);
         return isSuccess ? Result.success("更新用户信息成功") : Result.fail("更新用户信息失败");
+    }
+
+    @Override
+    public Result getSelfInfo() {
+        User user = SecurityUtils.getLoginUser().getUser();
+        if (Objects.isNull(user)) {
+            return Result.fail("获取用户信息失败");
+        }
+        // 返回用户基本信息，对密码进行脱敏处理
+        user.setPassword("********");
+        return Result.success(user);
     }
 }
