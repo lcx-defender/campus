@@ -53,15 +53,7 @@ public class JwtTokenServiceImpl {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
-    /**
-     * 获取存储到Redis中的键值
-     *
-     * @param tokenUUID
-     * @return
-     */
-    private String getTokenKey(String tokenUUID) {
-        return LOGIN_KEY + tokenUUID;
-    }
+
 
     /**
      * 创建令牌
@@ -102,6 +94,16 @@ public class JwtTokenServiceImpl {
     }
 
     /**
+     * 获取存储到Redis中的键值
+     *
+     * @param tokenUUID
+     * @return
+     */
+    private String getTokenKey(String tokenUUID) {
+        return LOGIN_KEY + tokenUUID;
+    }
+
+    /**
      * 设置登录用户的设备信息
      *
      * @param loginUser
@@ -129,19 +131,10 @@ public class JwtTokenServiceImpl {
         }
     }
 
-    // 接收token,验证token,并返回业务数据
-    public Map<String, Object> parseToken(HttpServletRequest request) {
-        String token = request.getHeader(header);
-        if (StrUtil.isEmpty(token)) {
-            return null;
-        }
-        return parseToken(token);
-    }
-
     /**
      * 获取用户身份信息
      *
-     * @return 用户信息
+     * @return 用户登录信息
      */
     public LoginUser getLoginUser(HttpServletRequest request) {
         String uuid = parseTokenToUUID(request);
@@ -151,7 +144,6 @@ public class JwtTokenServiceImpl {
         String userKey = getTokenKey(uuid);
         String JsonStr = stringRedisTemplate.opsForValue().get(userKey);
         if (StrUtil.isEmpty(JsonStr)) {
-
             return null;
         }
         return JSON.parseObject(JsonStr, LoginUser.class);
@@ -166,14 +158,27 @@ public class JwtTokenServiceImpl {
         if (StrUtil.isEmpty(token)) {
             return null;
         }
-        return parseToken(token).get(JWT_CLAIMS).toString();
+        return parseToken(request).get(JWT_CLAIMS).toString();
+    }
+
+    /**
+     * 根据前端请求头解析token并获取其中载荷map
+     * @param request 请求
+     * @return 解析token获取载荷
+     */
+    public Map<String, Object> parseToken(HttpServletRequest request) {
+        String token = request.getHeader(header);
+        if (StrUtil.isEmpty(token)) {
+            return null;
+        }
+        return parseToken(token);
     }
 
     /**
      * 解析token，获取token载荷数据
      *
-     * @param token
-     * @return
+     * @param token 用户令牌
+     * @return token载荷数据
      */
     public Map<String, Object> parseToken(String token) {
         if (StrUtil.isEmpty(token)) {

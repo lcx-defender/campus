@@ -38,7 +38,7 @@ public class User implements Serializable {
     /**
      * 用户昵称
      */
-    private String nickName;
+    private String nickname;
 
     /**
      * 用户类型（0系统管理&程序员;1教师;2学生） 数据字典

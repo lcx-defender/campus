@@ -2,9 +2,13 @@ package com.lcx.campus.controller;
 
 
 import com.lcx.campus.domain.dto.LoginBody;
+import com.lcx.campus.domain.dto.PasswordBody;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.service.IUserService;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -28,4 +32,24 @@ public class UserController {
     public Result getSelfInfo() {
         return userService.getSelfInfo();
     }
+
+    /**
+     * 修改自己密码
+     */
+    @PutMapping("/updatePassword")
+    public Result updatePassword(
+            @Validated(PasswordBody.UserUpdateGroup.class) @RequestBody PasswordBody passwordBody, HttpServletRequest request) {
+        return userService.updatePassword(passwordBody, request);
+    }
+
+    /**
+     * 管理员修改他人密码
+     */
+    @PreAuthorize("hasAnyAuthority('manage:user:resetPwd')")
+    @PutMapping("/resetPassword")
+    public Result resetPassword(
+            @Validated(PasswordBody.AdminResetGroup.class) @RequestBody PasswordBody passwordBody) {
+        return userService.resetPassword(passwordBody);
+    }
+
 }

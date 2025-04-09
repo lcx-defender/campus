@@ -31,6 +31,4 @@ public class LoginController {
     public Result loginByUsername(@RequestBody LoginBody loginBody) {
         return userService.loginByUsername(loginBody);
     }
-
-
 }

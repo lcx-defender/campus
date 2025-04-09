@@ -31,9 +31,12 @@ public class Result {
     public static Result success(Object data) {
         return new Result(HttpStatus.SUCCESS, "success", data, null);
     }
+    public static Result success(String message, Object data) {
+        return new Result(HttpStatus.SUCCESS, message, data, null);
+    }
 
-    public static Result success(Object data, Long total) {
-        return new Result(HttpStatus.SUCCESS, "success", data, total);
+    public static Result success(String message, Object data, Long total) {
+        return new Result(HttpStatus.SUCCESS, message, data, total);
     }
 
     public static Result fail() {
