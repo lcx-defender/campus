@@ -2,7 +2,9 @@ package com.lcx.campus.controller;
 
 import com.lcx.campus.domain.dto.LoginBody;
 import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.service.IMenuService;
 import com.lcx.campus.service.IUserService;
+import com.lcx.campus.utils.SecurityUtils;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
     @Resource
     private IUserService userService;
+    @Resource
+    private IMenuService menuService;
 
     /**
      * 根据用户名和密码登录方式
@@ -30,5 +34,14 @@ public class LoginController {
     @PostMapping("/loginByUsername")
     public Result loginByUsername(@RequestBody LoginBody loginBody) {
         return userService.loginByUsername(loginBody);
+    }
+
+    /**
+     * 获取登录用户的前端路由
+     */
+    @GetMapping("/getRouters")
+    public Result getRouters() {
+        Long userId = SecurityUtils.getUserId();
+        return menuService.getRouters(userId);
     }
 }

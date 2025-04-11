@@ -2,12 +2,16 @@ package com.lcx.campus.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.lcx.campus.constant.Constants;
+import com.lcx.campus.domain.Student;
+import com.lcx.campus.domain.Teacher;
 import com.lcx.campus.domain.User;
 import com.lcx.campus.domain.dto.LoginBody;
 import com.lcx.campus.domain.dto.LoginUser;
 import com.lcx.campus.domain.dto.PasswordBody;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.exception.BaseException;
+import com.lcx.campus.mapper.StudentMapper;
+import com.lcx.campus.mapper.TeacherMapper;
 import com.lcx.campus.mapper.UserMapper;
 import com.lcx.campus.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -40,21 +44,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Resource
     private UserMapper userMapper;
-
     @Resource
     private UserDetailsService userDetailsService;
-
     @Resource
     private AuthenticationManager authenticationManager;
-
     @Resource
     private StringRedisTemplate stringRedisTemplate;
-
     @Resource
     private JwtTokenServiceImpl jwtTokenService;
-
     @Resource
     private PasswordEncoder passwordEncoder;
+    @Resource
+    private TeacherMapper teacherMapper;
+    @Resource
+    private StudentMapper studentMapper;
 
     /**
      * 通过登陆界面用户名查询用户信息
@@ -172,6 +175,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (!isSuccess) {
             return Result.success("更新密码失败");
         }
+        // TODO 如何退出已经登录的其他当前用户(多端登录)
         // 更新完之后需要退出，重新登录
         LoginUser loginUser = jwtTokenService.getLoginUser(request);
         if (StringUtils.isNotNull(loginUser)) {
@@ -196,5 +200,83 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         user.setPassword(passwordEncoder.encode(passwordBody.getNewPassword()));
         boolean isSuccess = updateById(user);
         return isSuccess ? Result.success("重置密码成功") : Result.fail("重置密码失败");
+    }
+
+    /**
+     * 添加教师用户
+     * @param user
+     * @param teacher
+     * @return
+     */
+    @Override
+    public Result addUserOfTeacher(User user, Teacher teacher) {
+        // 1. 校验用户是否存在
+        Long userId = getUserIdByUser(user);
+        if (userId == null) {
+            return Result.fail("添加用户失败");
+        }
+        // 3. 插入教师信息
+        teacher.setUserId(userId);
+        int insert = teacherMapper.insert(teacher);
+        if (insert <= 0) {
+            return Result.fail("添加教师信息失败");
+        }
+        return Result.success("添加教师成功", userId);
+    }
+
+    /**
+     * @param user
+     * @param student
+     * @return
+     */
+    @Override
+    public Result addUserOfStudent(User user, Student student) {
+        // 1. 校验用户是否存在
+        Long userId = getUserIdByUser(user);
+        if (userId == null) {
+            return Result.fail("添加用户失败");
+        }
+        // 3. 插入学生信息
+        student.setUserId(userId);
+        int insert = studentMapper.insert(student);
+        if (insert <= 0) {
+            return Result.fail("添加学生信息失败");
+        }
+        return Result.success("添加学生成功", userId);
+    }
+
+    /**
+     * 获取用户ID:若用户已经存在则返回用户ID，否则插入用户信息并返回用户ID
+     * @param user
+     * @return 用户ID
+     */
+    private Long getUserIdByUser(User user) {
+        // 1. 校验用户是否存在
+        User existingUser = userMapper.selectUserByUserName(user.getIdentity());
+        Long userId = null;
+        if (existingUser != null) {
+            userId = existingUser.getUserId();
+        } else {
+            // 2. 用户不存在，插入用户
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setCreateTime(LocalDateTime.now());
+            user.setUpdateTime(LocalDateTime.now());
+            boolean isSuccess = save(user);
+            if (!isSuccess) {
+                return null;
+            }
+            userId = user.getUserId();
+        }
+        return userId;
+    }
+
+    @Override
+    public Result addUserOfAdmin(User user) {
+        // 1. 校验用户是否存在
+        Long userId = getUserIdByUser(user);
+        if (userId == null) {
+            return Result.fail("添加用户失败");
+        }
+        return Result.success("添加管理员成功", userId);
     }
 }

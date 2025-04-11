@@ -4,13 +4,14 @@
  Source Server         : 字节云服务器数据库
  Source Server Type    : MySQL
  Source Server Version : 90100
+ Source Host           : 14.103.226.91:3306
  Source Schema         : campus
 
  Target Server Type    : MySQL
  Target Server Version : 90100
  File Encoding         : 65001
 
- Date: 07/03/2025 23:18:51
+ Date: 11/04/2025 16:31:05
 */
 
 SET NAMES utf8mb4;
@@ -79,10 +80,11 @@ DROP TABLE IF EXISTS `sys_dept`;
 CREATE TABLE `sys_dept`  (
   `dept_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '部门id',
   `parent_id` bigint(0) NULL DEFAULT 0 COMMENT '父部门id',
-  `dept_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '部门名称',
+  `dept_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '部门名称',
   `leader` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '负责人',
   `phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '联系电话',
   `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '邮箱',
+  `website` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '院校官网',
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
@@ -159,13 +161,40 @@ CREATE TABLE `sys_login_info`  (
   PRIMARY KEY (`info_id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_login_time`(`login_time`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统登录记录' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 30 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统登录记录' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_login_info
 -- ----------------------------
 INSERT INTO `sys_login_info` VALUES (1, 1, '127.0.0.1', '内网IP', 'Unknown', 'Unknown', '0', '登录成功', NULL);
 INSERT INTO `sys_login_info` VALUES (2, 1, '127.0.0.1', '内网IP', 'Unknown', 'Unknown', '0', '退出成功', NULL);
+INSERT INTO `sys_login_info` VALUES (3, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '1', '验证码错误', NULL);
+INSERT INTO `sys_login_info` VALUES (4, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', NULL);
+INSERT INTO `sys_login_info` VALUES (5, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', NULL);
+INSERT INTO `sys_login_info` VALUES (6, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '1', '验证码错误,应为naMIY提交为naMy', NULL);
+INSERT INTO `sys_login_info` VALUES (7, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '1', '验证码已过期', NULL);
+INSERT INTO `sys_login_info` VALUES (8, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '1', '验证码已过期', NULL);
+INSERT INTO `sys_login_info` VALUES (9, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', NULL);
+INSERT INTO `sys_login_info` VALUES (10, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', NULL);
+INSERT INTO `sys_login_info` VALUES (11, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', NULL);
+INSERT INTO `sys_login_info` VALUES (12, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', NULL);
+INSERT INTO `sys_login_info` VALUES (13, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', NULL);
+INSERT INTO `sys_login_info` VALUES (14, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', NULL);
+INSERT INTO `sys_login_info` VALUES (15, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '1', '验证码错误,应为bgAum提交为bgAun', NULL);
+INSERT INTO `sys_login_info` VALUES (16, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', NULL);
+INSERT INTO `sys_login_info` VALUES (17, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', NULL);
+INSERT INTO `sys_login_info` VALUES (18, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '1', '验证码错误,应为QR1C5提交为qr123', NULL);
+INSERT INTO `sys_login_info` VALUES (19, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', NULL);
+INSERT INTO `sys_login_info` VALUES (20, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', NULL);
+INSERT INTO `sys_login_info` VALUES (21, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', NULL);
+INSERT INTO `sys_login_info` VALUES (22, 1, '127.0.0.1', '内网IP', 'Chrome 12', 'Windows 10', '0', '登录成功', NULL);
+INSERT INTO `sys_login_info` VALUES (23, 1, '127.0.0.1', '内网IP', 'Chrome 12', 'Windows 10', '1', '验证码已过期', NULL);
+INSERT INTO `sys_login_info` VALUES (24, 1, '127.0.0.1', '内网IP', 'Chrome 12', 'Windows 10', '0', '登录成功', NULL);
+INSERT INTO `sys_login_info` VALUES (25, 1, '127.0.0.1', '内网IP', 'Chrome 12', 'Windows 10', '0', '登录成功', NULL);
+INSERT INTO `sys_login_info` VALUES (26, 1, '127.0.0.1', '内网IP', 'Chrome 12', 'Windows 10', '1', '用户不存在/密码错误', NULL);
+INSERT INTO `sys_login_info` VALUES (27, 1, '127.0.0.1', '内网IP', 'Chrome 12', 'Windows 10', '0', '退出成功', NULL);
+INSERT INTO `sys_login_info` VALUES (28, 1, '127.0.0.1', '内网IP', 'Chrome 12', 'Windows 10', '0', '登录成功', NULL);
+INSERT INTO `sys_login_info` VALUES (29, 1, '127.0.0.1', '内网IP', 'Chrome 12', 'Windows 10', '0', '退出成功', NULL);
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -192,13 +221,24 @@ CREATE TABLE `sys_menu`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '备注',
   PRIMARY KEY (`menu_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_menu
 -- ----------------------------
-INSERT INTO `sys_menu` VALUES (1, '全部权限', 0, 0, '', NULL, NULL, '', 1, 0, '', '0', '*:*:*', '#', '', NULL, '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2, 'Hello测试', 0, 0, '', NULL, NULL, '', 1, 0, '', '0', 'sys:hello:hello', '#', '', '2025-03-07 16:22:11', '', '2025-03-07 16:22:19', '');
+INSERT INTO `sys_menu` VALUES (1, '系统管理', 0, 1, 'system', '', NULL, '', 1, 0, 'M', '0', '', 'system', '', '2025-04-11 15:38:37', '', '2025-04-11 15:39:38', '');
+INSERT INTO `sys_menu` VALUES (2, '系统监控', 0, 2, 'monitor', '', NULL, '', 1, 0, 'M', '0', '', 'monitor', '', '2025-03-07 16:22:11', '', '2025-03-07 16:22:19', '');
+INSERT INTO `sys_menu` VALUES (3, '用户管理', 1, 1, 'user', 'system/user/index', '', '', 1, 0, 'C', '0', 'system:user:list', 'user', 'admin', '2025-04-11 16:15:56', '', NULL, '用户管理菜单');
+INSERT INTO `sys_menu` VALUES (4, '角色管理', 1, 2, 'role', 'system/role/index', '', '', 1, 0, 'C', '0', 'system:role:list', 'peoples', 'admin', '2025-04-11 16:15:56', '', NULL, '角色管理菜单');
+INSERT INTO `sys_menu` VALUES (5, '菜单管理', 1, 3, 'menu', 'system/menu/index', '', '', 1, 0, 'C', '0', 'system:menu:list', 'tree-table', 'admin', '2025-04-11 16:15:56', '', NULL, '菜单管理菜单');
+INSERT INTO `sys_menu` VALUES (6, '部门管理', 1, 4, 'dept', 'system/dept/index', '', '', 1, 0, 'C', '0', 'system:dept:list', 'tree', 'admin', '2025-04-11 16:15:56', '', NULL, '部门管理菜单');
+INSERT INTO `sys_menu` VALUES (7, '字典管理', 1, 5, 'dict', 'system/dict/index', '', '', 1, 0, 'C', '0', 'system:dict:list', 'dict', 'admin', '2025-04-11 16:15:56', '', NULL, '字典管理菜单');
+INSERT INTO `sys_menu` VALUES (8, '日志管理', 1, 6, 'log', '', '', '', 1, 0, 'M', '0', '', 'log', 'admin', '2025-04-11 16:15:56', '', NULL, '日志管理菜单');
+INSERT INTO `sys_menu` VALUES (9, '在线用户', 2, 7, 'online', 'monitor/online/index', '', '', 1, 0, 'C', '0', 'monitor:online:list', 'online', 'admin', '2025-04-11 16:15:57', '', NULL, '在线用户菜单');
+INSERT INTO `sys_menu` VALUES (10, '操作日志', 8, 1, 'operlog', 'monitor/operlog/index', '', '', 1, 0, 'C', '0', 'monitor:operlog:list', 'form', 'admin', '2025-04-11 16:15:57', '', NULL, '操作日志菜单');
+INSERT INTO `sys_menu` VALUES (11, '登录日志', 8, 2, 'logininfor', 'monitor/logininfor/index', '', '', 1, 0, 'C', '0', 'monitor:logininfor:list', 'logininfor', 'admin', '2025-04-11 16:15:57', '', NULL, '登录日志菜单');
+INSERT INTO `sys_menu` VALUES (12, '用户查询', 3, 1, '', '', '', '', 1, 0, 'F', '0', 'system:user:query', '#', 'admin', '2025-04-11 16:15:57', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (13, '用户新增', 3, 2, '', '', '', '', 1, 0, 'F', '0', 'system:user:add', '#', 'admin', '2025-04-11 16:15:57', '', NULL, '');
 
 -- ----------------------------
 -- Table structure for sys_operate_log
@@ -246,7 +286,7 @@ CREATE TABLE `sys_role`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`role_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_role
@@ -298,7 +338,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, '360123', 'admin_lcx', 0, '', '', '0', 'https://greet-freshman.oss-cn-shanghai.aliyuncs.com/default-avatar.png', '$2a$10$SGoPUqmcd56FzbzsjYScCOMlPsnA1.4L0rjxl3GQpCZLid9yOmiKi', '0', '', '', '', '2025-03-05 22:03:23', '', '2025-03-05 22:03:28', '');
+INSERT INTO `sys_user` VALUES (1, '360123', 'admin_lcx', 0, '', '', '0', 'https://greet-freshman.oss-cn-shanghai.aliyuncs.com/default-avatar.png', '$2a$10$lyn4VN9u.SNX27iEOaCxX.vftSRQgjBQW7W4XfAk/hVfW40YZIyyq', '0', '127.0.0.1', '内网IP', '', '2025-03-05 22:03:23', '', '2025-04-09 23:55:26', '');
 
 -- ----------------------------
 -- Table structure for sys_user_role

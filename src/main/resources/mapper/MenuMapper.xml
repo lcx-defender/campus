@@ -1,12 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lcx.campus.mapper.MenuMapper">
+    <sql id="selectMenuVo">
+        select menu_id,
+               menu_name,
+               parent_id,
+               order_num,
+               router_path,
+               component,
+               query_param,
+               route_name,
+               is_frame,
+               is_cache,
+               menu_type,
+               menu_status,
+               ifnull(perms, '') as perms,
+               icon,
+               create_time
+        from sys_menu
+    </sql>
 
-    <select id="selectMenuPermsByUserId" resultType="java.lang.String" parameterType="java.lang.Long">
-        select distinct m.perms
+    <select id="selectMenuList" resultType="com.lcx.campus.domain.Menu"
+            parameterType="com.lcx.campus.domain.Menu">
+        select * from sys_menu
+        <where>
+            <if test="menuName != null and menuName != ''">
+                AND menu_name like concat('%', #{menuName}, '%')
+            </if>
+            <if test="menuStatus != null and menuStatus != ''">
+                AND menu_status = #{menuStatus}
+            </if>
+        </where>
+        order by parent_id, order_num
+    </select>
+    <select id="selectMenuListByUserId" resultType="com.lcx.campus.domain.Menu">
+        select distinct m.menu_id, m.parent_id, m.menu_name, m.router_path, m.component, m.query_param, m.route_name,
+        m.menu_status, ifnull(m.perms,'') as perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num,
+        m.create_time
         from sys_menu m
         left join sys_role_menu rm on m.menu_id = rm.menu_id
         left join sys_user_role ur on rm.role_id = ur.role_id
-        where ur.user_id = #{userId}
+        left join sys_role ro on ur.role_id = ro.role_id
+        where ur.user_id = #{params.userId}
+        <if test="menuName != null and menuName != ''">
+            AND m.menu_name like concat('%', #{menuName}, '%')
+        </if>
+        <if test="menuStatus != null and menuStatus != ''">
+            AND m.menu_status = #{menuStatus}
+        </if>
+        order by m.parent_id, m.order_num
     </select>
+
+    <select id="selectMenuPermsByRoleId" resultType="java.lang.String" parameterType="java.lang.Long">
+        select distinct m.perms
+        from sys_menu m
+                 left join sys_role_menu rm on m.menu_id = rm.menu_id
+        where m.menu_status = '0'
+          and rm.role_id = #{roleId}
+    </select>
+    <select id="selectMenuTreeAll" resultType="com.lcx.campus.domain.Menu">
+        select distinct m.menu_id,
+                        m.parent_id,
+                        m.menu_name,
+                        m.router_path,
+                        m.component,
+                        m.query_param,
+                        m.route_name,
+                        m.menu_status,
+                        ifnull(m.perms, '') as perms,
+                        m.is_frame,
+                        m.is_cache,
+                        m.menu_type,
+                        m.icon,
+                        m.order_num,
+                        m.create_time
+        from sys_menu m
+        where m.menu_type in ('M', 'C')
+          and m.menu_status = 0
+        order by m.parent_id, m.order_num
+    </select>
+    <select id="selectMenuTreeByUserId" resultType="com.lcx.campus.domain.Menu" parameterType="java.lang.Long">
+        select distinct m.menu_id,
+                        m.parent_id,
+                        m.menu_name,
+                        m.router_path,
+                        m.component,
+                        m.query_param,
+                        m.route_name,
+                        m.menu_status,
+                        ifnull(m.perms, '') as perms,
+                        m.is_frame,
+                        m.is_cache,
+                        m.menu_type,
+                        m.icon,
+                        m.order_num,
+                        m.create_time
+        from sys_menu m
+                 left join sys_role_menu rm on m.menu_id = rm.menu_id
+                 left join sys_user_role ur on rm.role_id = ur.role_id
+                 left join sys_role ro on ur.role_id = ro.role_id
+                 left join sys_user u on ur.user_id = u.user_id
+        where u.user_id = #{userId}
+          and m.menu_type in ('M', 'C')
+          and m.menu_status = 0
+          AND ro.role_status = 0
+        order by m.parent_id, m.order_num
+    </select>
+    <select id="selectMenuListByRoleId" resultType="java.lang.Long" parameterType="java.lang.Long">
+        select m.menu_id
+        from sys_menu m
+                 left join sys_role_menu rm on m.menu_id = rm.menu_id
+        where rm.role_id = #{roleId}
+        order by m.parent_id, m.order_num
+    </select>
+    <select id="hasChildByMenuId" resultType="java.lang.Integer" parameterType="java.lang.Long">
+        select count(1)
+        from sys_menu
+        where parent_id = #{menuId}
+    </select>
+
+    <select id="checkMenuNameUnique" resultType="com.lcx.campus.domain.Menu">
+        <include refid="selectMenuVo"/>
+        where menu_name=#{menuName} and parent_id = #{parentId} limit 1
+    </select>
+
+
 </mapper>

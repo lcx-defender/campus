@@ -3,6 +3,8 @@ package com.lcx.campus.service;
 import com.lcx.campus.domain.Role;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  * 角色信息表 服务类
@@ -13,4 +15,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IRoleService extends IService<Role> {
 
+    List<Role> selectRoleByUserId(Long userId);
+
+    boolean isAdmin(Long userId);
 }

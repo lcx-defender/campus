@@ -1,5 +1,7 @@
 package com.lcx.campus.service;
 
+import com.lcx.campus.domain.Student;
+import com.lcx.campus.domain.Teacher;
 import com.lcx.campus.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lcx.campus.domain.dto.LoginBody;
@@ -27,4 +29,10 @@ public interface IUserService extends IService<User> {
     Result updatePassword(PasswordBody passwordBody, HttpServletRequest request);
 
     Result resetPassword(PasswordBody passwordBody);
+
+    Result addUserOfTeacher(User user, Teacher teacher);
+
+    Result addUserOfStudent(User user, Student student);
+
+    Result addUserOfAdmin(User user);
 }

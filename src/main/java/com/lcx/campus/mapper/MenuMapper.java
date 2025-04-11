@@ -16,8 +16,22 @@ import java.util.List;
  */
 public interface MenuMapper extends BaseMapper<Menu> {
 
-    List<String> selectMenuPermsByUserId(Long userId);
-
     @Select("select distinct perms from sys_menu")
     List<String> selectAllMenuPerms();
+
+    List<Menu> selectMenuList(Menu menu);
+
+    List<Menu> selectMenuListByUserId(Menu menu, Long userId);
+
+    List<String> selectMenuPermsByRoleId(Long roleId);
+
+    List<Menu> selectMenuTreeAll();
+
+    List<Menu> selectMenuTreeByUserId(Long userId);
+
+    List<Long> selectMenuListByRoleId(Long roleId);
+
+    int hasChildByMenuId(Long menuId);
+
+    Menu checkMenuNameUnique(String menuName, Long parentId);
 }
