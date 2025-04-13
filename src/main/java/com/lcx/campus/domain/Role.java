@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -34,11 +36,13 @@ public class Role implements Serializable {
     /**
      * 角色名称
      */
+    @NotNull(message = "角色名称不能为空")
     private String roleName;
 
     /**
-     * 角色权限字符串
+     * 角色权限标识符
      */
+    @NotNull(message = "角色权限标识符不能为空")
     private String roleKey;
 
     /**

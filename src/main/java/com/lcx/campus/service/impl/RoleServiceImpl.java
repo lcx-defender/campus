@@ -1,9 +1,14 @@
 package com.lcx.campus.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lcx.campus.domain.Role;
+import com.lcx.campus.domain.dto.PageQuery;
+import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.PageVo;
 import com.lcx.campus.mapper.RoleMapper;
 import com.lcx.campus.service.IRoleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lcx.campus.utils.SecurityUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -40,5 +45,26 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
             }
         }
         return false;
+    }
+
+    @Override
+    public Result getCurrentRole() {
+        Long userId = SecurityUtils.getUserId();
+        return Result.success(selectRoleByUserId(userId));
+    }
+
+    @Override
+    public Result getPageList(PageQuery pageQuery, Role role) {
+        // 构建分页条件
+        Page<Role> page = pageQuery.toMpPage();
+        // 分页查询
+        Page<Role> resultP = lambdaQuery()
+                .like(role.getRoleName() != null, Role::getRoleName, role.getRoleName())
+                .like(role.getRoleKey() != null, Role::getRoleKey, role.getRoleKey())
+                .eq(role.getRoleStatus() != null, Role::getRoleStatus, role.getRoleStatus())
+                .page(page);
+        PageVo<Role> res = PageVo.of(resultP);
+
+        return Result.success(res);
     }
 }

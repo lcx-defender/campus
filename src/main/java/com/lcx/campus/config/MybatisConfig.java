@@ -21,7 +21,7 @@ public class MybatisConfig {
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         // 添加分页插件
-        PaginationInnerInterceptor pageInterceptor = new PaginationInnerInterceptor(DbType.MYSQL);
+        PaginationInnerInterceptor pageInterceptor = new PaginationInnerInterceptor(DbType.MYSQL); // mysql数据库
         pageInterceptor.setMaxLimit(1000L); // 设置分页查询最大上限
         interceptor.addInnerInterceptor(pageInterceptor);
         return interceptor;

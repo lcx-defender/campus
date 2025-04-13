@@ -18,6 +18,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lcx.campus.utils.*;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import net.sf.jsqlparser.util.validation.metadata.NamedObject;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,6 +31,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 import static com.lcx.campus.constant.RedisConstants.CAPTCHA_CODE_KEY;
+import static net.sf.jsqlparser.util.validation.metadata.NamedObject.user;
 
 /**
  * <p>
@@ -133,9 +135,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      */
     @Override
     public Result getSelfInfo() {
-        User user = SecurityUtils.getLoginUser().getUser();
-        if (Objects.isNull(user)) {
+        Long userId = SecurityUtils.getUserId();
+
+        if (Objects.isNull(userId)) {
             return Result.fail("获取用户信息失败");
+        }
+        User user = userMapper.selectById(userId);
+        if (Objects.isNull(user)) {
+            return Result.fail("用户不存在");
         }
         // 返回用户基本信息，对密码进行脱敏处理
         user.setPassword("********");

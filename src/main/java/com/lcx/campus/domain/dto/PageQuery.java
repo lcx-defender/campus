@@ -1,5 +1,6 @@
 package com.lcx.campus.domain.dto;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.Data;
@@ -16,11 +17,20 @@ import java.util.Map;
  */
 @Data
 public class PageQuery {
-    // 查询页码
+    /**
+     * 当前页码
+     */
+    @TableField(exist = false)
     private Integer pageNo;
-    // 查询条数/每页显示条数
+    /**
+     * 查询条数/每页显示条数
+     */
+    @TableField(exist = false)
     private Integer pageSize;
-    // 排序规则, key为字段名, value为true/false, true表示升序, false表示降序
+    /**
+     * 排序规则, key为字段名, value为true/false, true表示升序, false表示降序
+     */
+    @TableField(exist = false)
     private Map<String, Boolean> sort;
 
     public <T> Page<T> toMpPage() {

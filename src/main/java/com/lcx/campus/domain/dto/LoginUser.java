@@ -87,7 +87,12 @@ public class LoginUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (permissions == null || permissions.isEmpty()) {
+            return null;
+        }
+        System.out.println(permissions);
         return permissions.stream()
+                .filter(permission -> permission != null && !permission.isEmpty())
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toSet());
     }

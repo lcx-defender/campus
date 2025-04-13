@@ -2,6 +2,8 @@ package com.lcx.campus.service;
 
 import com.lcx.campus.domain.Role;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lcx.campus.domain.dto.PageQuery;
+import com.lcx.campus.domain.dto.Result;
 
 import java.util.List;
 
@@ -18,4 +20,8 @@ public interface IRoleService extends IService<Role> {
     List<Role> selectRoleByUserId(Long userId);
 
     boolean isAdmin(Long userId);
+
+    Result getCurrentRole();
+
+    Result getPageList(PageQuery pageQuery, Role role);
 }

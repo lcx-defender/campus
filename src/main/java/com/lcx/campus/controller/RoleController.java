@@ -1,9 +1,17 @@
 package com.lcx.campus.controller;
 
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.lcx.campus.domain.Role;
+import com.lcx.campus.domain.dto.PageQuery;
+import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.service.IRoleService;
+import com.lcx.campus.utils.SecurityUtils;
+import jakarta.annotation.Resource;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -17,4 +25,75 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/role")
 public class RoleController {
 
+    @Resource
+    private IRoleService roleService;
+
+    /**
+     * * 获取当前登录用户的角色信息
+     */
+    @GetMapping("/getCurrentRole")
+    public Result getCurrentRole() {
+        return roleService.getCurrentRole();
+    }
+
+    /**
+     * 获取所有角色信息
+     */
+    @PreAuthorize("hasAnyAuthority('system:role:list')")
+    @GetMapping("/getAllRole")
+    public Result getAllRole() {
+        return Result.success(roleService.list());
+    }
+
+    /**
+     * 分页查询角色信息
+     */
+    @PreAuthorize("hasAnyAuthority('system:role:list')")
+    @GetMapping("/getPageList")
+    public Result getPageList(@RequestBody PageQuery pageQuery, @RequestBody Role role) {
+        return roleService.getPageList(pageQuery, role);
+    }
+
+    /**
+     * 通过id获取角色信息
+     *
+     * @param id 角色id
+     * @return 角色信息
+     */
+    @PreAuthorize("hasAnyAuthority('system:role:query')")
+    @GetMapping("/getRole/{id}")
+    public Result getRoleById(@PathVariable Long id) {
+        return Result.success(roleService.getById(id));
+    }
+
+    /**
+     * 添加新的角色信息
+     */
+    @PreAuthorize("hasAnyAuthority('system:role:add')")
+    @PostMapping("/addRole")
+    public Result addRole(@Validated @RequestBody Role role) {
+        role.setCreateBy(String.valueOf(SecurityUtils.getUserId()));
+        role.setCreateTime(LocalDateTime.now());
+        return Result.success(roleService.save(role));
+    }
+
+    /**
+     * 修改角色信息
+     */
+    @PreAuthorize("hasAnyAuthority('system:role:edit')")
+    @PutMapping("/updateRole")
+    public Result updateRole(@RequestBody Role role) {
+        role.setUpdateBy(String.valueOf(SecurityUtils.getUserId()));
+        role.setUpdateTime(LocalDateTime.now());
+        return Result.success(roleService.updateById(role));
+    }
+
+    /**
+     * 删除角色信息
+     */
+    @PreAuthorize("hasAnyAuthority('system:role:remove')")
+    @DeleteMapping("/deleteRole/{id}")
+    public Result deleteRole(@PathVariable Long id) {
+        return Result.success(roleService.removeById(id));
+    }
 }
