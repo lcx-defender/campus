@@ -26,10 +26,10 @@ public class Dept implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 部门id
+     * 部门id,由创建者输入学校、学院、系、班级等编号
      */
     @TableId(value = "dept_id", type = IdType.INPUT)
-    private String deptId;
+    private Long deptId;
 
     /**
      * 父部门id

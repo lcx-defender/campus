@@ -51,7 +51,7 @@ public class UserController {
     /**
      * 管理员修改他人密码
      */
-    @PreAuthorize("hasAnyAuthority('manage:user:resetPwd')")
+    @PreAuthorize("hasAnyAuthority('system:user:resetPwd')")
     @PutMapping("/resetPassword")
     public Result resetPassword(
             @Validated(PasswordBody.AdminResetGroup.class) @RequestBody PasswordBody passwordBody) {
@@ -59,32 +59,12 @@ public class UserController {
     }
 
     /**
-     * 新建教师类型用户
-     */
-    @Log(title = "新建教师类型用户", businessType = BusinessType.INSERT)
-    @PreAuthorize("hasAnyAuthority('manage:user:addTeacher')")
-    @PostMapping("/addTeacher")
-    public Result addUserOfTeacher(@RequestBody User user, @RequestBody Teacher teacher) {
-        return userService.addUserOfTeacher(user, teacher);
-    }
-
-    /**
-     * 新建学生类型用户
-     */
-    @Log(title = "新建学生类型用户", businessType = BusinessType.INSERT)
-    @PreAuthorize("hasAnyAuthority('manage:user:addStudent')")
-    @PostMapping("/addStudent")
-    public Result addUserOfStudent(@RequestBody User user, @RequestBody Student student) {
-        return userService.addUserOfStudent(user, student);
-    }
-
-    /**
      * 新建系统用户(开发测试等人员使用,不对外开放)
      */
     @Log(title = "新建系统用户", businessType = BusinessType.INSERT)
-    @PreAuthorize("hasAnyAuthority('manage:user:addAdmin')")
+    @PreAuthorize("hasAnyAuthority('system:user:add')")
     @PostMapping("/addUser")
-    public Result addUserOfAdmin(@RequestBody User user) {
+    public Result addUserOfAdmin(@Validated(User.AddUserGroup.class) @RequestBody User user) {
         return userService.addUserOfAdmin(user);
     }
 

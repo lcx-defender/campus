@@ -57,8 +57,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Resource
     private PasswordEncoder passwordEncoder;
     @Resource
-    private TeacherMapper teacherMapper;
-    @Resource
     private StudentMapper studentMapper;
 
     /**
@@ -197,6 +195,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     /**
      * 管理员重置用户密码
+     *
      * @param passwordBody
      * @return
      */
@@ -210,69 +209,36 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     /**
-     * 添加教师用户
-     * @param user
-     * @param teacher
-     * @return
-     */
-    @Override
-    public Result addUserOfTeacher(User user, Teacher teacher) {
-        // 1. 校验用户是否存在
-        Long userId = getUserIdByUser(user);
-        if (userId == null) {
-            return Result.fail("添加用户失败");
-        }
-        // 3. 插入教师信息
-        teacher.setUserId(userId);
-        int insert = teacherMapper.insert(teacher);
-        if (insert <= 0) {
-            return Result.fail("添加教师信息失败");
-        }
-        return Result.success("添加教师成功", userId);
-    }
-
-    /**
-     * @param user
-     * @param student
-     * @return
-     */
-    @Override
-    public Result addUserOfStudent(User user, Student student) {
-        // 1. 校验用户是否存在
-        Long userId = getUserIdByUser(user);
-        if (userId == null) {
-            return Result.fail("添加用户失败");
-        }
-        // 3. 插入学生信息
-        student.setUserId(userId);
-        int insert = studentMapper.insert(student);
-        if (insert <= 0) {
-            return Result.fail("添加学生信息失败");
-        }
-        return Result.success("添加学生成功", userId);
-    }
-
-    /**
      * 获取用户ID:若用户已经存在则返回用户ID，否则插入用户信息并返回用户ID
+     *
      * @param user
      * @return 用户ID
      */
-    private Long getUserIdByUser(User user) {
+    public Long creatUserIfNotExist(User user) {
         // 1. 校验用户是否存在
-        User existingUser = userMapper.selectUserByUserName(user.getIdentity());
+        User existingUser = userMapper.selectOne(
+                lambdaQuery()
+                        .eq(User::getIdentity, user.getIdentity())
+                        .eq(User::getUserType, user.getUserType())
+        );
         Long userId = null;
+        boolean isSuccess;
         if (existingUser != null) {
             userId = existingUser.getUserId();
+            // 1.1 用户存在，更新用户信息
+            user.setUserId(userId);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setUpdateTime(LocalDateTime.now());
+            isSuccess = updateById(user);
         } else {
             // 2. 用户不存在，插入用户
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setCreateTime(LocalDateTime.now());
-            user.setUpdateTime(LocalDateTime.now());
-            boolean isSuccess = save(user);
-            if (!isSuccess) {
-                return null;
-            }
+            isSuccess = save(user);
             userId = user.getUserId();
+        }
+        if (!isSuccess) {
+            return null;
         }
         return userId;
     }
@@ -280,10 +246,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public Result addUserOfAdmin(User user) {
         // 1. 校验用户是否存在
-        Long userId = getUserIdByUser(user);
+        Long userId = creatUserIfNotExist(user);
         if (userId == null) {
             return Result.fail("添加用户失败");
         }
-        return Result.success("添加管理员成功", userId);
+        return Result.success("添加用户成功", userId);
     }
 }

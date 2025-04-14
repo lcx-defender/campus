@@ -13,4 +13,15 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IDeptService extends IService<Dept> {
 
+    /**
+     * 根据用户id查询用户所在部门
+     */
+    Long getDeptIdByUserId(Long userId);
+
+    boolean isParentDept(Long deptId1, Long deptId2);
+
+    /**
+     * 查询自己所在部门ID
+     */
+    Long getSelfDeptId();
 }

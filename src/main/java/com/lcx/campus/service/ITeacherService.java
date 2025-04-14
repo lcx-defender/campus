@@ -2,6 +2,9 @@ package com.lcx.campus.service;
 
 import com.lcx.campus.domain.Teacher;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lcx.campus.domain.User;
+import com.lcx.campus.domain.dto.PageQuery;
+import com.lcx.campus.domain.dto.Result;
 
 /**
  * <p>
@@ -13,4 +16,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ITeacherService extends IService<Teacher> {
 
+    Result addTeacher(User user, Teacher teacher);
+
+    Result pageListTeacher(Teacher teacher, PageQuery pageQuery);
+
+    Result editTeacher(Teacher teacher);
 }

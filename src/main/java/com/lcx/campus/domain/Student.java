@@ -44,22 +44,22 @@ public class Student implements Serializable {
     /**
      * 学校代码
      */
-    private String universityId;
+    private Long universityId;
 
     /**
      * 学院代码
      */
-    private String instituteId;
+    private Long instituteId;
 
     /**
      * 专业代码
      */
-    private String majorId;
+    private Long majorId;
 
     /**
      * 班级代码
      */
-    private String classId;
+    private Long classId;
 
     /**
      * 当前年级

@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -48,6 +49,7 @@ public class User implements Serializable {
     /**
      * 身份证号
      */
+    @NotNull(message = "身份证号不能为空", groups = {User.AddUserGroup.class})
     private String identity;
 
     /**
@@ -73,11 +75,13 @@ public class User implements Serializable {
     /**
      * 密码
      */
+    @NotNull(message = "密码不能为空", groups = {User.AddUserGroup.class})
     private String password;
 
     /**
      * 帐号状态（0正常 1封禁 2删除）数据字典
      */
+    @NotNull(message = "用户状态不能为空", groups = {User.AddUserGroup.class})
     private String userStatus;
 
     /**
@@ -120,5 +124,7 @@ public class User implements Serializable {
 
     @TableField(exist = false)
     private Set<Menu> menus;
+
+    public interface AddUserGroup {}
 
 }

@@ -13,4 +13,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface StudentMapper extends BaseMapper<Student> {
 
+    /**
+     *
+     * @param userId
+     * @return
+     */
+    Long selectClassByUserId(Long userId);
 }

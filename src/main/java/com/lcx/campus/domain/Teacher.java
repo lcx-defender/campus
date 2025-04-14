@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -29,23 +31,27 @@ public class Teacher implements Serializable {
      * 用户ID,逻辑外键
      */
     @TableId(value = "user_id", type = IdType.INPUT)
+    @NotNull(groups = {addTeacher.class, updateInfo.class}, message = "用户ID不能为空")
     private Long userId;
 
     /**
      * 教师工号
      */
+    @NotNull(groups = {addTeacher.class}, message = "教师工号不能为空")
     private String teacherId;
 
     /**
      * 姓名
      */
+    @NotNull(groups = {addTeacher.class}, message = "教师姓名不能为空")
     private String teacherName;
 
     /**
      * 部门代码
      * 直接显示最低单位,校级老师显示校级id,院级老师显示院级id
      */
-    private String deptId;
+    @NotNull(groups = {addTeacher.class}, message = "部门ID不能为空")
+    private Long deptId;
 
     /**
      * 职称
@@ -65,7 +71,7 @@ public class Teacher implements Serializable {
     /**
      * 职位状态（0在职、1停职、2离职） 数据字典
      */
-    private String positionStatus;
+    private Integer positionStatus;
 
     /**
      * 创建者
@@ -92,5 +98,8 @@ public class Teacher implements Serializable {
      */
     private String remark;
 
+    public interface addTeacher {}
+
+    public interface updateInfo {}
 
 }

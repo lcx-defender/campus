@@ -2,6 +2,8 @@ package com.lcx.campus.service;
 
 import com.lcx.campus.domain.Student;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lcx.campus.domain.User;
+import com.lcx.campus.domain.dto.Result;
 
 /**
  * <p>
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IStudentService extends IService<Student> {
 
+    Result addStudent(User user, Student student);
 }

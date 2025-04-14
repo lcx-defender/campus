@@ -21,4 +21,6 @@ public interface UserMapper extends BaseMapper<User> {
      */
     @Select("select * from sys_user where identity = #{username} or phone = #{username} or email = #{username}")
     User selectUserByUserName(String username);
+
+
 }

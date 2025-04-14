@@ -30,9 +30,12 @@ public interface IUserService extends IService<User> {
 
     Result resetPassword(PasswordBody passwordBody);
 
-    Result addUserOfTeacher(User user, Teacher teacher);
-
-    Result addUserOfStudent(User user, Student student);
-
     Result addUserOfAdmin(User user);
+
+    /**
+     * 创建用户如果不存在当前信息用户
+     * @param user
+     * @return 用户ID
+     */
+    Long creatUserIfNotExist(User user);
 }
