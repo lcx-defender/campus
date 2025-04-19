@@ -1,10 +1,14 @@
 package com.lcx.campus.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+import java.util.List;
+
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -28,17 +32,25 @@ public class Dept implements Serializable {
     /**
      * 部门id,由创建者输入学校、学院、系、班级等编号
      */
-    @TableId(value = "dept_id", type = IdType.INPUT)
+    @TableId(value = "dept_id", type = IdType.AUTO)
     private Long deptId;
 
     /**
      * 父部门id
      */
+    @NotNull(message = "父部门不能为空", groups = {Dept.insert.class})
     private Long parentId;
+
+    /**
+     * 子部门
+     */
+    @TableField(exist = false)
+    private List<Dept> children;
 
     /**
      * 部门名称
      */
+    @NotNull(message = "部门名称不能为空", groups = {Dept.insert.class})
     private String deptName;
 
     /**
@@ -55,6 +67,9 @@ public class Dept implements Serializable {
      * 邮箱
      */
     private String email;
+
+    /** 部门状态:0停用,1正常 */
+    private String status;
 
     /**
      * 删除标志（0代表存在 1代表删除）
@@ -86,5 +101,6 @@ public class Dept implements Serializable {
      */
     private String remark;
 
+    public interface insert {}
 
 }

@@ -51,6 +51,7 @@ public class UserController {
     /**
      * 管理员修改他人密码
      */
+    @Log(title = "管理员修改他人密码", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAnyAuthority('system:user:resetPwd')")
     @PutMapping("/resetPassword")
     public Result resetPassword(

@@ -11,7 +11,7 @@
  Target Server Version : 90100
  File Encoding         : 65001
 
- Date: 13/04/2025 23:12:23
+ Date: 19/04/2025 23:19:59
 */
 
 SET NAMES utf8mb4;
@@ -41,10 +41,10 @@ CREATE TABLE `student`  (
   `user_id` bigint(0) NOT NULL COMMENT '用户ID,逻辑外键',
   `student_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '学号',
   `student_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '姓名',
-  `university_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '学校代码',
-  `institute_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '学院代码',
-  `major_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '专业代码',
-  `class_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '班级代码',
+  `university_id` bigint(0) NULL DEFAULT NULL COMMENT '学校代码',
+  `institute_id` bigint(0) NULL DEFAULT NULL COMMENT '学院代码',
+  `major_id` bigint(0) NULL DEFAULT NULL COMMENT '专业代码',
+  `class_id` bigint(0) NULL DEFAULT NULL COMMENT '班级代码',
   `current_grade` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '当前年级',
   `admit_time` datetime(0) NULL DEFAULT NULL COMMENT '入学时间',
   `graduate_time` datetime(0) NULL DEFAULT NULL COMMENT '毕业时间',
@@ -78,13 +78,14 @@ CREATE TABLE `student`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_dept`;
 CREATE TABLE `sys_dept`  (
-  `dept_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '部门id',
+  `dept_id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '部门id',
   `parent_id` bigint(0) NULL DEFAULT 0 COMMENT '父部门id',
   `dept_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '部门名称',
   `leader` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '负责人',
   `phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '联系电话',
   `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '邮箱',
   `website` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '院校官网',
+  `status` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '1' COMMENT '部门状态 0停用,1正常',
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
@@ -92,7 +93,7 @@ CREATE TABLE `sys_dept`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`dept_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '院校表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '院校表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_dept
@@ -210,7 +211,7 @@ INSERT INTO `sys_menu` VALUES (8, '日志管理', 1, 6, 'log', '', '', '', 1, 0,
 INSERT INTO `sys_menu` VALUES (9, '在线用户', 2, 7, 'online', 'monitor/online/index', '', '', 1, 0, 'C', '0', 'monitor:online:list', 'online', '', '2025-04-13 23:10:43', '', NULL, '在线用户菜单');
 INSERT INTO `sys_menu` VALUES (10, '操作日志', 8, 1, 'operlog', 'monitor/operlog/index', '', '', 1, 0, 'C', '0', 'monitor:operlog:list', 'form', '', '2025-04-13 23:10:43', '', NULL, '操作日志菜单');
 INSERT INTO `sys_menu` VALUES (11, '登录日志', 8, 2, 'logininfor', 'monitor/logininfor/index', '', '', 1, 0, 'C', '0', 'monitor:logininfor:list', 'logininfor', '', '2025-04-13 23:10:43', '', NULL, '登录日志菜单');
-INSERT INTO `sys_menu` VALUES (12, '用户查询', 3, 1, '', '', '', '', 1, 0, 'F', '0', 'system:user:query', '#', '', '2025-04-13 23:10:43', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (12, '用户查询', 3, 1, '', '', '', '', 1, 0, 'F', '0', 'system:user:list', '#', '', '2025-04-13 23:10:43', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (13, '用户新增', 3, 2, '', '', '', '', 1, 0, 'F', '0', 'system:user:add', '#', '', '2025-04-13 23:10:43', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (14, '用户修改', 3, 3, '', '', '', '', 1, 0, 'F', '0', 'system:user:edit', '#', '', '2025-04-13 23:10:44', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (15, '用户删除', 3, 4, '', '', '', '', 1, 0, 'F', '0', 'system:user:remove', '#', '', '2025-04-13 23:10:44', '', NULL, '');
@@ -370,7 +371,7 @@ CREATE TABLE `teacher`  (
   `user_id` bigint(0) NOT NULL COMMENT '用户ID,逻辑外键',
   `teacher_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '教师工号',
   `teacher_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '姓名',
-  `dept_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '部门代码-直接显示最低单位',
+  `dept_id` bigint(0) NOT NULL COMMENT '部门代码-直接显示最低单位',
   `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '职称',
   `office` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '办公室',
   `admit_time` datetime(0) NULL DEFAULT NULL COMMENT '入职时间',

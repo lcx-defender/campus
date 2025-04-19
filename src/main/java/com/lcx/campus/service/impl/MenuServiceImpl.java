@@ -7,6 +7,7 @@ import com.lcx.campus.domain.Menu;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.domain.vo.MetaVo;
 import com.lcx.campus.domain.vo.RouterVo;
+import com.lcx.campus.domain.vo.TreeSelect;
 import com.lcx.campus.mapper.MenuMapper;
 import com.lcx.campus.service.IMenuService;
 import com.lcx.campus.service.IRoleMenuService;
@@ -217,6 +218,12 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
             returnList = menus;
         }
         return returnList;
+    }
+
+    @Override
+    public List<TreeSelect> buildMenuTreeSelect(List<Menu> menus) {
+        List<Menu> menuTrees = buildMenuTree(menus);
+        return menuTrees.stream().map(TreeSelect::new).collect(Collectors.toList());
     }
 
     /**

@@ -2,6 +2,10 @@ package com.lcx.campus.service;
 
 import com.lcx.campus.domain.Dept;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.TreeSelect;
+
+import java.util.List;
 
 /**
  * <p>
@@ -24,4 +28,10 @@ public interface IDeptService extends IService<Dept> {
      * 查询自己所在部门ID
      */
     Long getSelfDeptId();
+
+    Result treeSelect();
+
+    List<TreeSelect> buildDeptTreeSelect(List<Dept> depts);
+
+    List<Dept> buildDeptTree(List<Dept> depts);
 }

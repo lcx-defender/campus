@@ -4,6 +4,7 @@ import com.lcx.campus.domain.Menu;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.domain.vo.RouterVo;
+import com.lcx.campus.domain.vo.TreeSelect;
 
 import java.util.List;
 import java.util.Set;
@@ -78,6 +79,14 @@ public interface IMenuService extends IService<Menu> {
      * @return 树结构列表
      */
     public List<Menu> buildMenuTree(List<Menu> menus);
+
+    /**
+     * 构建前端所需要下拉树结构
+     *
+     * @param menus 菜单列表
+     * @return 下拉树结构列表
+     */
+    List<TreeSelect> buildMenuTreeSelect(List<Menu> menus);
 
     /**
      * 构建前端路由所需要的菜单

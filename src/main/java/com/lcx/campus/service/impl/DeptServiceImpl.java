@@ -2,6 +2,8 @@ package com.lcx.campus.service.impl;
 
 import com.lcx.campus.domain.Dept;
 import com.lcx.campus.domain.User;
+import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.TreeSelect;
 import com.lcx.campus.enums.UserType;
 import com.lcx.campus.mapper.DeptMapper;
 import com.lcx.campus.mapper.StudentMapper;
@@ -12,6 +14,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lcx.campus.utils.SecurityUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -45,7 +52,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
         Integer userType = user.getUserType();
         if (userType.equals(UserType.TEACHER.ordinal())) {
             return teacherMapper.selectDeptByUserId(userId);
-        } else if(userType.equals(UserType.STUDENT.ordinal())) {
+        } else if (userType.equals(UserType.STUDENT.ordinal())) {
             return studentMapper.selectClassByUserId(userId);
         } else {
             return null;
@@ -59,6 +66,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
      * @param deptId2 第二个部门id
      * @return 部门信息
      */
+    @Override
     public boolean isParentDept(Long deptId1, Long deptId2) {
         Dept dept = getById(deptId2);
         if (dept == null) {
@@ -76,5 +84,73 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
     @Override
     public Long getSelfDeptId() {
         return getDeptIdByUserId(SecurityUtils.getUserId());
+    }
+
+    @Override
+    public Result treeSelect() {
+        return null;
+    }
+
+    @Override
+    public List<TreeSelect> buildDeptTreeSelect(List<Dept> depts) {
+        List<Dept> deptTrees = buildDeptTree(depts);
+        return deptTrees.stream().map((TreeSelect::new)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Dept> buildDeptTree(List<Dept> depts) {
+        List<Dept> returnList = new ArrayList<Dept>();
+        List<Long> tempList = depts.stream().map(Dept::getDeptId).toList();
+        for (Iterator<Dept> iterator = depts.iterator(); iterator.hasNext(); ) {
+            Dept dept = (Dept) iterator.next();
+            // 如果是顶级节点, 遍历该父节点的所有子节点
+            if (!tempList.contains(dept.getParentId())) {
+                recursionFn(depts, dept);
+                returnList.add(dept);
+            }
+        }
+        if (returnList.isEmpty()) {
+            returnList = depts;
+        }
+        return returnList;
+    }
+
+    /**
+     * 递归列表
+     *
+     * @param list 分类表
+     * @param t    子节点
+     */
+    private void recursionFn(List<Dept> list, Dept t) {
+        // 得到子节点列表
+        List<Dept> childList = getChildList(list, t);
+        t.setChildren(childList);
+        for (Dept tChild : childList) {
+            if (hasChild(list, tChild)) {
+                recursionFn(list, tChild);
+            }
+        }
+    }
+
+    /**
+     * 得到子节点列表
+     */
+    private List<Dept> getChildList(List<Dept> list, Dept t) {
+        List<Dept> tlist = new ArrayList<Dept>();
+        Iterator<Dept> it = list.iterator();
+        while (it.hasNext()) {
+            Dept n = (Dept) it.next();
+            if (n.getParentId().longValue() == t.getDeptId().longValue()) {
+                tlist.add(n);
+            }
+        }
+        return tlist;
+    }
+
+    /**
+     * 判断是否有子节点
+     */
+    private boolean hasChild(List<Dept> list, Dept t) {
+        return getChildList(list, t).size() > 0;
     }
 }
