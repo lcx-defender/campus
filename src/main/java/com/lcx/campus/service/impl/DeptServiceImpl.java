@@ -32,6 +32,8 @@ import java.util.stream.Collectors;
 public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements IDeptService {
 
     @Resource
+    private DeptMapper deptMapper;
+    @Resource
     private UserMapper userMapper;
     @Resource
     private TeacherMapper teacherMapper;
@@ -88,7 +90,8 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
 
     @Override
     public Result treeSelect() {
-        return null;
+        List<Dept> depts = list().stream().filter(dept -> dept.getDelFlag().equals("0")).toList();
+        return Result.success(buildDeptTreeSelect(depts));
     }
 
     @Override
@@ -113,6 +116,97 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
             returnList = depts;
         }
         return returnList;
+    }
+
+
+    @Override
+    public Result getDeptInfo(Long deptId) {
+        Dept dept = deptMapper.selectById(deptId);
+        if (dept == null) {
+            return Result.fail("部门不存在");
+        }
+        return Result.success(dept);
+    }
+
+    @Override
+    public Result selectDeptTreeList() {
+        // 查询所有部门,去除掉delFlag=1的部门
+        List<Dept> list = list().stream().filter(dept -> dept.getDelFlag().equals("0")).toList();
+        return Result.success(buildDeptTree(list));
+    }
+
+    @Override
+    public Result addDept(Dept dept) {
+        // 先判断父部门是否存在
+        if(dept.getParentId() != null && !isParentDeptExist(dept.getParentId())) {
+            return Result.fail("父部门不存在");
+        }
+        // 判断当前部门是否存在
+        Dept existingDept = lambdaQuery()
+                .eq(Dept::getDeptName, dept.getDeptName())
+                .eq(Dept::getParentId, dept.getParentId())
+                .one();
+        if (existingDept != null) {
+            if(existingDept.getDelFlag().equals("1")) {
+                return Result.fail("部门添加失败,请联系管理员恢复部门");
+            }
+            return Result.fail("当前部门已存在");
+        }
+        // 插入新部门
+        save(dept);
+        return Result.success("部门添加成功");
+    }
+
+    @Override
+    public Result updateDept(Dept dept) {
+        // 先判断父部门是否存在
+        if(dept.getParentId() != null && !isParentDeptExist(dept.getParentId())) {
+            return Result.fail("父部门不存在");
+        }
+        // 判断当前部门是否存在
+        Dept existingDept = lambdaQuery()
+                .eq(Dept::getDeptName, dept.getDeptName())
+                .eq(Dept::getParentId, dept.getParentId())
+                .one();
+        if(existingDept != null) {
+            return Result.fail("当前部门已存在");
+        }
+        // 更新部门
+        return updateById(dept) ? Result.success("部门修改成功") : Result.fail("部门修改失败");
+    }
+
+    @Override
+    public boolean isParentDeptExist(Long deptId) {
+        if (deptId == 0) return true;
+        Dept dept = getById(deptId);
+        if(dept == null) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public Result deleteDept(Long deptId) {
+        // 判断当前部门是否存在子部门
+        if(hasChildByDeptId(deptId)) {
+            return Result.fail("当前部门存在子部门,请先删除子部门");
+        }
+        // TODO 判断当前部门是否存在用户
+        // 逻辑删除
+        Dept dept = new Dept();
+        dept.setDeptId(deptId);
+        dept.setDelFlag("1");
+        return updateById(dept) ? Result.success("部门删除成功") : Result.fail("部门删除失败");
+    }
+
+    @Override
+    public boolean hasChildByDeptId(Long deptId) {
+        // 查询当前部门是否存在子部门
+        Long count = lambdaQuery()
+                .eq(Dept::getParentId, deptId)
+                .eq(Dept::getDelFlag, "0")
+                .count();
+        return count > 0;
     }
 
     /**

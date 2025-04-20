@@ -29,9 +29,43 @@ public interface IDeptService extends IService<Dept> {
      */
     Long getSelfDeptId();
 
+    /**
+     * 查询部门列表，以树型结构返回
+     */
     Result treeSelect();
 
+    /**
+     * 查询部门列表，以树型结构返回
+     */
     List<TreeSelect> buildDeptTreeSelect(List<Dept> depts);
 
+    /**
+     * 构建部门树型结构
+     */
     List<Dept> buildDeptTree(List<Dept> depts);
+
+    /**
+     * 根据部门ID查询部门树信息
+     * @param deptId
+     * @return
+     */
+    Result getDeptInfo(Long deptId);
+
+    /**
+     * 查询部门列表，以树型结构返回
+     */
+    Result selectDeptTreeList();
+
+    Result addDept(Dept dept);
+
+    Result updateDept(Dept dept);
+
+    /**
+     * 判断当前部门的父部门是否存在
+     */
+    boolean isParentDeptExist(Long deptId);
+
+    Result deleteDept(Long deptId);
+
+    boolean hasChildByDeptId(Long deptId);
 }

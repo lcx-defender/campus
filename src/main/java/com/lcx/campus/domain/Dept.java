@@ -33,6 +33,7 @@ public class Dept implements Serializable {
      * 部门id,由创建者输入学校、学院、系、班级等编号
      */
     @TableId(value = "dept_id", type = IdType.AUTO)
+    @NotNull(message = "部门id不能为空", groups = {Dept.update.class})
     private Long deptId;
 
     /**
@@ -102,5 +103,7 @@ public class Dept implements Serializable {
     private String remark;
 
     public interface insert {}
+
+    public interface update {}
 
 }

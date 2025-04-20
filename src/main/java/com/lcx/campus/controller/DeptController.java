@@ -1,13 +1,13 @@
 package com.lcx.campus.controller;
 
 
+import com.lcx.campus.domain.Dept;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.service.IDeptService;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -25,10 +25,56 @@ public class DeptController {
     private IDeptService deptService;
 
     /**
-     * 查询部门列表，以树型结构返回
+     * 查询部门列表，封装成TreeSelect
      */
     @GetMapping("/treeSelect")
+    @PreAuthorize("hasAnyAuthority('system:dept:list')")
     public Result treeSelect() {
         return deptService.treeSelect();
+    }
+
+    /**
+     * 查询部门列表,树型结构
+     */
+    @GetMapping("/selectDeptTreeList")
+    @PreAuthorize("hasAnyAuthority('system:dept:list')")
+    public Result selectDeptTreeList() {
+        return deptService.selectDeptTreeList();
+    }
+
+    /**
+     * 查询部门详情
+     */
+    @GetMapping("/getDeptInfo/{deptId}")
+    @PreAuthorize("hasAnyAuthority('system:dept:query')")
+    public Result getDeptInfo(@PathVariable Long deptId) {
+        return deptService.getDeptInfo(deptId);
+    }
+
+    /**
+     * 添加新的部门
+     */
+    @PostMapping("/addDept")
+    @PreAuthorize("hasAnyAuthority('system:dept:add')")
+    public Result addDept(@Validated({Dept.insert.class}) @RequestBody Dept dept) {
+        return deptService.addDept(dept);
+    }
+
+    /**
+     * 修改部门
+     */
+    @PutMapping("/updateDept")
+    @PreAuthorize("hasAnyAuthority('system:dept:edit')")
+    public Result updateDept(@Validated({Dept.update.class}) @RequestBody Dept dept) {
+        return deptService.updateDept(dept);
+    }
+
+    /**
+     * 删除单个部门
+     */
+    @DeleteMapping("/deleteDept/{deptId}")
+    @PreAuthorize("hasAnyAuthority('system:dept:remove')")
+    public Result deleteDept(@PathVariable Long deptId) {
+        return deptService.deleteDept(deptId);
     }
 }
