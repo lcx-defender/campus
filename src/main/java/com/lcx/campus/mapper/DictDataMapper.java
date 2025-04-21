@@ -2,6 +2,9 @@ package com.lcx.campus.mapper;
 
 import com.lcx.campus.domain.DictData;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface DictDataMapper extends BaseMapper<DictData> {
 
+    @Select("SELECT * FROM sys_dict_data WHERE dict_type = #{dictType}")
+    List<DictData> selectListByDictType(String dictType);
 }

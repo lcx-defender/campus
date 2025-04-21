@@ -2,6 +2,7 @@ package com.lcx.campus.service;
 
 import com.lcx.campus.domain.DictData;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lcx.campus.domain.dto.Result;
 
 /**
  * <p>
@@ -13,4 +14,21 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IDictDataService extends IService<DictData> {
 
+    Result pageList(DictData dictData);
+
+    Result getInfo(Long dictCode);
+
+    /**
+     * 根据字典类型查询字典数据信息
+     */
+    Result dictType(String dictType);
+
+    /**
+     * 新增字典数据
+     */
+    Result add(DictData dictData);
+
+    Result updateDict(DictData dictData);
+
+    Result deleteDictDataByIds(Long[] dictCodes);
 }

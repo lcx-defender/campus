@@ -20,4 +20,9 @@ public class RedisConstants {
      */
     public static final String CAPTCHA_CODE_KEY = "captcha_code:";
 
+    /**
+     * dict数据字典缓存前缀
+     */
+    public static final String SYS_DICT_KEY = "sys_dict_type:";
+
 }
