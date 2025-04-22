@@ -2,6 +2,7 @@ package com.lcx.campus.service;
 
 import com.lcx.campus.domain.DictType;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lcx.campus.domain.dto.Result;
 
 /**
  * <p>
@@ -13,4 +14,13 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IDictTypeService extends IService<DictType> {
 
+    Result pageList(DictType dictType);
+
+    Result addDictType(DictType dictType);
+
+    void refreshCache();
+
+    void loadingDictCache();
+
+    void clearDictCache();
 }

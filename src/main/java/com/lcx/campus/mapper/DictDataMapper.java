@@ -18,4 +18,7 @@ public interface DictDataMapper extends BaseMapper<DictData> {
 
     @Select("SELECT * FROM sys_dict_data WHERE dict_type = #{dictType}")
     List<DictData> selectListByDictType(String dictType);
+
+    @Select("SELECT * FROM sys_dict_data WHERE dict_type = #{type} AND dict_status = #{dictStatus}")
+    List<DictData> selectListByDictTypeWithStatus(String type, String dictStatus);
 }

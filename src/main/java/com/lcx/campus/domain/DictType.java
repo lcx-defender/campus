@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.lcx.campus.domain.dto.PageQuery;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -21,7 +24,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("sys_dict_type")
-public class DictType implements Serializable {
+public class DictType extends PageQuery implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,11 +37,13 @@ public class DictType implements Serializable {
     /**
      * 字典名称
      */
+    @NotNull(message = "字典名称不能为空")
     private String dictName;
 
     /**
      * 字典类型
      */
+    @NotNull(message = "字典类型不能为空")
     private String dictType;
 
     /**
