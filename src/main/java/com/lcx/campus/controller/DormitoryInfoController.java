@@ -10,6 +10,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * <p>
  * 学生宿舍信息表 前端控制器
@@ -68,5 +70,23 @@ public class DormitoryInfoController {
     @PreAuthorize("hasAnyAuthority('system:dormitory:edit')")
     public Result edit(@Validated @RequestBody DormitoryInfo dormitoryInfo) {
         return dormitoryInfoService.edit(dormitoryInfo);
+    }
+
+    /**
+     * 清空宿舍信息：有学生退宿且暂无学生入住时，将studentId置空
+     */
+    @PutMapping("/clear/{id}")
+    @PreAuthorize("hasAnyAuthority('system:dormitory:edit')")
+    public Result clear(@PathVariable Long id) {
+        return dormitoryInfoService.clear(id);
+    }
+
+    /**
+     * 批量清空宿舍信息中的学生信息
+     */
+    @PutMapping("/clearBatch")
+    @PreAuthorize("hasAnyAuthority('system:dormitory:edit')")
+    public Result clearBatch(@RequestBody List<Long> ids) {
+        return dormitoryInfoService.clearBatch(ids);
     }
 }

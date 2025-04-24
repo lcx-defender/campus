@@ -42,7 +42,14 @@ public class DormitoryInfoServiceImpl extends ServiceImpl<DormitoryInfoMapper, D
 
     @Override
     public Result getStudentDormitoryInfo(String studentId) {
-        return Result.success(getById(studentId));
+        DormitoryInfo dormitoryInfo = dormitoryInfoMapper.selectOne(
+                lambdaQuery()
+                        .eq(DormitoryInfo::getStudentId, studentId)
+        );
+        if(dormitoryInfo == null) {
+            return Result.fail("未找到当前学生宿舍信息");
+        }
+        return Result.success(dormitoryInfo);
     }
 
     @Override
@@ -124,7 +131,11 @@ public class DormitoryInfoServiceImpl extends ServiceImpl<DormitoryInfoMapper, D
                         .eq(DormitoryInfo::getBedId, dormitoryInfo.getBedId())
         );
         if (existingDormitoryInfo != null) {
-            // 更新宿舍信息
+            if(existingDormitoryInfo.getStudentId() != null) {
+                // 如果已有学生入住，则不允许重复添加
+                return Result.fail("宿舍信息已有学生入驻，请勿重复添加");
+            }
+            // 更新已有宿舍信息
             existingDormitoryInfo.setStudentId(dormitoryInfo.getStudentId());
             dormitoryInfoMapper.updateById(existingDormitoryInfo);
             return Result.success("更新宿舍信息成功");
@@ -144,4 +155,15 @@ public class DormitoryInfoServiceImpl extends ServiceImpl<DormitoryInfoMapper, D
     public Result edit(DormitoryInfo dormitoryInfo) {
         return updateById(dormitoryInfo) ? Result.success("修改宿舍信息成功") : Result.fail("修改宿舍信息失败");
     }
+
+    @Override
+    public Result clear(Long id) {
+        return dormitoryInfoMapper.clearStudent(id) ? Result.success("清空宿舍信息成功") : Result.fail("清空宿舍信息失败");
+    }
+
+    @Override
+    public Result clearBatch(List<Long> ids) {
+        return dormitoryInfoMapper.clearBatch(ids) ? Result.success("批量清空宿舍信息成功") : Result.fail("批量清空宿舍信息失败");
+    }
+
 }

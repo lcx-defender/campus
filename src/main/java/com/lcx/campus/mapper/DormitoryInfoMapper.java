@@ -2,6 +2,9 @@ package com.lcx.campus.mapper;
 
 import com.lcx.campus.domain.DormitoryInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Update;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface DormitoryInfoMapper extends BaseMapper<DormitoryInfo> {
 
+    @Update("UPDATE dormitory_info SET student_id = NULL WHERE id = #{id}")
+    boolean clearStudent(Long id);
+
+    @Update("UPDATE dormitory_info SET student_id = NULL WHERE id IN (${ids})")
+    boolean clearBatch(List<Long> ids);
 }

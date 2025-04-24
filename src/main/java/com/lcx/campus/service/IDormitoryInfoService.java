@@ -4,6 +4,8 @@ import com.lcx.campus.domain.DormitoryInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lcx.campus.domain.dto.Result;
 
+import java.util.List;
+
 /**
  * <p>
  * 学生宿舍信息表 服务类
@@ -44,4 +46,8 @@ public interface IDormitoryInfoService extends IService<DormitoryInfo> {
      * @return
      */
     Result edit(DormitoryInfo dormitoryInfo);
+
+    Result clear(Long id);
+
+    Result clearBatch(List<Long> ids);
 }
