@@ -157,6 +157,11 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
         return Result.success("部门添加成功");
     }
 
+    /**
+     * 更新部门信息
+     * @param dept
+     * @return
+     */
     @Override
     public Result updateDept(Dept dept) {
         // 先判断父部门是否存在
@@ -185,6 +190,12 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
         return true;
     }
 
+    /**
+     * 删除部门
+     *
+     * @param deptId 部门id
+     * @return 结果
+     */
     @Override
     public Result deleteDept(Long deptId) {
         // 判断当前部门是否存在子部门

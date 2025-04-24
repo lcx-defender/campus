@@ -43,6 +43,11 @@ public class Dept implements Serializable {
     private Long parentId;
 
     /**
+     * 所处层级, 1:学校, 2:学院, 3:系, 4:专业，5:班级
+     */
+    private Integer level;
+
+    /**
      * 子部门
      */
     @TableField(exist = false)
