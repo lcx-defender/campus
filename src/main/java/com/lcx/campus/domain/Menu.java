@@ -28,7 +28,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("sys_menu")
-public class Menu extends PageQuery implements Serializable {
+public class Menu implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

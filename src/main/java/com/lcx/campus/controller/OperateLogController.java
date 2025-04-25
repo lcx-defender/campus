@@ -1,9 +1,14 @@
 package com.lcx.campus.controller;
 
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.lcx.campus.domain.OperateLog;
+import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.service.IOperateLogService;
+import jakarta.annotation.Resource;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 /**
  * <p>
@@ -16,5 +21,33 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/operate-log")
 public class OperateLogController {
+    @Resource
+    private IOperateLogService operateLogService;
 
+    /**
+     * 分页查询操作记录
+     */
+    @PreAuthorize("hasAnyAuthority('monitor:operatelog:list')")
+    @GetMapping("/pageList")
+    public Result pageList(@RequestBody OperateLog operateLog) {
+        return operateLogService.pageList(operateLog);
+    }
+
+    /**
+     * 删除操作记录
+     */
+    @PreAuthorize("hasAnyAuthority('monitor:operatelog:remove')")
+    @DeleteMapping("/remove")
+    public Result remove(@RequestBody List<Long> operateIds) {
+        return operateLogService.removeByIds(operateIds)? Result.success() : Result.fail("删除失败");
+    }
+
+    /**
+     * 清空操作记录
+     */
+    @PreAuthorize("hasAnyAuthority('monitor:operatelog:remove')")
+    @DeleteMapping("/clean")
+    public Result clean() {
+        return operateLogService.clean() ? Result.success() : Result.fail("清空失败");
+    }
 }

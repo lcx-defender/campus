@@ -15,4 +15,8 @@ import com.lcx.campus.domain.dto.Result;
 public interface IOperateLogService extends IService<OperateLog> {
 
     Result insertOperateLog(OperateLog operLog);
+
+    Result pageList(OperateLog operateLog);
+
+    boolean clean();
 }
