@@ -4,6 +4,8 @@ import com.lcx.campus.domain.LoginInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lcx.campus.domain.dto.Result;
 
+import java.util.List;
+
 /**
  * <p>
  * 系统登录记录 服务类
@@ -15,4 +17,12 @@ import com.lcx.campus.domain.dto.Result;
 public interface ILoginInfoService extends IService<LoginInfo> {
 
     Result insertLoginInfo(LoginInfo loginInfo);
+
+    Result deleteLoginInfo(Long infoId);
+
+    Result deleteLoginInfoBatch(List<Long> infoIds);
+
+    Result getLoginInfoList(LoginInfo loginInfo);
+
+    Result clear();
 }

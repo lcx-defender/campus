@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 
+import com.lcx.campus.domain.dto.PageQuery;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -23,7 +24,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("sys_login_info")
-public class LoginInfo implements Serializable {
+public class LoginInfo extends PageQuery implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,7 +35,7 @@ public class LoginInfo implements Serializable {
     private Long infoId;
 
     /**
-     * 用户身份证
+     * 用户ID
      */
     private Long userId;
 
