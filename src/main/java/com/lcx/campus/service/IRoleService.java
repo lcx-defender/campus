@@ -23,5 +23,5 @@ public interface IRoleService extends IService<Role> {
 
     Result getCurrentRole();
 
-    Result getPageList(PageQuery pageQuery, Role role);
+    Result getPageList(Role role);
 }

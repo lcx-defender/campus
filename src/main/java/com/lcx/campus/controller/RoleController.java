@@ -50,8 +50,8 @@ public class RoleController {
      */
     @PreAuthorize("hasAnyAuthority('system:role:list')")
     @GetMapping("/getPageList")
-    public Result getPageList(@RequestBody PageQuery pageQuery, @RequestBody Role role) {
-        return roleService.getPageList(pageQuery, role);
+    public Result getPageList(@RequestBody Role role) {
+        return roleService.getPageList(role);
     }
 
     /**

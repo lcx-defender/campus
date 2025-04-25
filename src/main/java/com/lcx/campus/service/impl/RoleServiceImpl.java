@@ -54,9 +54,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
-    public Result getPageList(PageQuery pageQuery, Role role) {
+    public Result getPageList(Role role) {
         // 构建分页条件
-        Page<Role> page = pageQuery.toMpPage();
+        Page<Role> page = role.toMpPage();
         // 分页查询
         Page<Role> resultP = lambdaQuery()
                 .like(role.getRoleName() != null, Role::getRoleName, role.getRoleName())
