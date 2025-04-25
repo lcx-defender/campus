@@ -1,9 +1,16 @@
 package com.lcx.campus.controller;
 
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.lcx.campus.domain.Menu;
+import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.service.IMenuService;
+import com.lcx.campus.utils.SecurityUtils;
+import jakarta.annotation.Resource;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +24,72 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/menu")
 public class MenuController {
 
+    @Resource
+    private IMenuService menuService;
+
+    /**
+     * 获取菜单列表
+     */
+    @PreAuthorize("hasAnyAuthority('system:menu:list')")
+    @GetMapping("/list")
+    public Result list() {
+        return Result.success(menuService.selectMenuList(SecurityUtils.getUserId()));
+    }
+
+    /**
+     * 根据菜单编号获取详细信息
+     */
+    @PreAuthorize("hasAnyAuthority('system:menu:query')")
+    @GetMapping("/{menuId}")
+    public Result getInfo(@PathVariable Long menuId) {
+        return Result.success(menuService.getById(menuId));
+    }
+
+    /**
+     * 获取菜单下拉树列表
+     */
+    @PreAuthorize("hasAnyAuthority('system:menu:treeselect')")
+    @GetMapping("/treeSelect")
+    public Result treeSelect() {
+        List<Menu> menus = menuService.selectMenuList(SecurityUtils.getUserId());
+        return Result.success(menuService.buildMenuTreeSelect(menus));
+    }
+
+    /**
+     * 新增菜单
+     */
+    @PreAuthorize("hasAnyAuthority('system:menu:add')")
+    @PostMapping
+    public Result add(@Validated @RequestBody Menu menu) {
+        if (menuService.checkMenuNameUnique(menu)) {
+            return Result.fail("新增菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
+        }
+        return Result.success(menuService.save(menu));
+    }
+
+    /**
+     * 修改菜单
+     */
+    @PreAuthorize("hasAnyAuthority('system:menu:edit')")
+    @PutMapping
+    public Result edit(@Validated @RequestBody Menu menu) {
+        if (menuService.checkMenuNameUnique(menu)) {
+            return Result.fail("修改菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
+        }
+        return Result.success(menuService.updateById(menu));
+    }
+    /**
+    * 删除菜单
+    */
+    @PreAuthorize("hasAnyAuthority('system:menu:remove')")
+    @DeleteMapping("/{menuId}")
+    public Result remove(@PathVariable Long menuId) {
+        if (menuService.hasChildByMenuId(menuId)) {
+            return Result.fail("存在子菜单,不允许删除");
+        }
+        if (menuService.checkMenuExistRole(menuId)) {
+            return Result.fail("菜单已分配,不允许删除");
+        }
+        return Result.success(menuService.removeById(menuId));
+    }
 }

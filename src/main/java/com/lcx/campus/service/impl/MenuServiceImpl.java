@@ -92,7 +92,6 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
         // 管理员显示所有菜单信息
         if (roleService.isAdmin(userId)) {
             menuList = menuMapper.selectMenuList(menu);
-
         } else {
             menuList = menuMapper.selectMenuListByUserId(menu, userId);
         }
@@ -309,6 +308,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
         }
         return UserConstants.UNIQUE;
     }
+
 
     /**
      * 获取路由名称

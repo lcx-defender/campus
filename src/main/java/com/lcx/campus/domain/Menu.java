@@ -9,6 +9,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lcx.campus.domain.dto.PageQuery;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -25,7 +28,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("sys_menu")
-public class Menu implements Serializable {
+public class Menu extends PageQuery implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,6 +41,7 @@ public class Menu implements Serializable {
     /**
      * 菜单名称
      */
+    @NotBlank(message = "菜单名称不能为空")
     private String menuName;
 
     /** 父菜单名称 */
@@ -52,6 +56,7 @@ public class Menu implements Serializable {
     /**
      * 显示顺序
      */
+    @NotNull(message = "显示顺序不能为空")
     private Integer orderNum;
 
     /**
@@ -87,6 +92,7 @@ public class Menu implements Serializable {
     /**
      * 菜单类型（M目录 C菜单 F按钮）
      */
+    @NotBlank(message = "菜单类型不能为空")
     private String menuType;
 
     /**

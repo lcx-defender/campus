@@ -151,4 +151,5 @@ public interface IMenuService extends IService<Menu> {
      * @return 结果
      */
     public boolean checkMenuNameUnique(Menu menu);
+
 }
