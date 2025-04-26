@@ -13,5 +13,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface RoleMenuMapper extends BaseMapper<RoleMenu> {
 
-    int checkMenuExistRole(Long menuId);
+    int countRoleWithMenu(Long menuId);
+
+    boolean deleteRoleMenu(RoleMenu roleMenu);
+
+    boolean deleteRoleMenuByRoleId(Long roleId);
 }

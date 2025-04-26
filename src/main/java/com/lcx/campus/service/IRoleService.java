@@ -2,6 +2,7 @@ package com.lcx.campus.service;
 
 import com.lcx.campus.domain.Role;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lcx.campus.domain.RoleMenu;
 import com.lcx.campus.domain.dto.PageQuery;
 import com.lcx.campus.domain.dto.Result;
 
@@ -24,4 +25,19 @@ public interface IRoleService extends IService<Role> {
     Result getCurrentRole();
 
     Result getPageList(Role role);
+
+    Result getRoleMenu(Long roleId);
+
+    Result addRoleMenu(RoleMenu roleMenu);
+
+    int countRoleWithMenu(Long menuId);
+
+    /**
+     * 解除指定角色与指定权菜单的关联
+     * @param roleMenu
+     * @return
+     */
+    Result deleteRoleMenu(RoleMenu roleMenu);
+
+    Result deleteRoleAllMenu(Long roleId);
 }

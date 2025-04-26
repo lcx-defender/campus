@@ -2,6 +2,7 @@ package com.lcx.campus.controller;
 
 
 import com.lcx.campus.domain.Role;
+import com.lcx.campus.domain.RoleMenu;
 import com.lcx.campus.domain.dto.PageQuery;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.service.IRoleService;
@@ -67,6 +68,14 @@ public class RoleController {
     }
 
     /**
+     * 查询角色对应的权限
+     */
+    @GetMapping("/getRoleMenu/{roleId}")
+    public Result getRoleMenu(@PathVariable Long roleId) {
+        return roleService.getRoleMenu(roleId);
+    }
+
+    /**
      * 添加新的角色信息
      */
     @PreAuthorize("hasAnyAuthority('system:role:add')")
@@ -75,6 +84,16 @@ public class RoleController {
         role.setCreateBy(String.valueOf(SecurityUtils.getUserId()));
         role.setCreateTime(LocalDateTime.now());
         return Result.success(roleService.save(role));
+    }
+
+    /**
+     * 给角色添加权限菜单
+     * 参数1:roleId
+     * 参数2:menuId
+     */
+    @PostMapping("/addRoleMenu")
+    public Result addRoleMenu(@RequestBody RoleMenu roleMenu) {
+        return roleService.addRoleMenu(roleMenu);
     }
 
     /**
@@ -95,5 +114,23 @@ public class RoleController {
     @DeleteMapping("/deleteRole/{id}")
     public Result deleteRole(@PathVariable Long id) {
         return Result.success(roleService.removeById(id));
+    }
+
+    /**
+     * 删除角色和菜单关联
+     */
+    @PreAuthorize("hasAnyAuthority('system:role:remove')")
+    @DeleteMapping("/deleteRoleMenu")
+    public Result deleteRoleMenu(@RequestBody RoleMenu roleMenu) {
+        return roleService.deleteRoleMenu(roleMenu);
+    }
+
+    /**
+     * 解除指定角色的所有权限菜单
+     */
+    @PreAuthorize("hasAnyAuthority('system:role:remove')")
+    @DeleteMapping("/deleteRoleAllMenu/{roleId}")
+    public Result deleteRoleAllMenu(@PathVariable Long roleId) {
+        return roleService.deleteRoleAllMenu(roleId);
     }
 }

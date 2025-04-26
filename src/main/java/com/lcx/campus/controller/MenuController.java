@@ -10,7 +10,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -56,6 +58,18 @@ public class MenuController {
     }
 
     /**
+     * 加载对应角色菜单列表树
+     */
+    @GetMapping(value = "/roleMenuTreeselect/{roleId}")
+    public Result roleMenuTreeSelect(@PathVariable("roleId") Long roleId) {
+        List<Menu> menus = menuService.selectMenuList(SecurityUtils.getUserId());
+        Map<String, Object> ajax = new HashMap<>();
+        ajax.put("checkedKeys", menuService.selectMenuListByRoleId(roleId));
+        ajax.put("menus", menuService.buildMenuTreeSelect(menus));
+        return Result.success(ajax);
+    }
+
+    /**
      * 新增菜单
      */
     @PreAuthorize("hasAnyAuthority('system:menu:add')")
@@ -78,9 +92,10 @@ public class MenuController {
         }
         return Result.success(menuService.updateById(menu));
     }
+
     /**
-    * 删除菜单
-    */
+     * 删除菜单
+     */
     @PreAuthorize("hasAnyAuthority('system:menu:remove')")
     @DeleteMapping("/{menuId}")
     public Result remove(@PathVariable Long menuId) {

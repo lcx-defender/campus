@@ -10,7 +10,6 @@ import com.lcx.campus.domain.vo.RouterVo;
 import com.lcx.campus.domain.vo.TreeSelect;
 import com.lcx.campus.mapper.MenuMapper;
 import com.lcx.campus.service.IMenuService;
-import com.lcx.campus.service.IRoleMenuService;
 import com.lcx.campus.service.IRoleService;
 import com.lcx.campus.utils.StringUtils;
 import jakarta.annotation.Resource;
@@ -34,8 +33,6 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     private MenuMapper menuMapper;
     @Resource
     private IRoleService roleService;
-    @Resource
-    private IRoleMenuService roleMenuService;
 
     /**
      * 根据用户ID查询权限字符穿
@@ -249,22 +246,16 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     }
 
     /**
-     * 查询菜单使用数量
-     *
-     * @param menuId 菜单ID
-     * @return 结果
+     * 查询菜单是否被使用
      */
     @Override
     public boolean checkMenuExistRole(Long menuId) {
-        int result = roleMenuService.checkMenuExistRole(menuId);
+        int result = roleService.countRoleWithMenu(menuId);
         return result > 0;
     }
 
     /**
      * 新增保存菜单信息
-     *
-     * @param menu 菜单信息
-     * @return 结果
      */
     @Override
     public int insertMenu(Menu menu) {
