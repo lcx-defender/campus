@@ -16,4 +16,8 @@ import com.lcx.campus.domain.dto.Result;
 public interface IStudentService extends IService<Student> {
 
     Result addStudent(User user, Student student);
+
+    Result pageList(Student student);
+
+    Result editStudent(Student student);
 }

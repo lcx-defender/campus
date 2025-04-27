@@ -3,7 +3,6 @@ package com.lcx.campus.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lcx.campus.domain.Teacher;
 import com.lcx.campus.domain.User;
-import com.lcx.campus.domain.dto.PageQuery;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.domain.vo.PageVo;
 import com.lcx.campus.enums.UserType;
@@ -64,21 +63,21 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
     }
 
     @Override
-    public Result pageListTeacher(Teacher teacher, PageQuery pageQuery) {
-        Page<Teacher> page = pageQuery.toMpPage();
+    public Result pageListTeacher(Teacher teacher) {
+        Page<Teacher> queryPage = teacher.toMpPage();
         boolean isAdmin = roleService.isAdmin(SecurityUtils.getUserId());
         if(!isAdmin && teacher.getDeptId() != null && !deptService.isParentDept(deptService.getSelfDeptId(), teacher.getDeptId())) {
             // 非管理员只能查询自己所在部门及子部门的教师
             return Result.fail("没有权限查询该部门的教师信息");
         }
-        Page<Teacher> result = lambdaQuery()
+        Page<Teacher> resPage = lambdaQuery()
                 .like(teacher.getTeacherName() != null, Teacher::getTeacherName, teacher.getTeacherName())
                 .eq(teacher.getDeptId() != null, Teacher::getDeptId, teacher.getDeptId())
                 .eq(teacher.getPositionStatus() != null, Teacher::getPositionStatus, teacher.getPositionStatus())
                 .eq(teacher.getTitle() != null, Teacher::getTitle, teacher.getTitle())
-                .page(page);
-        PageVo<Teacher> ret = PageVo.of(result);
-        return Result.success("查询成功", ret);
+                .page(queryPage);
+        PageVo<Teacher> res = PageVo.of(resPage);
+        return Result.success("查询成功", res);
     }
 
     @Override

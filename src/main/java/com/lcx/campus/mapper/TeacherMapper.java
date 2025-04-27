@@ -1,5 +1,6 @@
 package com.lcx.campus.mapper;
 
+import com.lcx.campus.domain.Dept;
 import com.lcx.campus.domain.Teacher;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -13,5 +14,13 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface TeacherMapper extends BaseMapper<Teacher> {
 
-    Long selectDeptByUserId(Long userId);
+    /**
+     * 根据用户id查询教师所在部门
+     */
+    Long selectDeptIdByUserId(Long userId);
+
+    /**
+     * 根据用户ID查询教师所在部门详细
+     */
+    Dept selectDeptByUserId(Long userId);
 }

@@ -1,10 +1,13 @@
 package com.lcx.campus.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+
+import com.lcx.campus.domain.dto.PageQuery;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -21,7 +24,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("student")
-public class Student implements Serializable {
+public class Student extends PageQuery implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,6 +43,12 @@ public class Student implements Serializable {
      * 姓名
      */
     private String studentName;
+
+    /**
+     * 查询条件：deptId
+     */
+    @TableField(exist = false)
+    private Long deptId;
 
     /**
      * 学校代码

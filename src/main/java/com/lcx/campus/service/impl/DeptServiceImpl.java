@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -53,7 +54,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
         User user = userMapper.selectById(userId);
         Integer userType = user.getUserType();
         if (userType.equals(UserType.TEACHER.ordinal())) {
-            return teacherMapper.selectDeptByUserId(userId);
+            return teacherMapper.selectDeptIdByUserId(userId);
         } else if (userType.equals(UserType.STUDENT.ordinal())) {
             return studentMapper.selectClassByUserId(userId);
         } else {
@@ -77,9 +78,9 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
         if (dept.getParentId() == null || dept.getParentId() == 0) {
             return false;
         }
-        if (dept.getParentId().equals(deptId1)) {
-            return true;
-        }
+        // 如果是同一个部门,直接返回true
+        if (Objects.equals(deptId1, deptId2)) return true;
+        if (dept.getParentId().equals(deptId1)) return true;
         return isParentDept(deptId1, dept.getParentId());
     }
 
@@ -138,7 +139,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
     @Override
     public Result addDept(Dept dept) {
         // 先判断父部门是否存在
-        if(dept.getParentId() != null && !isParentDeptExist(dept.getParentId())) {
+        if (dept.getParentId() != null && !isParentDeptExist(dept.getParentId())) {
             return Result.fail("父部门不存在");
         }
         // 判断当前部门是否存在
@@ -147,7 +148,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
                 .eq(Dept::getParentId, dept.getParentId())
                 .one();
         if (existingDept != null) {
-            if(existingDept.getDelFlag().equals("1")) {
+            if (existingDept.getDelFlag().equals("1")) {
                 return Result.fail("部门添加失败,请联系管理员恢复部门");
             }
             return Result.fail("当前部门已存在");
@@ -159,13 +160,14 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
 
     /**
      * 更新部门信息
+     *
      * @param dept
      * @return
      */
     @Override
     public Result updateDept(Dept dept) {
         // 先判断父部门是否存在
-        if(dept.getParentId() != null && !isParentDeptExist(dept.getParentId())) {
+        if (dept.getParentId() != null && !isParentDeptExist(dept.getParentId())) {
             return Result.fail("父部门不存在");
         }
         // 判断当前部门是否存在
@@ -173,7 +175,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
                 .eq(Dept::getDeptName, dept.getDeptName())
                 .eq(Dept::getParentId, dept.getParentId())
                 .one();
-        if(existingDept != null) {
+        if (existingDept != null) {
             return Result.fail("当前部门已存在");
         }
         // 更新部门
@@ -184,7 +186,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
     public boolean isParentDeptExist(Long deptId) {
         if (deptId == 0) return true;
         Dept dept = getById(deptId);
-        if(dept == null) {
+        if (dept == null) {
             return false;
         }
         return true;
@@ -199,7 +201,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
     @Override
     public Result deleteDept(Long deptId) {
         // 判断当前部门是否存在子部门
-        if(hasChildByDeptId(deptId)) {
+        if (hasChildByDeptId(deptId)) {
             return Result.fail("当前部门存在子部门,请先删除子部门");
         }
         // TODO 判断当前部门是否存在用户

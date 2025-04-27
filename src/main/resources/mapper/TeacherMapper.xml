@@ -2,7 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lcx.campus.mapper.TeacherMapper">
 
-    <select id="selectDeptByUserId" parameterType="java.lang.Long" resultType="java.lang.Long">
+    <select id="selectDeptIdByUserId" parameterType="java.lang.Long" resultType="java.lang.Long">
         select dept_id from teacher where user_id = #{userId}
     </select>
+
+    <select id="selectDeptByUserId" resultType="com.lcx.campus.domain.Dept" parameterType="java.lang.Long">
+        select d.* from sys_dept d
+        left join teacher t on d.dept_id = t.dept_id
+        where t.user_id = #{userId}
+    </select>
+
+
 </mapper>

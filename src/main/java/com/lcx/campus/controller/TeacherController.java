@@ -34,9 +34,8 @@ public class TeacherController {
     @Log(title = "查询教师列表", businessType = BusinessType.QUERY)
     @PreAuthorize("hasAnyAuthority('system:teacher:list')")
     @GetMapping("/pageList")
-    public Result listTeacher(@RequestBody Teacher teacher,
-                              @RequestBody PageQuery pageQuery) {
-        return teacherService.pageListTeacher(teacher, pageQuery);
+    public Result listTeacher(@RequestBody Teacher teacher) {
+        return teacherService.pageListTeacher(teacher);
     }
 
     /**
@@ -59,5 +58,4 @@ public class TeacherController {
     public Result editTeacher(@Validated(Teacher.updateInfo.class) @RequestBody Teacher teacher) {
         return teacherService.editTeacher(teacher);
     }
-
 }

@@ -10,11 +10,7 @@ import com.lcx.campus.service.IStudentService;
 import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -32,8 +28,14 @@ public class StudentController {
     private IStudentService studentService;
 
     /**
-     * 添加学生用户
+     * 分页查询学生信息
      */
+    @GetMapping("/pageList")
+    @PreAuthorize("hasAnyAuthority('system:student:list')")
+    public Result pageList(@RequestBody Student student) {
+        return studentService.pageList(student);
+    }
+
     /**
      * 新建学生类型用户
      */
@@ -42,5 +44,15 @@ public class StudentController {
     @PostMapping("/addStudent")
     public Result addStudent(@Validated(User.AddUserGroup.class) @RequestBody User user, @RequestBody Student student) {
         return studentService.addStudent(user, student);
+    }
+
+    /**
+     * 修改学生信息
+     */
+    @Log(title = "修改学生信息", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:student:edit')")
+    @PutMapping("/editStudent")
+    public Result editStudent(@RequestBody Student student) {
+        return studentService.editStudent(student);
     }
 }
