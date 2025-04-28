@@ -29,12 +29,14 @@ public class RoleMenu implements Serializable {
     /**
      * 角色ID
      */
+
     @NotNull(message = "角色ID不能为空")
     private Long roleId;
 
     /**
      * 菜单ID
      */
+
     @NotNull(message = "菜单ID不能为空")
     private Long menuId;
 

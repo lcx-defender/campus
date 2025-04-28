@@ -41,8 +41,6 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
     @Resource
     private StudentMapper studentMapper;
 
-    @Resource
-
     /**
      * 根据用户id查询用户所在部门
      *

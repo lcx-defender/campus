@@ -11,11 +11,13 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author 刘传星
  * @since 2025-03-04
  */
-public interface RoleMenuMapper extends BaseMapper<RoleMenu> {
+public interface RoleMenuMapper {
 
     int countRoleWithMenu(Long menuId);
 
     boolean deleteRoleMenu(RoleMenu roleMenu);
 
     boolean deleteRoleMenuByRoleId(Long roleId);
+
+    int insert(RoleMenu roleMenu);
 }
