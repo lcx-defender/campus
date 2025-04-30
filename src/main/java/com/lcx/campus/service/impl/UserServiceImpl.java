@@ -100,7 +100,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new BaseException("验证码已过期");
         }
         stringRedisTemplate.delete(key);
-        if (!StrUtil.equals(cacheCode, code)) {
+        // 比较验证码时，希望忽略大小写
+        if (!code.equalsIgnoreCase(cacheCode)) {
             AsyncManager.me().execute(AsyncFactory.recordLoginInfo(userId, Constants.LOGIN_FAIL, "验证码错误,应为" + cacheCode + "提交为" + code));
             throw new BaseException("验证码错误");
         }
