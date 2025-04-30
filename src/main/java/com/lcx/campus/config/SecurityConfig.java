@@ -1,6 +1,8 @@
 package com.lcx.campus.config;
 
 import com.lcx.campus.filter.JwtAuthenticationTokenFilter;
+import com.lcx.campus.handler.AccessDeniedHandlerImpl;
+import com.lcx.campus.handler.AuthenticationEntryPointImpl;
 import com.lcx.campus.handler.LogoutSuccessHandlerImpl;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
@@ -39,12 +42,17 @@ public class SecurityConfig {
 
     @Resource
     private UserDetailsService userDetailsService;
-
     @Resource
     private JwtAuthenticationTokenFilter authenticationTokenFilter;
-
     @Resource
     private LogoutSuccessHandlerImpl logoutSuccessHandler;
+    /**
+     * 认证失败处理类
+     */
+    @Resource
+    private AuthenticationEntryPointImpl unauthorizedHandler;
+    @Resource
+    private AccessDeniedHandlerImpl accessDeniedHandler;
 
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity httpSecurity)
@@ -54,6 +62,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 // 基于token，所以不需要session
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exception -> {
+                    exception.authenticationEntryPoint(unauthorizedHandler)
+                            .accessDeniedHandler(accessDeniedHandler);
+                })
                 .authorizeHttpRequests((requests) -> {
                     // 对于登录login 注册register 验证码captchaImage 允许匿名访问
                     requests.requestMatchers("/loginByUsername", "/captchaImage").permitAll()

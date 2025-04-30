@@ -10,6 +10,7 @@ import com.lcx.campus.domain.dto.LoginUser;
 import com.lcx.campus.domain.dto.PasswordBody;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.exception.BaseException;
+import com.lcx.campus.exception.WrongCaptchaCodeException;
 import com.lcx.campus.mapper.StudentMapper;
 import com.lcx.campus.mapper.TeacherMapper;
 import com.lcx.campus.mapper.UserMapper;
@@ -23,6 +24,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import static com.lcx.campus.constant.Constants.LOGIN_SUCCESS;
 import static com.lcx.campus.constant.RedisConstants.CAPTCHA_CODE_KEY;
 import static net.sf.jsqlparser.util.validation.metadata.NamedObject.user;
 
@@ -83,7 +86,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginBody.getUsername(), loginBody.getPassword(), loginUser.getAuthorities());
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
         loginUser = (LoginUser) authentication.getPrincipal();
-        AsyncManager.me().execute(AsyncFactory.recordLoginInfo(loginUser.getUserId(), Constants.LOGIN_SUCCESS, "登录成功"));
+        AsyncManager.me().execute(AsyncFactory.recordLoginInfo(loginUser.getUserId(), LOGIN_SUCCESS, "登录成功"));
         recordLoginInfo(loginUser.getUserId());
         // 生成token并返回
         return Result.success(jwtTokenService.createToken(loginUser));
@@ -103,7 +106,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 比较验证码时，希望忽略大小写
         if (!code.equalsIgnoreCase(cacheCode)) {
             AsyncManager.me().execute(AsyncFactory.recordLoginInfo(userId, Constants.LOGIN_FAIL, "验证码错误,应为" + cacheCode + "提交为" + code));
-            throw new BaseException("验证码错误");
+            throw new WrongCaptchaCodeException("验证码错误");
         }
     }
 

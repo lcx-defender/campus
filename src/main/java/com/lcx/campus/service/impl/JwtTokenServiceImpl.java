@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -44,16 +45,26 @@ public class JwtTokenServiceImpl {
     @Value("${token.expireTime}")
     private Long expireTime;
 
-    protected static final Long MILLIS_SECOND = 1000L;
+    /**
+     * 一秒
+     */
+    protected static final Long SECOND_UNIT = 1000L;
+    /**
+     * 一分
+     */
+    protected static final Long MINUTE_UNIT = 60 * SECOND_UNIT;
+    /**
+     * 一小时
+     */
+    private static final Long HOUR_UNIT = 60 * MINUTE_UNIT;
 
-    protected static final Long MILLIS_MINUTE = 60 * MILLIS_SECOND;
-
-    private static final Long MILLIS_MINUTE_TEN = 20 * 60 * 1000L;
+    /**
+     * 刷新时间
+     */
+    private static final Long REFRESH_TIME = 30 * MINUTE_UNIT;
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
-
-
 
     /**
      * 创建令牌
@@ -87,7 +98,7 @@ public class JwtTokenServiceImpl {
 
     public void refreshToken(LoginUser loginUser) {
         loginUser.setLoginTime(System.currentTimeMillis());
-        loginUser.setExpireTime(loginUser.getLoginTime() + expireTime * MILLIS_MINUTE);
+        loginUser.setExpireTime(loginUser.getLoginTime() + expireTime * HOUR_UNIT);
 
         String tokenKey = getTokenKey(loginUser.getTokenUUID());
         stringRedisTemplate.opsForValue().set(tokenKey, JSON.toJSONString(loginUser), expireTime, TimeUnit.MINUTES);
@@ -118,15 +129,14 @@ public class JwtTokenServiceImpl {
     }
 
     /**
-     * 验证令牌有效期，相差不足20分钟，自动刷新缓存
-     *
-     * @param loginUser
-     * @return 令牌
+     * 验证令牌有效期，相差不足30分钟，自动刷新缓存
      */
     public void verifyToken(LoginUser loginUser) {
         long expireTime = loginUser.getExpireTime();
         long currentTime = System.currentTimeMillis();
-        if (expireTime - currentTime <= MILLIS_MINUTE_TEN) {
+        if(expireTime <= currentTime) {
+            throw new BadCredentialsException("token已过期");
+        }else if (expireTime - currentTime <= REFRESH_TIME) {
             refreshToken(loginUser);
         }
     }
