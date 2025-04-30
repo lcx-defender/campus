@@ -11,6 +11,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import static com.lcx.campus.constant.HttpStatus.FORBIDDEN;
+import static com.lcx.campus.constant.HttpStatus.UNAUTHORIZED;
+
 /**
  * 全局异常处理
  *
@@ -23,13 +26,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public Result handleAuthenticationException(AuthenticationException e) {
         e.printStackTrace();
-        return Result.fail("认证失败: " + (StringUtils.hasLength(e.getMessage()) ? e.getMessage() : "未知错误"));
+        return Result.fail(UNAUTHORIZED, "认证失败: " + (StringUtils.hasLength(e.getMessage()) ? e.getMessage() : "未知错误"));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public Result handleAccessDeniedException(AccessDeniedException e) {
         e.printStackTrace();
-        return Result.fail("权限不足: " + (StringUtils.hasLength(e.getMessage()) ? e.getMessage() : "未知错误"));
+        return Result.fail(FORBIDDEN ,"权限不足: " + (StringUtils.hasLength(e.getMessage()) ? e.getMessage() : "未知错误"));
     }
 
     @ExceptionHandler(Exception.class)

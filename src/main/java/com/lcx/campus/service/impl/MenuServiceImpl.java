@@ -92,7 +92,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
         } else {
             menuList = menuMapper.selectMenuListByUserId(menu, userId);
         }
-        System.out.println(menuList);
+//        System.out.println(menuList);
         return menuList;
     }
 

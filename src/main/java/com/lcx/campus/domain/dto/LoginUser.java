@@ -90,7 +90,7 @@ public class LoginUser implements UserDetails {
         if (permissions == null || permissions.isEmpty()) {
             return null;
         }
-        System.out.println(permissions);
+//        System.out.println(permissions);
         return permissions.stream()
                 .filter(permission -> permission != null && !permission.isEmpty())
                 .map(SimpleGrantedAuthority::new)
