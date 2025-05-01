@@ -34,6 +34,7 @@ public class User implements Serializable {
      * 用户ID
      */
     @TableId(value = "user_id", type = IdType.AUTO)
+    @NotNull(message = "用户ID不能为空", groups = {User.UpdateUserGroup.class})
     private Long userId;
 
     /**
@@ -127,4 +128,5 @@ public class User implements Serializable {
 
     public interface AddUserGroup {}
 
+    public interface UpdateUserGroup {}
 }

@@ -60,6 +60,25 @@ public class UserController {
     }
 
     /**
+     * 用户修改个人信息，只允许个人修改 nickname、email、phone、sex 这四个字段，根据uderId更新
+     */
+    @Log(title = "修改个人信息", businessType = BusinessType.UPDATE)
+    @PutMapping("/updateSelfInfo")
+    public Result updateSelfInfo(@RequestBody User user) {
+        return userService.updateSelfInfo(user);
+    }
+
+    /**
+     * 管理员修改他人信息
+     */
+    @Log(title = "管理员修改他人信息", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:user:edit')")
+    @PutMapping("/updateUser")
+    public Result updateUser(@Validated(User.UpdateUserGroup.class) @RequestBody User user) {
+        return userService.updateUser(user);
+    }
+
+    /**
      * 新建系统用户(开发测试等人员使用,不对外开放)
      */
     @Log(title = "新建系统用户", businessType = BusinessType.INSERT)

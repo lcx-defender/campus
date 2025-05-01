@@ -247,6 +247,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return userId;
     }
 
+    /**
+     * 用户修改个人信息，只允许个人修改 nickname、email、phone、sex 这四个字段，根据当前登录token更新
+     */
+    @Override
+    public Result updateSelfInfo(User user) {
+        User currentUser = new User();
+        currentUser.setUserId(SecurityUtils.getUserId());
+        currentUser.setNickname(user.getNickname());
+        currentUser.setEmail(user.getEmail());
+        currentUser.setPhone(user.getPhone());
+        currentUser.setSex(user.getSex());
+        return updateUser(currentUser);
+    }
+
+    @Override
+    public Result updateUser(User user) {
+        return updateById(user) ? Result.success("更新用户信息成功") : Result.fail("更新用户信息失败");
+    }
+
     @Override
     public Result addUserOfAdmin(User user) {
         // 1. 校验用户是否存在

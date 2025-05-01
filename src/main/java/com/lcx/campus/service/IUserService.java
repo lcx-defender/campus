@@ -38,4 +38,11 @@ public interface IUserService extends IService<User> {
      * @return 用户ID
      */
     Long creatUserIfNotExist(User user);
+
+    /**
+     * 用户修改个人信息，只允许个人修改 nickname、email、phone、sex 这四个字段，根据uderId更新
+     */
+    Result updateSelfInfo(User user);
+
+    Result updateUser(User user);
 }
