@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import com.lcx.campus.domain.dto.PageQuery;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,7 +27,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("sys_user")
-public class User implements Serializable {
+public class User extends PageQuery implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -101,7 +102,7 @@ public class User implements Serializable {
     private String createBy;
 
     /**
-     * 创建时间
+     * 注册时间
      */
     private LocalDateTime createTime;
 

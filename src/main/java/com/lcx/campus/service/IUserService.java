@@ -44,5 +44,11 @@ public interface IUserService extends IService<User> {
      */
     Result updateSelfInfo(User user);
 
+    /**
+     * 分页查询所有自己部门之下的用户信息
+     * 通过用户昵称、用户类型、邮箱、手机号、用户状态去多条件查询
+     */
     Result updateUser(User user);
+
+    Result pageUserList(User user);
 }

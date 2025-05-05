@@ -9,6 +9,7 @@ import com.lcx.campus.domain.dto.LoginBody;
 import com.lcx.campus.domain.dto.PasswordBody;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.enums.BusinessType;
+import com.lcx.campus.enums.UserStatus;
 import com.lcx.campus.service.IUserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,6 +37,30 @@ public class UserController {
     @GetMapping("/getSelfInfo")
     public Result getSelfInfo() {
         return userService.getSelfInfo();
+    }
+
+    /**
+     * 获取指定用户信息
+     */
+    @GetMapping("/getUser/{userId}")
+    @PreAuthorize("hasAnyAuthority('system:user:query')")
+    public Result getUser(@PathVariable Long userId) {
+        User user = userService.getById(userId);
+        if (user == null) {
+            return Result.fail("用户不存在");
+        }
+        return Result.success(user);
+    }
+
+
+    /**
+     * 分页查询所有自己部门之下的用户信息
+     * 通过用户昵称、用户类型、邮箱、手机号、用户状态去多条件查询
+     */
+    @PostMapping("/pageList")
+    @PreAuthorize("hasAnyAuthority('system:user:list')")
+    public Result pageUserList(@RequestBody User user) {
+        return userService.pageUserList(user);
     }
 
     /**
@@ -86,6 +111,32 @@ public class UserController {
     @PostMapping("/addUser")
     public Result addUserOfAdmin(@Validated(User.AddUserGroup.class) @RequestBody User user) {
         return userService.addUserOfAdmin(user);
+    }
+
+    /**
+     * 删除用户(逻辑)
+     */
+    @Log(title = "删除用户", businessType = BusinessType.DELETE)
+    @PreAuthorize("hasAnyAuthority('system:user:remove')")
+    @DeleteMapping("/deleteUser/{userId}")
+    public Result deleteUser(@PathVariable Long userId) {
+        User user = new User();
+        user.setUserId(userId);
+        user.setUserStatus(UserStatus.DELETED.getCode());
+        return userService.updateUser(user);
+    }
+
+    /**
+     * 封禁用户
+     */
+    @Log(title = "封禁用户", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:user:edit')")
+    @PutMapping("/banUser/{userId}")
+    public Result banUser(@PathVariable Long userId) {
+        User user = new User();
+        user.setUserId(userId);
+        user.setUserStatus(UserStatus.DISABLE.getCode());
+        return userService.updateUser(user);
     }
 
 }

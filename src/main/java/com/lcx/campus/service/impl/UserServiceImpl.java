@@ -1,6 +1,7 @@
 package com.lcx.campus.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lcx.campus.constant.Constants;
 import com.lcx.campus.domain.Student;
 import com.lcx.campus.domain.Teacher;
@@ -9,6 +10,7 @@ import com.lcx.campus.domain.dto.LoginBody;
 import com.lcx.campus.domain.dto.LoginUser;
 import com.lcx.campus.domain.dto.PasswordBody;
 import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.PageVo;
 import com.lcx.campus.exception.BaseException;
 import com.lcx.campus.exception.WrongCaptchaCodeException;
 import com.lcx.campus.mapper.StudentMapper;
@@ -31,9 +33,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 import static com.lcx.campus.constant.Constants.LOGIN_SUCCESS;
 import static com.lcx.campus.constant.RedisConstants.CAPTCHA_CODE_KEY;
+import static com.lcx.campus.constant.UserConstants.DEFAULT_AVATAR;
+import static com.lcx.campus.constant.UserConstants.SYS_USER;
 import static net.sf.jsqlparser.util.validation.metadata.NamedObject.user;
 
 /**
@@ -231,11 +236,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             userId = existingUser.getUserId();
             // 1.1 用户存在，更新用户信息
             user.setUserId(userId);
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setUpdateTime(LocalDateTime.now());
             isSuccess = updateById(user);
         } else {
             // 2. 用户不存在，插入用户
+            if(StringUtils.isEmpty(user.getAvatar())) {
+                user.setAvatar(DEFAULT_AVATAR);
+            }
+            if(StringUtils.isEmpty(user.getNickname())) {
+                user.setNickname(SYS_USER + UUID.randomUUID().toString().substring(0, 8));
+            }
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setCreateTime(LocalDateTime.now());
             isSuccess = save(user);
@@ -264,6 +274,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public Result updateUser(User user) {
         return updateById(user) ? Result.success("更新用户信息成功") : Result.fail("更新用户信息失败");
+    }
+
+    /**
+     * 分页查询所有自己部门之下的用户信息
+     * 通过用户昵称、用户类型、邮箱、手机号、用户状态去多条件查询
+     */
+    @Override
+    public Result pageUserList(User user) {
+        Page<User> queryPage = user.toMpPage();
+        Page<User> page = lambdaQuery()
+                .like(user.getNickname() != null, User::getNickname, user.getNickname())
+                .eq(user.getUserType() != null, User::getUserType, user.getUserType())
+                .eq(user.getEmail() != null, User::getEmail, user.getEmail())
+                .eq(user.getPhone() != null, User::getPhone, user.getPhone())
+                .eq(user.getUserStatus() != null, User::getUserStatus, user.getUserStatus())
+                .page(queryPage);
+        PageVo<User> res = PageVo.of(page);
+        return Result.success("查询用户列表成功", res);
     }
 
     @Override
