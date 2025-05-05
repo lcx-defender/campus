@@ -101,7 +101,7 @@ public class JwtTokenServiceImpl {
         loginUser.setExpireTime(loginUser.getLoginTime() + expireTime * HOUR_UNIT);
 
         String tokenKey = getTokenKey(loginUser.getTokenUUID());
-        stringRedisTemplate.opsForValue().set(tokenKey, JSON.toJSONString(loginUser), expireTime, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(tokenKey, JSON.toJSONString(loginUser), expireTime, TimeUnit.HOURS);
     }
 
     /**
