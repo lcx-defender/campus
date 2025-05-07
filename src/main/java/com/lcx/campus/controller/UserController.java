@@ -10,12 +10,17 @@ import com.lcx.campus.domain.dto.PasswordBody;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.enums.BusinessType;
 import com.lcx.campus.enums.UserStatus;
+import com.lcx.campus.service.IRoleService;
 import com.lcx.campus.service.IUserService;
+import com.lcx.campus.utils.StringUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -31,6 +36,9 @@ public class UserController {
     @Resource
     private IUserService userService;
 
+    @Resource
+    private IRoleService roleService;
+
     /**
      * 获取当前登录用户个人信息
      */
@@ -43,10 +51,11 @@ public class UserController {
      * 获取指定用户信息
      */
     @GetMapping("/getUser/{userId}")
-    @PreAuthorize("hasAnyAuthority('system:user:query')")
+    @PreAuthorize("hasAnyAuthority('system:user:list')")
     public Result getUser(@PathVariable Long userId) {
         User user = userService.getById(userId);
-        if (user == null) {
+        user.setPassword(null);
+        if (StringUtils.isNull(user)) {
             return Result.fail("用户不存在");
         }
         return Result.success(user);
@@ -77,10 +86,13 @@ public class UserController {
      * 管理员修改他人密码
      */
     @Log(title = "管理员修改他人密码", businessType = BusinessType.UPDATE)
-    @PreAuthorize("hasAnyAuthority('system:user:resetPwd')")
+    @PreAuthorize("hasAnyAuthority('system:user:edit')")
     @PutMapping("/resetPassword")
     public Result resetPassword(
             @Validated(PasswordBody.AdminResetGroup.class) @RequestBody PasswordBody passwordBody) {
+        if(roleService.isAdmin(passwordBody.getUserId())) {
+            return Result.fail("无法修改管理员账户");
+        }
         return userService.resetPassword(passwordBody);
     }
 
@@ -96,10 +108,13 @@ public class UserController {
     /**
      * 管理员修改他人信息
      */
-    @Log(title = "管理员修改他人信息", businessType = BusinessType.UPDATE)
+    @Log(title = "修改用户信息", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAnyAuthority('system:user:edit')")
     @PutMapping("/updateUser")
     public Result updateUser(@Validated(User.UpdateUserGroup.class) @RequestBody User user) {
+        if(roleService.isAdmin(user.getUserId())) {
+            return Result.fail("管理员账户无法修改");
+        }
         return userService.updateUser(user);
     }
 
@@ -118,12 +133,22 @@ public class UserController {
      */
     @Log(title = "删除用户", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAnyAuthority('system:user:remove')")
-    @DeleteMapping("/deleteUser/{userId}")
-    public Result deleteUser(@PathVariable Long userId) {
-        User user = new User();
-        user.setUserId(userId);
-        user.setUserStatus(UserStatus.DELETED.getCode());
-        return userService.updateUser(user);
+    @DeleteMapping("/deleteUsers")
+    public Result deleteUser(@RequestBody List<Long> userIds) {
+        if(StringUtils.isEmpty(userIds)) {
+            return Result.fail("用户ID不能为空");
+        }
+        List<User> users = new ArrayList<>();
+        for (Long userId : userIds) {
+            // 判断是不是管理员账户，管理员账户无法删除
+            if(userId != null && !roleService.isAdmin(userId)) {
+                User user = new User();
+                user.setUserId(userId);
+                user.setUserStatus(UserStatus.DELETED.getCode());
+                users.add(user);
+            }
+        }
+        return userService.updateBatchById(users) ? Result.success() : Result.fail("用户删除失败");
     }
 
     /**
