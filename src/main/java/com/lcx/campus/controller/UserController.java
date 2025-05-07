@@ -129,15 +129,12 @@ public class UserController {
     }
 
     /**
-     * 删除用户(逻辑)
+     * 注销用户(逻辑)
      */
     @Log(title = "删除用户", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAnyAuthority('system:user:remove')")
-    @DeleteMapping("/deleteUsers")
-    public Result deleteUser(@RequestBody List<Long> userIds) {
-        if(StringUtils.isEmpty(userIds)) {
-            return Result.fail("用户ID不能为空");
-        }
+    @DeleteMapping("/deleteUsers/{userIds}")
+    public Result deleteUser(@PathVariable Long[] userIds) {
         List<User> users = new ArrayList<>();
         for (Long userId : userIds) {
             // 判断是不是管理员账户，管理员账户无法删除
@@ -148,20 +145,55 @@ public class UserController {
                 users.add(user);
             }
         }
+        if(StringUtils.isEmpty(users)) {
+            return Result.fail("没有可删除的用户");
+        }
         return userService.updateBatchById(users) ? Result.success() : Result.fail("用户删除失败");
+    }
+
+    /**
+     * 恢复用户
+     */
+    @Log(title = "恢复用户", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:user:remove')")
+    @PutMapping("/recoverUser/{userIds}")
+    public Result recoverUser(@PathVariable Long[] userIds) {
+        List<User> users = new ArrayList<>();
+        for (Long userId : userIds) {
+            if(userId != null) {
+                User user = new User();
+                user.setUserId(userId);
+                user.setUserStatus(UserStatus.OK.getCode());
+                users.add(user);
+            }
+        }
+        if(StringUtils.isEmpty(users)) {
+            return Result.fail("没有可恢复的用户");
+        }
+        return userService.updateBatchById(users) ? Result.success() : Result.fail("用户恢复失败");
     }
 
     /**
      * 封禁用户
      */
     @Log(title = "封禁用户", businessType = BusinessType.UPDATE)
-    @PreAuthorize("hasAnyAuthority('system:user:edit')")
-    @PutMapping("/banUser/{userId}")
-    public Result banUser(@PathVariable Long userId) {
-        User user = new User();
-        user.setUserId(userId);
-        user.setUserStatus(UserStatus.DISABLE.getCode());
-        return userService.updateUser(user);
+    @PreAuthorize("hasAnyAuthority('system:user:remove')")
+    @PutMapping("/banUser/{userIds}")
+    public Result banUser(@PathVariable Long[] userIds) {
+        List<User> users = new ArrayList<>();
+        for (Long userId : userIds) {
+            // 判断是不是管理员账户，管理员账户无法删除
+            if(userId != null && !roleService.isAdmin(userId)) {
+                User user = new User();
+                user.setUserId(userId);
+                user.setUserStatus(UserStatus.DISABLE.getCode());
+                users.add(user);
+            }
+        }
+        if(StringUtils.isEmpty(users)) {
+            return Result.fail("没有可封禁的用户");
+        }
+        return userService.updateBatchById(users) ? Result.success() : Result.fail("用户封禁失败");
     }
 
 }
