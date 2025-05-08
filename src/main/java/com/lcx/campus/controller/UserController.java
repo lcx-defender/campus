@@ -113,7 +113,7 @@ public class UserController {
     @PutMapping("/updateUser")
     public Result updateUser(@Validated(User.UpdateUserGroup.class) @RequestBody User user) {
         if(roleService.isAdmin(user.getUserId())) {
-            return Result.fail("管理员账户无法修改");
+            return Result.fail("管理员账户仅可自行修改");
         }
         return userService.updateUser(user);
     }

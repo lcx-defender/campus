@@ -1,6 +1,7 @@
 package com.lcx.campus.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lcx.campus.constant.Constants;
 import com.lcx.campus.domain.Student;
@@ -225,11 +226,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      */
     public Long creatUserIfNotExist(User user) {
         // 1. 校验用户是否存在
-        User existingUser = userMapper.selectOne(
-                lambdaQuery()
-                        .eq(User::getIdentity, user.getIdentity())
-                        .eq(User::getUserType, user.getUserType())
-        );
+
+        User existingUser = lambdaQuery()
+                .eq(User::getIdentity, user.getIdentity())
+                .eq(User::getUserType, user.getUserType())
+                .one();
         Long userId = null;
         boolean isSuccess;
         if (existingUser != null) {
@@ -298,7 +299,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public Result addUserOfAdmin(User user) {
         // 1. 校验用户是否存在
         Long userId = creatUserIfNotExist(user);
-        if (userId == null) {
+        if (StringUtils.isNull(userId)) {
             return Result.fail("添加用户失败");
         }
         return Result.success("添加用户成功", userId);

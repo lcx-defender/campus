@@ -45,7 +45,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
     @Override
     public Result addStudent(User user, Student student) {
-        user.setUserType(UserType.STUDENT.ordinal());
+        user.setUserType(UserType.STUDENT.getCode());
         Long userId = userService.creatUserIfNotExist(user);
         if (userId == null) {
             return Result.fail("用户添加失败");
@@ -66,7 +66,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         // 获取当前用户的userID
         Long userId = SecurityUtils.getUserId();
         User user = userMapper.selectById(userId);
-        if (user.getUserType().equals(UserType.STUDENT.ordinal())) {
+        if (user.getUserType().equals(UserType.STUDENT.getCode())) {
             // 如果是学生用户，查询当前用户的班级
             Student currentStudent = studentMapper.selectById(userId);
             if (student.getDeptId() != null && currentStudent.getClassId() != null && student.getDeptId().equals(currentStudent.getClassId())) {

@@ -46,7 +46,7 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
      */
     @Override
     public Result addTeacher(User user, Teacher teacher) {
-        user.setUserType(UserType.TEACHER.ordinal());
+        user.setUserType(UserType.TEACHER.getCode());
         // 1. 已经存在当前身份信息的用户就不新建用户
         Long userId = userService.creatUserIfNotExist(user);
         if (userId == null) {

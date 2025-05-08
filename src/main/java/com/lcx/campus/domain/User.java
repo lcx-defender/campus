@@ -46,7 +46,8 @@ public class User extends PageQuery implements Serializable {
     /**
      * 用户类型（0系统管理&程序员;1教师;2学生） 数据字典
      */
-    private Integer userType;
+    @NotNull(message = "用户类型不能为空", groups = {User.AddUserGroup.class})
+    private String userType;
 
     /**
      * 身份证号
@@ -83,7 +84,6 @@ public class User extends PageQuery implements Serializable {
     /**
      * 帐号状态（0正常 1封禁 2删除）数据字典
      */
-    @NotNull(message = "用户状态不能为空", groups = {User.AddUserGroup.class})
     private String userStatus;
 
     /**

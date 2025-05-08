@@ -50,10 +50,10 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
     @Override
     public Long getDeptIdByUserId(Long userId) {
         User user = userMapper.selectById(userId);
-        Integer userType = user.getUserType();
-        if (userType.equals(UserType.TEACHER.ordinal())) {
+        String userType = user.getUserType();
+        if (userType.equals(UserType.TEACHER.getCode())) {
             return teacherMapper.selectDeptIdByUserId(userId);
-        } else if (userType.equals(UserType.STUDENT.ordinal())) {
+        } else if (userType.equals(UserType.STUDENT.getCode())) {
             return studentMapper.selectClassByUserId(userId);
         } else {
             return null;

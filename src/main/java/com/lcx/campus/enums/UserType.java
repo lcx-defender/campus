@@ -10,18 +10,25 @@ package com.lcx.campus.enums;
  */
 public enum UserType {
     // 0系统管理&程序员;1教师;2学生
-    SYSTEM("系统管理&程序员"),
-    TEACHER("教师"),
-    STUDENT("学生");
+    SYSTEM("0", "系统管理&程序员"),
+    TEACHER("1","教师"),
+    STUDENT("2", "学生");
 
     private final String name;
 
-    UserType(String name) {
+    private String code;
+
+    UserType(String code, String name) {
+        this.code = code;
         this.name = name;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getCode() {
+        return code;
     }
 
 }
