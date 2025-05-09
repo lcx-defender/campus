@@ -40,4 +40,9 @@ public interface IRoleService extends IService<Role> {
     Result deleteRoleMenu(RoleMenu roleMenu);
 
     Result deleteRoleAllMenu(Long roleId);
+
+    /**
+     * 通过用户id获取角色信息
+     */
+    Result getUserRole(Long userId);
 }

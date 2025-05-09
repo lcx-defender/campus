@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.lcx.campus.domain.dto.LoginBody;
 import com.lcx.campus.domain.dto.PasswordBody;
 import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.UserRolesVo;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -51,4 +52,9 @@ public interface IUserService extends IService<User> {
     Result updateUser(User user);
 
     Result pageUserList(User user);
+
+    /**
+     * 管理员修改用户角色信息
+     */
+    Result updateUserRoles(UserRolesVo userRolesVo);
 }

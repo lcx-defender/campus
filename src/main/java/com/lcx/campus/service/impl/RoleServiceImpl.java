@@ -117,4 +117,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     public Result deleteRoleAllMenu(Long roleId) {
         return roleMenuMapper.deleteRoleMenuByRoleId(roleId) ? Result.success("删除成功") : Result.fail("删除失败");
     }
+
+    /**
+     * 通过用户id获取角色信息
+     */
+    @Override
+    public Result getUserRole(Long userId) {
+        List<Role> roles = roleMapper.selectRoleByUserId(userId);
+        return Result.success(roles);
+    }
 }

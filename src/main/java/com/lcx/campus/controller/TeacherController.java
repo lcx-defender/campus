@@ -7,6 +7,7 @@ import com.lcx.campus.domain.User;
 import com.lcx.campus.domain.dto.PageQuery;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.enums.BusinessType;
+import com.lcx.campus.enums.UserType;
 import com.lcx.campus.service.ITeacherService;
 import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -46,6 +47,7 @@ public class TeacherController {
     @PostMapping("/addTeacher")
     public Result addUserOfTeacher(@Validated(User.AddUserGroup.class) @RequestBody User user,
                                    @Validated(Teacher.addTeacher.class) @RequestBody Teacher teacher) {
+        user.setUserType(UserType.TEACHER.getCode());
         return teacherService.addTeacher(user, teacher);
     }
 

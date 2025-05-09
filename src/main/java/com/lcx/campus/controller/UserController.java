@@ -8,10 +8,13 @@ import com.lcx.campus.domain.User;
 import com.lcx.campus.domain.dto.LoginBody;
 import com.lcx.campus.domain.dto.PasswordBody;
 import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.UserRolesVo;
 import com.lcx.campus.enums.BusinessType;
 import com.lcx.campus.enums.UserStatus;
+import com.lcx.campus.enums.UserType;
 import com.lcx.campus.service.IRoleService;
 import com.lcx.campus.service.IUserService;
+import com.lcx.campus.utils.SecurityUtils;
 import com.lcx.campus.utils.StringUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -61,6 +64,14 @@ public class UserController {
         return Result.success(user);
     }
 
+    /**
+     * 通过用户id获取角色信息
+     */
+    @PreAuthorize("hasAnyAuthority('system:user:list')")
+    @GetMapping("/getUserRole/{userId}")
+    public Result getUserRole(@PathVariable Long userId) {
+        return roleService.getUserRole(userId);
+    }
 
     /**
      * 分页查询所有自己部门之下的用户信息
@@ -119,12 +130,26 @@ public class UserController {
     }
 
     /**
-     * 新建系统用户(开发测试等人员使用,不对外开放)
+     * 管理员修改用户角色信息
+     */
+    @Log(title = "修改用户角色", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:user:edit')")
+    @PutMapping("/updateUserRoles")
+    public Result updateUserRoles(@RequestBody UserRolesVo userRolesVo) {
+        if(roleService.isAdmin(userRolesVo.getUserId()) && !roleService.isAdmin(SecurityUtils.getUserId())) {
+            return Result.fail("管理员账户仅可自行修改");
+        }
+        return userService.updateUserRoles(userRolesVo);
+    }
+
+    /**
+     * 新建系统用户, userTye 为 SYSTEM
      */
     @Log(title = "新建系统用户", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAnyAuthority('system:user:add')")
     @PostMapping("/addUser")
     public Result addUserOfAdmin(@Validated(User.AddUserGroup.class) @RequestBody User user) {
+        user.setUserType(UserType.SYSTEM.getCode());
         return userService.addUserOfAdmin(user);
     }
 
@@ -152,28 +177,6 @@ public class UserController {
     }
 
     /**
-     * 恢复用户
-     */
-    @Log(title = "恢复用户", businessType = BusinessType.UPDATE)
-    @PreAuthorize("hasAnyAuthority('system:user:remove')")
-    @PutMapping("/recoverUser/{userIds}")
-    public Result recoverUser(@PathVariable Long[] userIds) {
-        List<User> users = new ArrayList<>();
-        for (Long userId : userIds) {
-            if(userId != null) {
-                User user = new User();
-                user.setUserId(userId);
-                user.setUserStatus(UserStatus.OK.getCode());
-                users.add(user);
-            }
-        }
-        if(StringUtils.isEmpty(users)) {
-            return Result.fail("没有可恢复的用户");
-        }
-        return userService.updateBatchById(users) ? Result.success() : Result.fail("用户恢复失败");
-    }
-
-    /**
      * 封禁用户
      */
     @Log(title = "封禁用户", businessType = BusinessType.UPDATE)
@@ -196,4 +199,25 @@ public class UserController {
         return userService.updateBatchById(users) ? Result.success() : Result.fail("用户封禁失败");
     }
 
+    /**
+     * 恢复用户
+     */
+    @Log(title = "恢复用户", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:user:remove')")
+    @PutMapping("/recoverUser/{userIds}")
+    public Result recoverUser(@PathVariable Long[] userIds) {
+        List<User> users = new ArrayList<>();
+        for (Long userId : userIds) {
+            if(userId != null) {
+                User user = new User();
+                user.setUserId(userId);
+                user.setUserStatus(UserStatus.OK.getCode());
+                users.add(user);
+            }
+        }
+        if(StringUtils.isEmpty(users)) {
+            return Result.fail("没有可恢复的用户");
+        }
+        return userService.updateBatchById(users) ? Result.success() : Result.fail("用户恢复失败");
+    }
 }

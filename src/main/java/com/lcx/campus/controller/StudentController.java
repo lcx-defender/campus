@@ -6,6 +6,7 @@ import com.lcx.campus.domain.Student;
 import com.lcx.campus.domain.User;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.enums.BusinessType;
+import com.lcx.campus.enums.UserType;
 import com.lcx.campus.service.IStudentService;
 import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,6 +44,7 @@ public class StudentController {
     @PreAuthorize("hasAnyAuthority('system:student:add')")
     @PostMapping("/addStudent")
     public Result addStudent(@Validated(User.AddUserGroup.class) @RequestBody User user, @RequestBody Student student) {
+        user.setUserType(UserType.STUDENT.getCode());
         return studentService.addStudent(user, student);
     }
 

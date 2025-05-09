@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lcx.campus.constant.Constants;
+import com.lcx.campus.domain.Role;
 import com.lcx.campus.domain.Student;
 import com.lcx.campus.domain.Teacher;
 import com.lcx.campus.domain.User;
@@ -12,11 +13,10 @@ import com.lcx.campus.domain.dto.LoginUser;
 import com.lcx.campus.domain.dto.PasswordBody;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.domain.vo.PageVo;
+import com.lcx.campus.domain.vo.UserRolesVo;
 import com.lcx.campus.exception.BaseException;
 import com.lcx.campus.exception.WrongCaptchaCodeException;
-import com.lcx.campus.mapper.StudentMapper;
-import com.lcx.campus.mapper.TeacherMapper;
-import com.lcx.campus.mapper.UserMapper;
+import com.lcx.campus.mapper.*;
 import com.lcx.campus.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lcx.campus.utils.*;
@@ -33,6 +33,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -66,7 +68,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Resource
     private PasswordEncoder passwordEncoder;
     @Resource
-    private StudentMapper studentMapper;
+    private RoleMapper roleMapper;
+    @Resource
+    private UserRoleMapper userRoleMapper;
 
     /**
      * 通过登陆界面用户名查询用户信息
@@ -226,7 +230,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      */
     public Long creatUserIfNotExist(User user) {
         // 1. 校验用户是否存在
-
         User existingUser = lambdaQuery()
                 .eq(User::getIdentity, user.getIdentity())
                 .eq(User::getUserType, user.getUserType())
@@ -293,6 +296,40 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 .page(queryPage);
         PageVo<User> res = PageVo.of(page);
         return Result.success("查询用户列表成功", res);
+    }
+
+    /**
+     * 管理员修改用户角色信息
+     */
+    @Override
+    public Result updateUserRoles(UserRolesVo userRolesVo) {
+        // 1. 校验用户是否存在
+        User user = userMapper.selectById(userRolesVo.getUserId());
+        if(StringUtils.isNull(user)) {
+            return Result.fail("用户不存在");
+        }
+        // 对roleIds进行去重
+        Long[] roleIds = Arrays.stream(userRolesVo.getRoleIds())
+                .distinct()
+                .toArray(Long[]::new);
+        if(roleIds.length == 0) {
+            boolean isSuccess = userRoleMapper.deleteByUserId(userRolesVo.getUserId());
+            return isSuccess ? Result.success("删除用户角色成功") : Result.fail("删除用户角色失败");
+        }
+        // 2. 校验角色是否存在
+        List<Role> roles = roleMapper.selectBatchIds(Arrays.asList(userRolesVo.getRoleIds()));
+        if(roles.size() != roleIds.length) {
+            return Result.fail("有角色不存在");
+        }
+        List<Role> roleList = roleMapper.selectRoleByUserId(userRolesVo.getUserId());
+        // 3. 删除用户原有角色
+        boolean isSuccess = userRoleMapper.deleteByUserId(userRolesVo.getUserId());
+        if(!isSuccess && roleList.size() > 0) {
+            return Result.fail("删除用户原有角色失败");
+        }
+        // 4. 添加用户新角色
+        int rows = userRoleMapper.insertBatch(userRolesVo.getUserId(), roleIds);
+        return rows == roles.size() ? Result.success("修改用户角色成功") : Result.fail("修改用户角色失败");
     }
 
     @Override

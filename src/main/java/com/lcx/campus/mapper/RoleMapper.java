@@ -15,5 +15,9 @@ import java.util.List;
  */
 public interface RoleMapper extends BaseMapper<Role> {
 
+    /**
+     * 根据userId查询具有的角色
+     */
     List<Role> selectRoleByUserId(Long userId);
+
 }

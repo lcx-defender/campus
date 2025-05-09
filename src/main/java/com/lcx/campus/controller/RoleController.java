@@ -50,13 +50,13 @@ public class RoleController {
      * 分页查询角色信息
      */
     @PreAuthorize("hasAnyAuthority('system:role:list')")
-    @GetMapping("/getPageList")
+    @PostMapping("/getPageList")
     public Result getPageList(@RequestBody Role role) {
         return roleService.getPageList(role);
     }
 
     /**
-     * 通过id获取角色信息
+     * 通过id获取角色详细信息
      *
      * @param id 角色id
      * @return 角色信息
@@ -66,6 +66,8 @@ public class RoleController {
     public Result getRoleById(@PathVariable Long id) {
         return Result.success(roleService.getById(id));
     }
+
+
 
     /**
      * 查询角色对应的权限
@@ -133,4 +135,5 @@ public class RoleController {
     public Result deleteRoleAllMenu(@PathVariable Long roleId) {
         return roleService.deleteRoleAllMenu(roleId);
     }
+
 }
