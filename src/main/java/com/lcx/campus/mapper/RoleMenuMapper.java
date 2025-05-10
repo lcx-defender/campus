@@ -3,6 +3,8 @@ package com.lcx.campus.mapper;
 import com.lcx.campus.domain.RoleMenu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.List;
+
 /**
  * <p>
  * 角色和菜单关联表 Mapper 接口
@@ -20,4 +22,8 @@ public interface RoleMenuMapper {
     boolean deleteRoleMenuByRoleId(Long roleId);
 
     int insert(RoleMenu roleMenu);
+
+    List<RoleMenu> selectByRoleId(Long roleId);
+
+    int insertBatchRoleMenu(Long roleId, Long[] menuIds);
 }

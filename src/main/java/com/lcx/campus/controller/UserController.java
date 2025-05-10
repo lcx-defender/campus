@@ -43,37 +43,6 @@ public class UserController {
     private IRoleService roleService;
 
     /**
-     * 获取当前登录用户个人信息
-     */
-    @GetMapping("/getSelfInfo")
-    public Result getSelfInfo() {
-        return userService.getSelfInfo();
-    }
-
-    /**
-     * 获取指定用户信息
-     */
-    @GetMapping("/getUser/{userId}")
-    @PreAuthorize("hasAnyAuthority('system:user:list')")
-    public Result getUser(@PathVariable Long userId) {
-        User user = userService.getById(userId);
-        user.setPassword(null);
-        if (StringUtils.isNull(user)) {
-            return Result.fail("用户不存在");
-        }
-        return Result.success(user);
-    }
-
-    /**
-     * 通过用户id获取角色信息
-     */
-    @PreAuthorize("hasAnyAuthority('system:user:list')")
-    @GetMapping("/getUserRole/{userId}")
-    public Result getUserRole(@PathVariable Long userId) {
-        return roleService.getUserRole(userId);
-    }
-
-    /**
      * 分页查询所有自己部门之下的用户信息
      * 通过用户昵称、用户类型、邮箱、手机号、用户状态去多条件查询
      */
@@ -81,65 +50,6 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('system:user:list')")
     public Result pageUserList(@RequestBody User user) {
         return userService.pageUserList(user);
-    }
-
-    /**
-     * 修改自己密码
-     */
-    @Log(title = "修改个人密码", businessType = BusinessType.UPDATE)
-    @PutMapping("/updatePassword")
-    public Result updatePassword(
-            @Validated(PasswordBody.UserUpdateGroup.class) @RequestBody PasswordBody passwordBody, HttpServletRequest request) {
-        return userService.updatePassword(passwordBody, request);
-    }
-
-    /**
-     * 管理员修改他人密码
-     */
-    @Log(title = "管理员修改他人密码", businessType = BusinessType.UPDATE)
-    @PreAuthorize("hasAnyAuthority('system:user:edit')")
-    @PutMapping("/resetPassword")
-    public Result resetPassword(
-            @Validated(PasswordBody.AdminResetGroup.class) @RequestBody PasswordBody passwordBody) {
-        if(roleService.isAdmin(passwordBody.getUserId())) {
-            return Result.fail("无法修改管理员账户");
-        }
-        return userService.resetPassword(passwordBody);
-    }
-
-    /**
-     * 用户修改个人信息，只允许个人修改 nickname、email、phone、sex 这四个字段，根据uderId更新
-     */
-    @Log(title = "修改个人信息", businessType = BusinessType.UPDATE)
-    @PutMapping("/updateSelfInfo")
-    public Result updateSelfInfo(@RequestBody User user) {
-        return userService.updateSelfInfo(user);
-    }
-
-    /**
-     * 管理员修改他人信息
-     */
-    @Log(title = "修改用户信息", businessType = BusinessType.UPDATE)
-    @PreAuthorize("hasAnyAuthority('system:user:edit')")
-    @PutMapping("/updateUser")
-    public Result updateUser(@Validated(User.UpdateUserGroup.class) @RequestBody User user) {
-        if(roleService.isAdmin(user.getUserId())) {
-            return Result.fail("管理员账户仅可自行修改");
-        }
-        return userService.updateUser(user);
-    }
-
-    /**
-     * 管理员修改用户角色信息
-     */
-    @Log(title = "修改用户角色", businessType = BusinessType.UPDATE)
-    @PreAuthorize("hasAnyAuthority('system:user:edit')")
-    @PutMapping("/updateUserRoles")
-    public Result updateUserRoles(@RequestBody UserRolesVo userRolesVo) {
-        if(roleService.isAdmin(userRolesVo.getUserId()) && !roleService.isAdmin(SecurityUtils.getUserId())) {
-            return Result.fail("管理员账户仅可自行修改");
-        }
-        return userService.updateUserRoles(userRolesVo);
     }
 
     /**
@@ -177,10 +87,87 @@ public class UserController {
     }
 
     /**
+     * 管理员修改他人信息
+     */
+    @Log(title = "修改用户信息", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:user:edit')")
+    @PutMapping("/updateUser")
+    public Result updateUser(@Validated(User.UpdateUserGroup.class) @RequestBody User user) {
+        if(roleService.isAdmin(user.getUserId())) {
+            return Result.fail("管理员账户仅可自行修改");
+        }
+        return userService.updateUser(user);
+    }
+
+    /**
+     * 用户修改个人信息，只允许个人修改 nickname、email、phone、sex 这四个字段，根据uderId更新
+     */
+    @Log(title = "修改个人信息", businessType = BusinessType.UPDATE)
+    @PutMapping("/updateSelfInfo")
+    public Result updateSelfInfo(@RequestBody User user) {
+        return userService.updateSelfInfo(user);
+    }
+
+    /**
+     * 获取指定用户信息
+     */
+    @GetMapping("/getUser/{userId}")
+    @PreAuthorize("hasAnyAuthority('system:user:query')")
+    public Result getUser(@PathVariable Long userId) {
+        User user = userService.getById(userId);
+        if (StringUtils.isNull(user)) {
+            return Result.fail("用户不存在");
+        }
+        user.setPassword(null); // 隐藏密码
+        return Result.success(user);
+    }
+
+    /**
+     * 通过用户id获取角色信息
+     */
+    @PreAuthorize("hasAnyAuthority('system:user:query')")
+    @GetMapping("/getUserRole/{userId}")
+    public Result getUserRole(@PathVariable Long userId) {
+        return roleService.getUserRole(userId);
+    }
+
+    /**
+     * 获取当前登录用户个人信息
+     */
+    @GetMapping("/getSelfInfo")
+    public Result getSelfInfo() {
+        return userService.getSelfInfo();
+    }
+
+    /**
+     * 管理员修改他人密码
+     */
+    @Log(title = "管理员修改他人密码", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:user:reset')")
+    @PutMapping("/resetPassword")
+    public Result resetPassword(
+            @Validated(PasswordBody.AdminResetGroup.class) @RequestBody PasswordBody passwordBody) {
+        if(roleService.isAdmin(passwordBody.getUserId())) {
+            return Result.fail("无法修改管理员账户");
+        }
+        return userService.resetPassword(passwordBody);
+    }
+
+    /**
+     * 修改自己密码
+     */
+    @Log(title = "修改个人密码", businessType = BusinessType.UPDATE)
+    @PutMapping("/updatePassword")
+    public Result updatePassword(
+            @Validated(PasswordBody.UserUpdateGroup.class) @RequestBody PasswordBody passwordBody, HttpServletRequest request) {
+        return userService.updatePassword(passwordBody, request);
+    }
+
+    /**
      * 封禁用户
      */
     @Log(title = "封禁用户", businessType = BusinessType.UPDATE)
-    @PreAuthorize("hasAnyAuthority('system:user:remove')")
+    @PreAuthorize("hasAnyAuthority('system:user:ban')")
     @PutMapping("/banUser/{userIds}")
     public Result banUser(@PathVariable Long[] userIds) {
         List<User> users = new ArrayList<>();
@@ -200,10 +187,10 @@ public class UserController {
     }
 
     /**
-     * 恢复用户
+     * 恢复用户状态为正常
      */
     @Log(title = "恢复用户", businessType = BusinessType.UPDATE)
-    @PreAuthorize("hasAnyAuthority('system:user:remove')")
+    @PreAuthorize("hasAnyAuthority('system:user:recover')")
     @PutMapping("/recoverUser/{userIds}")
     public Result recoverUser(@PathVariable Long[] userIds) {
         List<User> users = new ArrayList<>();
@@ -219,5 +206,18 @@ public class UserController {
             return Result.fail("没有可恢复的用户");
         }
         return userService.updateBatchById(users) ? Result.success() : Result.fail("用户恢复失败");
+    }
+
+    /**
+     * 管理员修改用户角色信息
+     */
+    @Log(title = "修改用户角色", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:user:grant')")
+    @PutMapping("/updateUserRoles")
+    public Result updateUserRoles(@RequestBody UserRolesVo userRolesVo) {
+        if(roleService.isAdmin(userRolesVo.getUserId()) && !roleService.isAdmin(SecurityUtils.getUserId())) {
+            return Result.fail("管理员账户仅可自行修改");
+        }
+        return userService.updateUserRoles(userRolesVo);
     }
 }

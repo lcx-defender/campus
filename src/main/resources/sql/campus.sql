@@ -4,14 +4,13 @@
  Source Server         : 字节云服务器数据库
  Source Server Type    : MySQL
  Source Server Version : 90100
- Source Host           : 14.103.226.91:3306
  Source Schema         : campus
 
  Target Server Type    : MySQL
  Target Server Version : 90100
  File Encoding         : 65001
 
- Date: 19/04/2025 23:19:59
+ Date: 09/05/2025 22:54:37
 */
 
 SET NAMES utf8mb4;
@@ -22,11 +21,12 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `dormitory_info`;
 CREATE TABLE `dormitory_info`  (
-  `student_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '学号',
+  `id` bigint(0) NOT NULL,
+  `student_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '学号',
   `dormitory_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '宿舍楼号',
   `room_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '房间号',
   `bed_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '床位号',
-  PRIMARY KEY (`student_id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '学生宿舍信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -79,7 +79,8 @@ CREATE TABLE `student`  (
 DROP TABLE IF EXISTS `sys_dept`;
 CREATE TABLE `sys_dept`  (
   `dept_id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '部门id',
-  `parent_id` bigint(0) NULL DEFAULT 0 COMMENT '父部门id',
+  `parent_id` bigint(0) NOT NULL DEFAULT 0 COMMENT '父部门id',
+  `level` int(0) NULL DEFAULT NULL,
   `dept_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '部门名称',
   `leader` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '负责人',
   `phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '联系电话',
@@ -93,11 +94,13 @@ CREATE TABLE `sys_dept`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`dept_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '院校表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '院校表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_dept
 -- ----------------------------
+INSERT INTO `sys_dept` VALUES (1, 0, 1, '南京测试大学', NULL, NULL, NULL, NULL, '1', '0', '', '2025-04-28 13:08:24', '', NULL, NULL);
+INSERT INTO `sys_dept` VALUES (2, 0, 1, '南京艺术测试学院', NULL, NULL, NULL, NULL, '1', '0', '', '2025-05-09 19:38:58', '', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_dict_data
@@ -111,7 +114,7 @@ CREATE TABLE `sys_dict_data`  (
   `css_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '样式属性（其他样式扩展）',
   `list_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '表格回显样式',
   `is_default` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT 'N' COMMENT '是否默认（Y是 N否）',
-  `dict_status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '状态（0正常 1停用）',
+  `dict_status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '状态（1正常 0停用）',
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
@@ -162,13 +165,11 @@ CREATE TABLE `sys_login_info`  (
   PRIMARY KEY (`info_id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_login_time`(`login_time`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 32 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统登录记录' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 164 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统登录记录' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_login_info
 -- ----------------------------
-INSERT INTO `sys_login_info` VALUES (30, 1, '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', NULL);
-INSERT INTO `sys_login_info` VALUES (31, 1, '127.0.0.1', '内网IP', 'Chrome 12', 'Windows 10', '0', '登录成功', NULL);
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -177,6 +178,7 @@ DROP TABLE IF EXISTS `sys_menu`;
 CREATE TABLE `sys_menu`  (
   `menu_id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
   `menu_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '菜单名称',
+  `perms` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '权限标识',
   `parent_id` bigint(0) NULL DEFAULT 0 COMMENT '父菜单ID',
   `order_num` int(0) NULL DEFAULT 0 COMMENT '显示顺序',
   `router_path` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '路由地址',
@@ -187,7 +189,6 @@ CREATE TABLE `sys_menu`  (
   `is_cache` int(0) NULL DEFAULT 0 COMMENT '是否缓存（0缓存 1不缓存）',
   `menu_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '菜单类型（M目录 C菜单 F按钮）',
   `menu_status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '菜单状态（0正常 1停用）',
-  `perms` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '权限标识',
   `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '#' COMMENT '菜单图标',
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
@@ -200,53 +201,53 @@ CREATE TABLE `sys_menu`  (
 -- ----------------------------
 -- Records of sys_menu
 -- ----------------------------
-INSERT INTO `sys_menu` VALUES (1, '系统管理', 0, 1, 'system', '', NULL, '', 1, 0, 'M', '0', '', 'system', '', '2025-04-13 23:10:42', '', '2025-04-11 15:39:38', '');
-INSERT INTO `sys_menu` VALUES (2, '系统监控', 0, 2, 'monitor', '', NULL, '', 1, 0, 'M', '0', '', 'monitor', '', '2025-04-13 23:10:42', '', '2025-03-07 16:22:19', '');
-INSERT INTO `sys_menu` VALUES (3, '用户管理', 1, 1, 'user', 'system/user/index', '', '', 1, 0, 'C', '0', 'system:user:list', 'user', '', '2025-04-13 23:10:42', '', NULL, '用户管理菜单');
-INSERT INTO `sys_menu` VALUES (4, '角色管理', 1, 2, 'role', 'system/role/index', '', '', 1, 0, 'C', '0', 'system:role:list', 'peoples', '', '2025-04-13 23:10:42', '', NULL, '角色管理菜单');
-INSERT INTO `sys_menu` VALUES (5, '菜单管理', 1, 3, 'menu', 'system/menu/index', '', '', 1, 0, 'C', '0', 'system:menu:list', 'tree-table', '', '2025-04-13 23:10:42', '', NULL, '菜单管理菜单');
-INSERT INTO `sys_menu` VALUES (6, '部门管理', 1, 4, 'dept', 'system/dept/index', '', '', 1, 0, 'C', '0', 'system:dept:list', 'tree', '', '2025-04-13 23:10:42', '', NULL, '部门管理菜单');
-INSERT INTO `sys_menu` VALUES (7, '字典管理', 1, 5, 'dict', 'system/dict/index', '', '', 1, 0, 'C', '0', 'system:dict:list', 'dict', '', '2025-04-13 23:10:42', '', NULL, '字典管理菜单');
-INSERT INTO `sys_menu` VALUES (8, '日志管理', 1, 6, 'log', '', '', '', 1, 0, 'M', '0', '', 'log', '', '2025-04-13 23:10:43', '', NULL, '日志管理菜单');
-INSERT INTO `sys_menu` VALUES (9, '在线用户', 2, 7, 'online', 'monitor/online/index', '', '', 1, 0, 'C', '0', 'monitor:online:list', 'online', '', '2025-04-13 23:10:43', '', NULL, '在线用户菜单');
-INSERT INTO `sys_menu` VALUES (10, '操作日志', 8, 1, 'operlog', 'monitor/operlog/index', '', '', 1, 0, 'C', '0', 'monitor:operlog:list', 'form', '', '2025-04-13 23:10:43', '', NULL, '操作日志菜单');
-INSERT INTO `sys_menu` VALUES (11, '登录日志', 8, 2, 'logininfor', 'monitor/logininfor/index', '', '', 1, 0, 'C', '0', 'monitor:logininfor:list', 'logininfor', '', '2025-04-13 23:10:43', '', NULL, '登录日志菜单');
-INSERT INTO `sys_menu` VALUES (12, '用户查询', 3, 1, '', '', '', '', 1, 0, 'F', '0', 'system:user:list', '#', '', '2025-04-13 23:10:43', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (13, '用户新增', 3, 2, '', '', '', '', 1, 0, 'F', '0', 'system:user:add', '#', '', '2025-04-13 23:10:43', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (14, '用户修改', 3, 3, '', '', '', '', 1, 0, 'F', '0', 'system:user:edit', '#', '', '2025-04-13 23:10:44', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (15, '用户删除', 3, 4, '', '', '', '', 1, 0, 'F', '0', 'system:user:remove', '#', '', '2025-04-13 23:10:44', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (16, '用户导出', 3, 5, '', '', '', '', 1, 0, 'F', '0', 'system:user:export', '#', '', '2025-04-13 23:10:44', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (17, '用户导入', 3, 6, '', '', '', '', 1, 0, 'F', '0', 'system:user:import', '#', '', '2025-04-13 23:10:44', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (18, '重置密码', 3, 7, '', '', '', '', 1, 0, 'F', '0', 'system:user:resetPwd', '#', '', '2025-04-13 23:10:44', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (19, '账户封禁', 3, 8, ' ', '', '', '', 1, 0, 'F', '0', 'system:user:unlock', '#', '', '2025-04-13 23:10:44', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (20, '账户解锁', 3, 9, ' ', '', '', '', 1, 0, 'F', '0', 'system:user:unlock', '#', '', '2025-04-13 23:10:45', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (21, '角色查询', 4, 1, '', '', '', '', 1, 0, 'F', '0', 'system:role:query', '#', '', '2025-04-13 23:10:45', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (22, '角色新增', 4, 2, '', '', '', '', 1, 0, 'F', '0', 'system:role:add', '#', '', '2025-04-13 23:10:45', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (23, '角色修改', 4, 3, '', '', '', '', 1, 0, 'F', '0', 'system:role:edit', '#', '', '2025-04-13 23:10:45', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (24, '角色删除', 4, 4, '', '', '', '', 1, 0, 'F', '0', 'system:role:remove', '#', '', '2025-04-13 23:10:45', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (25, '角色导出', 4, 5, '', '', '', '', 1, 0, 'F', '0', 'system:role:export', '#', '', '2025-04-13 23:10:45', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (26, '菜单查询', 5, 1, '', '', '', '', 1, 0, 'F', '0', 'system:menu:query', '#', '', '2025-04-13 23:10:45', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (27, '菜单新增', 5, 2, '', '', '', '', 1, 0, 'F', '0', 'system:menu:add', '#', '', '2025-04-13 23:10:46', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (28, '菜单修改', 5, 3, '', '', '', '', 1, 0, 'F', '0', 'system:menu:edit', '#', '', '2025-04-13 23:10:46', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (29, '菜单删除', 5, 4, '', '', '', '', 1, 0, 'F', '0', 'system:menu:remove', '#', '', '2025-04-13 23:10:46', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (30, '部门查询', 6, 1, '', '', '', '', 1, 0, 'F', '0', 'system:dept:query', '#', '', '2025-04-13 23:10:46', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (31, '部门新增', 6, 2, '', '', '', '', 1, 0, 'F', '0', 'system:dept:add', '#', '', '2025-04-13 23:10:46', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (32, '部门修改', 6, 3, '', '', '', '', 1, 0, 'F', '0', 'system:dept:edit', '#', '', '2025-04-13 23:10:46', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (33, '部门删除', 6, 4, '', '', '', '', 1, 0, 'F', '0', 'system:dept:remove', '#', '', '2025-04-13 23:10:47', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (34, '字典查询', 7, 1, ' ', '', '', '', 1, 0, 'F', '0', 'system:dict:query', '#', '', '2025-04-13 23:10:47', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (35, '字典新增', 7, 2, ' ', '', '', '', 1, 0, 'F', '0', 'system:dict:add', '#', '', '2025-04-13 23:10:47', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (36, '字典修改', 7, 3, ' ', '', '', '', 1, 0, 'F', '0', 'system:dict:edit', '#', '', '2025-04-13 23:10:47', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (37, '字典删除', 7, 4, ' ', '', '', '', 1, 0, 'F', '0', 'system:dict:remove', '#', '', '2025-04-13 23:10:47', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (38, '字典导出', 7, 5, ' ', '', '', '', 1, 0, 'F', '0', 'system:dict:export', '#', '', '2025-04-13 23:10:47', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (39, '操作查询', 10, 1, ' ', '', '', '', 1, 0, 'F', '0', 'monitor:operlog:query', '#', '', '2025-04-13 23:10:47', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (40, '操作删除', 10, 2, ' ', '', '', '', 1, 0, 'F', '0', 'monitor:operlog:remove', '#', '', '2025-04-13 23:10:48', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (41, '日志导出', 10, 3, ' ', '', '', '', 1, 0, 'F', '0', 'monitor:operlog:export', '#', '', '2025-04-13 23:10:48', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (42, '登录查询', 11, 1, ' ', '', '', '', 1, 0, 'F', '0', 'monitor:logininfor:query', '#', '', '2025-04-13 23:10:48', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (43, '登录删除', 11, 2, ' ', '', '', '', 1, 0, 'F', '0', 'monitor:logininfor:remove', '#', '', '2025-04-13 23:10:48', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (44, '日志导出', 11, 3, ' ', '', '', '', 1, 0, 'F', '0', 'monitor:logininfor:export', '#', '', '2025-04-13 23:10:48', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (45, '在线查询', 9, 1, ' ', '', '', '', 1, 0, 'F', '0', 'monitor:online:query', '#', '', '2025-04-13 23:10:48', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (46, '批量强退', 9, 2, ' ', '', '', '', 1, 0, 'F', '0', 'monitor:online:batchLogout', '#', '', '2025-04-13 23:10:49', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (47, '单条强退', 9, 3, ' ', '', '', '', 1, 0, 'F', '0', 'monitor:online:forceLogout', '#', '', '2025-04-13 23:10:49', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1, '系统管理', '', 0, 1, 'system', '', NULL, '', 1, 0, 'M', '0', 'system', '', '2025-04-13 23:10:42', '', '2025-04-11 15:39:38', '');
+INSERT INTO `sys_menu` VALUES (2, '系统监控', '', 0, 2, 'monitor', '', NULL, '', 1, 0, 'M', '0', 'monitor', '', '2025-04-13 23:10:42', '', '2025-03-07 16:22:19', '');
+INSERT INTO `sys_menu` VALUES (3, '用户管理', 'system:user:list', 1, 1, 'user', 'system/user/index', '', '', 1, 0, 'C', '0', 'user', '', '2025-04-13 23:10:42', '', NULL, '用户管理菜单');
+INSERT INTO `sys_menu` VALUES (4, '角色管理', 'system:role:list', 1, 2, 'role', 'system/role/index', '', '', 1, 0, 'C', '0', 'peoples', '', '2025-04-13 23:10:42', '', NULL, '角色管理菜单');
+INSERT INTO `sys_menu` VALUES (5, '菜单管理', 'system:menu:list', 1, 3, 'menu', 'system/menu/index', '', '', 1, 0, 'C', '0', 'tree-table', '', '2025-04-13 23:10:42', '', NULL, '菜单管理菜单');
+INSERT INTO `sys_menu` VALUES (6, '部门管理', 'system:dept:list', 1, 4, 'dept', 'system/dept/index', '', '', 1, 0, 'C', '0', 'tree', '', '2025-04-13 23:10:42', '', NULL, '部门管理菜单');
+INSERT INTO `sys_menu` VALUES (7, '字典管理', 'system:dict:list', 1, 5, 'dict', 'system/dict/index', '', '', 1, 0, 'C', '0', 'dict', '', '2025-04-13 23:10:42', '', NULL, '字典管理菜单');
+INSERT INTO `sys_menu` VALUES (8, '校内业务', '', 0, 3, 'university', '', '', '', 1, 0, 'M', '0', 'log', '', '2025-04-13 23:10:43', '', NULL, '校园业务管理菜单');
+INSERT INTO `sys_menu` VALUES (9, '在线用户', 'monitor:online:list', 2, 1, 'online', 'monitor/online/index', '', '', 1, 0, 'C', '0', 'online', '', '2025-04-13 23:10:43', '', NULL, '在线用户菜单');
+INSERT INTO `sys_menu` VALUES (10, '操作日志', 'monitor:operlog:list', 2, 2, 'operlog', 'monitor/operlog/index', '', '', 1, 0, 'C', '0', 'form', '', '2025-04-13 23:10:43', '', NULL, '操作日志菜单');
+INSERT INTO `sys_menu` VALUES (11, '登录日志', 'monitor:logininfor:list', 2, 3, 'logininfo', 'monitor/logininfo/index', '', '', 1, 0, 'C', '0', 'logininfor', '', '2025-04-13 23:10:43', '', NULL, '登录日志菜单');
+INSERT INTO `sys_menu` VALUES (12, '用户查询', 'system:user:list', 3, 1, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:43', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (13, '用户新增', 'system:user:add', 3, 2, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:43', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (14, '用户修改', 'system:user:edit', 3, 3, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:44', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (15, '用户删除', 'system:user:remove', 3, 4, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:44', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (16, '用户导出', 'system:user:export', 3, 5, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:44', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (17, '用户导入', 'system:user:import', 3, 6, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:44', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (18, '重置密码', 'system:user:resetPwd', 3, 7, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:44', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (19, '账户封禁', 'system:user:unlock', 3, 8, ' ', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:44', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (20, '账户解锁', 'system:user:unlock', 3, 9, ' ', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:45', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (21, '角色查询', 'system:role:query', 4, 1, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:45', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (22, '角色新增', 'system:role:add', 4, 2, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:45', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (23, '角色修改', 'system:role:edit', 4, 3, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:45', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (24, '角色删除', 'system:role:remove', 4, 4, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:45', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (25, '角色导出', 'system:role:export', 4, 5, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:45', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (26, '菜单查询', 'system:menu:query', 5, 1, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:45', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (27, '菜单新增', 'system:menu:add', 5, 2, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:46', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (28, '菜单修改', 'system:menu:edit', 5, 3, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:46', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (29, '菜单删除', 'system:menu:remove', 5, 4, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:46', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (30, '部门查询', 'system:dept:query', 6, 1, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:46', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (31, '部门新增', 'system:dept:add', 6, 2, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:46', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (32, '部门修改', 'system:dept:edit', 6, 3, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:46', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (33, '部门删除', 'system:dept:remove', 6, 4, '', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:47', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (34, '字典查询', 'system:dict:query', 7, 1, ' ', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:47', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (35, '字典新增', 'system:dict:add', 7, 2, ' ', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:47', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (36, '字典修改', 'system:dict:edit', 7, 3, ' ', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:47', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (37, '字典删除', 'system:dict:remove', 7, 4, ' ', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:47', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (38, '字典导出', 'system:dict:export', 7, 5, ' ', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:47', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (39, '操作查询', 'monitor:operlog:query', 10, 1, ' ', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:47', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (40, '操作删除', 'monitor:operlog:remove', 10, 2, ' ', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:48', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (41, '日志导出', 'monitor:operlog:export', 10, 3, ' ', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:48', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (42, '登录查询', 'monitor:logininfor:query', 11, 1, ' ', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:48', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (43, '登录删除', 'monitor:logininfor:remove', 11, 2, ' ', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:48', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (44, '日志导出', 'monitor:logininfor:export', 11, 3, ' ', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:48', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (45, '在线查询', 'monitor:online:query', 9, 1, ' ', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:48', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (46, '批量强退', 'monitor:online:batchLogout', 9, 2, ' ', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:49', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (47, '单条强退', 'monitor:online:forceLogout', 9, 3, ' ', '', '', '', 1, 0, 'F', '0', '#', '', '2025-04-13 23:10:49', '', NULL, '');
 
 -- ----------------------------
 -- Table structure for sys_operate_log
@@ -256,6 +257,7 @@ CREATE TABLE `sys_operate_log`  (
   `operate_id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '日志主键',
   `business_type` int(0) NULL DEFAULT 0 COMMENT '业务类型（0其它 1新增 2修改 3删除 4查询 5授权 6导出 7导入 8强退）数据字典',
   `method` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '方法名称',
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '业务名称',
   `request_method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '请求方式,PUT,POST,GET,DELETE',
   `operator_type` int(0) NULL DEFAULT 0 COMMENT '操作类别（0其它 1后台用户 2手机端用户）数据字典',
   `user_id` bigint(0) NOT NULL COMMENT '操作人员ID',
@@ -268,12 +270,11 @@ CREATE TABLE `sys_operate_log`  (
   `error_msg` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '错误消息',
   `operate_time` datetime(0) NULL DEFAULT NULL COMMENT '操作时间',
   `cost_time` bigint(0) NULL DEFAULT 0 COMMENT '消耗时间',
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '业务名称',
   PRIMARY KEY (`operate_id`) USING BTREE,
   INDEX `idx_sys_op_log_bt`(`business_type`) USING BTREE,
   INDEX `idx_sys_op_log_s`(`operate_status`) USING BTREE,
   INDEX `idx_sys_op_log_ot`(`operate_time`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '操作日志记录' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '操作日志记录' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_operate_log
@@ -299,7 +300,9 @@ CREATE TABLE `sys_role`  (
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
-INSERT INTO `sys_role` VALUES (1, '超级管理员', 'admin', '0', '', '2025-03-07 16:06:33', '', '2025-03-07 16:06:36', NULL);
+INSERT INTO `sys_role` VALUES (1, '顶级管理员', 'admin', '0', '', '2025-03-07 16:06:33', '', '2025-03-07 16:06:36', NULL);
+INSERT INTO `sys_role` VALUES (2, '南京艺术测试学院校级管理员', '校级管理员', '0', '', '2025-05-09 19:41:56', '', NULL, NULL);
+INSERT INTO `sys_role` VALUES (4, '南京测试大学校级管理员', '校级管理员', '0', '', '2025-05-09 19:48:08', '', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_role_menu
@@ -346,7 +349,8 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, '360123', 'admin_lcx', 0, '', '15962953641', '0', 'https://greet-freshman.oss-cn-shanghai.aliyuncs.com/default-avatar.png', '$2a$10$lyn4VN9u.SNX27iEOaCxX.vftSRQgjBQW7W4XfAk/hVfW40YZIyyq', '0', '127.0.0.1', '内网IP', '', '2025-03-05 22:03:23', '', '2025-04-12 16:39:10', '');
+INSERT INTO `sys_user` VALUES (1, '360123', 'lcx_defender', 0, '123456@qq.com', '180000000', '0', 'https://greet-freshman.oss-cn-shanghai.aliyuncs.com/default-avatar.png', '$2a$10$lyn4VN9u.SNX27iEOaCxX.vftSRQgjBQW7W4XfAk/hVfW40YZIyyq', '0', '127.0.0.1', '内网IP', '', '2025-03-05 22:03:23', '', '2025-05-09 22:43:35', '');
+INSERT INTO `sys_user` VALUES (2, '320123', '1688小便当火爆上市', 1, '', '', '1', 'https://greet-freshman.oss-cn-shanghai.aliyuncs.com/default-avatar.png', '$2a$10$nsmKiSdYZHxJy1p3ViXUyu5R/AQSAww5yT8fmV7eEKojhbyq/Swym', '0', '', '', '', '2025-05-09 00:27:17', '', NULL, '');
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -362,6 +366,7 @@ CREATE TABLE `sys_user_role`  (
 -- Records of sys_user_role
 -- ----------------------------
 INSERT INTO `sys_user_role` VALUES (1, 1);
+INSERT INTO `sys_user_role` VALUES (2, 2);
 
 -- ----------------------------
 -- Table structure for teacher

@@ -106,7 +106,7 @@
           AND ro.role_status = 0
         order by m.parent_id, m.order_num
     </select>
-    <select id="selectMenuListByRoleId" resultType="java.lang.Long" parameterType="java.lang.Long">
+    <select id="selectMenuIdsByRoleId" resultType="java.lang.Long" parameterType="java.lang.Long">
         select m.menu_id
         from sys_menu m
                  left join sys_role_menu rm on m.menu_id = rm.menu_id
@@ -123,6 +123,25 @@
         <include refid="selectMenuVo"/>
         where menu_name=#{menuName} and parent_id = #{parentId} limit 1
     </select>
-
-
+    <select id="selectAllMenuListByRoleId" resultType="com.lcx.campus.domain.Menu">
+        select m.menu_id,
+               m.parent_id,
+               m.menu_name,
+               m.router_path,
+               m.component,
+               m.query_param,
+               m.route_name,
+               m.menu_status,
+               ifnull(m.perms, '') as perms,
+               m.is_frame,
+               m.is_cache,
+               m.menu_type,
+               m.icon,
+               m.order_num,
+               m.create_time
+        from sys_menu m
+                 left join sys_role_menu rm on m.menu_id = rm.menu_id
+        where rm.role_id = #{roleId}
+        order by m.parent_id, m.order_num
+    </select>
 </mapper>

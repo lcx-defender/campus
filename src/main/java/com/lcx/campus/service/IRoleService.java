@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.lcx.campus.domain.RoleMenu;
 import com.lcx.campus.domain.dto.PageQuery;
 import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.RoleMenusVo;
 
 import java.util.List;
 
@@ -33,16 +34,32 @@ public interface IRoleService extends IService<Role> {
     int countRoleWithMenu(Long menuId);
 
     /**
-     * 解除指定角色与指定权菜单的关联
-     * @param roleMenu
-     * @return
-     */
-    Result deleteRoleMenu(RoleMenu roleMenu);
-
-    Result deleteRoleAllMenu(Long roleId);
-
-    /**
      * 通过用户id获取角色信息
      */
     Result getUserRole(Long userId);
+
+    /**
+     * 删除角色信息
+     */
+    Result deleteRole(Long roleId);
+
+    /**
+     * 查询角色对应的权限菜单树型选择器
+     */
+    Result getRoleMenuTreeSelect(Long roleId);
+
+    /**
+     * 给角色分配菜单权限
+     */
+    Result grantRoleMenus(RoleMenusVo roleMenusVo);
+
+    /**
+     * 查询角色被授予的用户
+     */
+    Result getRoleUsers(Long roleId);
+
+    /**
+     * 解绑角色对应的所有用户
+     */
+    Result unbindRoleUsers(Long roleId);
 }

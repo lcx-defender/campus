@@ -29,9 +29,11 @@ public interface MenuMapper extends BaseMapper<Menu> {
 
     List<Menu> selectMenuTreeByUserId(Long userId);
 
-    List<Long> selectMenuListByRoleId(Long roleId);
+    List<Long> selectMenuIdsByRoleId(Long roleId);
 
     int hasChildByMenuId(Long menuId);
 
     Menu checkMenuNameUnique(String menuName, Long parentId);
+
+    List<Menu> selectAllMenuListByRoleId(Long roleId);
 }

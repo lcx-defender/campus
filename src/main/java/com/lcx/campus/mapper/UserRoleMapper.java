@@ -1,5 +1,6 @@
 package com.lcx.campus.mapper;
 
+import com.lcx.campus.domain.User;
 import com.lcx.campus.domain.UserRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -26,4 +27,13 @@ public interface UserRoleMapper {
     boolean deleteByUserId(Long userId);
 
     int insertBatch(Long userId, Long[] roleIds);
+
+    /**
+     * 通过roleId查询所具备的所有用户的userId
+     */
+    List<UserRole> selectByRoleId(Long roleId);
+
+    List<User> selectUserByRoleId(Long roleId);
+
+    boolean deleteByRoleId(Long roleId);
 }

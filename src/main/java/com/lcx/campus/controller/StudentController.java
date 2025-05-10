@@ -29,15 +29,6 @@ public class StudentController {
     private IStudentService studentService;
 
     /**
-     * 分页查询学生信息
-     */
-    @GetMapping("/pageList")
-    @PreAuthorize("hasAnyAuthority('system:student:list')")
-    public Result pageList(@RequestBody Student student) {
-        return studentService.pageList(student);
-    }
-
-    /**
      * 新建学生类型用户
      */
     @Log(title = "新建学生类型用户", businessType = BusinessType.INSERT)
@@ -56,5 +47,14 @@ public class StudentController {
     @PutMapping("/editStudent")
     public Result editStudent(@RequestBody Student student) {
         return studentService.editStudent(student);
+    }
+
+    /**
+     * 分页查询学生信息
+     */
+    @GetMapping("/pageList")
+    @PreAuthorize("hasAnyAuthority('system:student:list')")
+    public Result pageList(@RequestBody Student student) {
+        return studentService.pageList(student);
     }
 }

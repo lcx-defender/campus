@@ -133,13 +133,10 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
 
     /**
      * 根据角色ID查询菜单树信息
-     *
-     * @param roleId 角色ID
-     * @return 选中菜单列表
      */
     @Override
     public List<Long> selectMenuListByRoleId(Long roleId) {
-        return menuMapper.selectMenuListByRoleId(roleId);
+        return menuMapper.selectMenuIdsByRoleId(roleId);
     }
 
     /**

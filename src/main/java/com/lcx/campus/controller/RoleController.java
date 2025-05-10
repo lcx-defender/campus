@@ -5,6 +5,7 @@ import com.lcx.campus.domain.Role;
 import com.lcx.campus.domain.RoleMenu;
 import com.lcx.campus.domain.dto.PageQuery;
 import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.RoleMenusVo;
 import com.lcx.campus.service.IRoleService;
 import com.lcx.campus.utils.SecurityUtils;
 import jakarta.annotation.Resource;
@@ -56,28 +57,6 @@ public class RoleController {
     }
 
     /**
-     * 通过id获取角色详细信息
-     *
-     * @param id 角色id
-     * @return 角色信息
-     */
-    @PreAuthorize("hasAnyAuthority('system:role:query')")
-    @GetMapping("/getRole/{id}")
-    public Result getRoleById(@PathVariable Long id) {
-        return Result.success(roleService.getById(id));
-    }
-
-
-
-    /**
-     * 查询角色对应的权限
-     */
-    @GetMapping("/getRoleMenu/{roleId}")
-    public Result getRoleMenu(@PathVariable Long roleId) {
-        return roleService.getRoleMenu(roleId);
-    }
-
-    /**
      * 添加新的角色信息
      */
     @PreAuthorize("hasAnyAuthority('system:role:add')")
@@ -89,13 +68,12 @@ public class RoleController {
     }
 
     /**
-     * 给角色添加权限菜单
-     * 参数1:roleId
-     * 参数2:menuId
+     * 删除角色信息
      */
-    @PostMapping("/addRoleMenu")
-    public Result addRoleMenu(@RequestBody RoleMenu roleMenu) {
-        return roleService.addRoleMenu(roleMenu);
+    @PreAuthorize("hasAnyAuthority('system:role:remove')")
+    @DeleteMapping("/deleteRole/{roleId}")
+    public Result deleteRole(@PathVariable Long roleId) {
+        return roleService.deleteRole(roleId);
     }
 
     /**
@@ -110,30 +88,55 @@ public class RoleController {
     }
 
     /**
-     * 删除角色信息
+     * 通过 roleId 获取角色详细信息
      */
-    @PreAuthorize("hasAnyAuthority('system:role:remove')")
-    @DeleteMapping("/deleteRole/{id}")
-    public Result deleteRole(@PathVariable Long id) {
-        return Result.success(roleService.removeById(id));
+    @PreAuthorize("hasAnyAuthority('system:role:query')")
+    @GetMapping("/getRole/{roleId}")
+    public Result getRoleById(@PathVariable Long roleId) {
+        return Result.success(roleService.getById(roleId));
     }
 
     /**
-     * 删除角色和菜单关联
+     * 查询角色对应的权限字符
      */
-    @PreAuthorize("hasAnyAuthority('system:role:remove')")
-    @DeleteMapping("/deleteRoleMenu")
-    public Result deleteRoleMenu(@RequestBody RoleMenu roleMenu) {
-        return roleService.deleteRoleMenu(roleMenu);
+    @GetMapping("/getRoleMenu/{roleId}")
+    public Result getRoleMenu(@PathVariable Long roleId) {
+        return roleService.getRoleMenu(roleId);
     }
 
     /**
-     * 解除指定角色的所有权限菜单
+     * 查询角色对应的权限菜单树型选择器
      */
-    @PreAuthorize("hasAnyAuthority('system:role:remove')")
-    @DeleteMapping("/deleteRoleAllMenu/{roleId}")
-    public Result deleteRoleAllMenu(@PathVariable Long roleId) {
-        return roleService.deleteRoleAllMenu(roleId);
+    @GetMapping("/getRoleMenuTreeSelect/{roleId}")
+    @PreAuthorize("hasAnyAuthority('system:role:query')")
+    public Result getRoleMenuTreeSelect(@PathVariable Long roleId) {
+        return roleService.getRoleMenuTreeSelect(roleId);
     }
 
+    /**
+     * 查询角色被授予的用户
+     */
+    @GetMapping("/getRoleUsers/{roleId}")
+    @PreAuthorize("hasAnyAuthority('system:role:query')")
+    public Result getRoleUsers(@PathVariable Long roleId) {
+        return roleService.getRoleUsers(roleId);
+    }
+
+    /**
+     * 给角色分配菜单权限
+     */
+    @PreAuthorize("hasAnyAuthority('system:role:grant')")
+    @PutMapping("/grantRoleMenus")
+    public Result grantRoleMenus(@Validated @RequestBody RoleMenusVo roleMenusVo) {
+        return roleService.grantRoleMenus(roleMenusVo);
+    }
+
+    /**
+     * 解绑角色对应的所有用户
+     */
+    @PreAuthorize("hasAnyAuthority('system:role:unbind')")
+    @DeleteMapping("/unbindRoleUsers/{roleId}")
+    public Result unbindRoleUsers(@PathVariable Long roleId) {
+        return roleService.unbindRoleUsers(roleId);
+    }
 }

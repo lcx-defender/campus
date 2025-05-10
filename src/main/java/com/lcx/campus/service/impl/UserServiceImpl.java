@@ -321,8 +321,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if(roles.size() != roleIds.length) {
             return Result.fail("有角色不存在");
         }
-        List<Role> roleList = roleMapper.selectRoleByUserId(userRolesVo.getUserId());
         // 3. 删除用户原有角色
+        List<Role> roleList = roleMapper.selectRoleByUserId(userRolesVo.getUserId()); // 查询角色原有的菜单
         boolean isSuccess = userRoleMapper.deleteByUserId(userRolesVo.getUserId());
         if(!isSuccess && roleList.size() > 0) {
             return Result.fail("删除用户原有角色失败");
