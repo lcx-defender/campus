@@ -25,32 +25,31 @@ public class Result {
     private String message;
     // 返回的数据
     private Object data;
-    private Long total;
 
     public static Result success() {
-        return new Result(SUCCESS, "success", null, null);
+        return new Result(SUCCESS, "success", null);
     }
 
     public static Result success(Object data) {
-        return new Result(SUCCESS, "success", data, null);
+        return new Result(SUCCESS, "success", data);
     }
     public static Result success(String message, Object data) {
-        return new Result(SUCCESS, message, data, null);
+        return new Result(SUCCESS, message, data);
     }
 
     public static Result success(String message, Object data, Long total) {
-        return new Result(SUCCESS, message, data, total);
+        return new Result(SUCCESS, message, data);
     }
 
     public static Result fail() {
-        return new Result(FAIL, "fail", null, null);
+        return new Result(FAIL, "fail", null);
     }
 
     public static Result fail(String message) {
-        return new Result(FAIL, message, null, null);
+        return new Result(FAIL, message, null);
     }
 
     public static Result fail(Integer code, String message) {
-        return new Result(code, message, null, null);
+        return new Result(code, message, null);
     }
 }

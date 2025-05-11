@@ -21,9 +21,13 @@ public interface RoleMenuMapper {
 
     boolean deleteRoleMenuByRoleId(Long roleId);
 
+    boolean deleteRoleMenuByRoleIds(Long[] roleId);
+
     int insert(RoleMenu roleMenu);
 
     List<RoleMenu> selectByRoleId(Long roleId);
 
     int insertBatchRoleMenu(Long roleId, Long[] menuIds);
+
+    boolean deleteRoleMenuByMenuId(Long menuId);
 }

@@ -73,14 +73,14 @@ public class UserController {
         List<User> users = new ArrayList<>();
         for (Long userId : userIds) {
             // 判断是不是管理员账户，管理员账户无法删除
-            if(userId != null && !roleService.isAdmin(userId)) {
+            if (userId != null && !roleService.isAdmin(userId)) {
                 User user = new User();
                 user.setUserId(userId);
                 user.setUserStatus(UserStatus.DELETED.getCode());
                 users.add(user);
             }
         }
-        if(StringUtils.isEmpty(users)) {
+        if (StringUtils.isEmpty(users)) {
             return Result.fail("没有可删除的用户");
         }
         return userService.updateBatchById(users) ? Result.success() : Result.fail("用户删除失败");
@@ -93,7 +93,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('system:user:edit')")
     @PutMapping("/updateUser")
     public Result updateUser(@Validated(User.UpdateUserGroup.class) @RequestBody User user) {
-        if(roleService.isAdmin(user.getUserId())) {
+        if (roleService.isAdmin(user.getUserId())) {
             return Result.fail("管理员账户仅可自行修改");
         }
         return userService.updateUser(user);
@@ -147,7 +147,7 @@ public class UserController {
     @PutMapping("/resetPassword")
     public Result resetPassword(
             @Validated(PasswordBody.AdminResetGroup.class) @RequestBody PasswordBody passwordBody) {
-        if(roleService.isAdmin(passwordBody.getUserId())) {
+        if (roleService.isAdmin(passwordBody.getUserId())) {
             return Result.fail("无法修改管理员账户");
         }
         return userService.resetPassword(passwordBody);
@@ -173,14 +173,14 @@ public class UserController {
         List<User> users = new ArrayList<>();
         for (Long userId : userIds) {
             // 判断是不是管理员账户，管理员账户无法删除
-            if(userId != null && !roleService.isAdmin(userId)) {
+            if (userId != null && !roleService.isAdmin(userId)) {
                 User user = new User();
                 user.setUserId(userId);
                 user.setUserStatus(UserStatus.DISABLE.getCode());
                 users.add(user);
             }
         }
-        if(StringUtils.isEmpty(users)) {
+        if (StringUtils.isEmpty(users)) {
             return Result.fail("没有可封禁的用户");
         }
         return userService.updateBatchById(users) ? Result.success() : Result.fail("用户封禁失败");
@@ -195,14 +195,14 @@ public class UserController {
     public Result recoverUser(@PathVariable Long[] userIds) {
         List<User> users = new ArrayList<>();
         for (Long userId : userIds) {
-            if(userId != null) {
+            if (userId != null) {
                 User user = new User();
                 user.setUserId(userId);
                 user.setUserStatus(UserStatus.OK.getCode());
                 users.add(user);
             }
         }
-        if(StringUtils.isEmpty(users)) {
+        if (StringUtils.isEmpty(users)) {
             return Result.fail("没有可恢复的用户");
         }
         return userService.updateBatchById(users) ? Result.success() : Result.fail("用户恢复失败");
@@ -215,7 +215,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('system:user:grant')")
     @PutMapping("/updateUserRoles")
     public Result updateUserRoles(@RequestBody UserRolesVo userRolesVo) {
-        if(roleService.isAdmin(userRolesVo.getUserId()) && !roleService.isAdmin(SecurityUtils.getUserId())) {
+        if (roleService.isAdmin(userRolesVo.getUserId()) && !roleService.isAdmin(SecurityUtils.getUserId())) {
             return Result.fail("管理员账户仅可自行修改");
         }
         return userService.updateUserRoles(userRolesVo);

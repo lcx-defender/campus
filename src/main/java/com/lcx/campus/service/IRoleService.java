@@ -27,26 +27,13 @@ public interface IRoleService extends IService<Role> {
 
     Result getPageList(Role role);
 
-    Result getRoleMenu(Long roleId);
+    Result getMenusByRoleId(Long roleId);
 
-    Result addRoleMenu(RoleMenu roleMenu);
-
-    int countRoleWithMenu(Long menuId);
 
     /**
      * 通过用户id获取角色信息
      */
     Result getUserRole(Long userId);
-
-    /**
-     * 删除角色信息
-     */
-    Result deleteRole(Long roleId);
-
-    /**
-     * 查询角色对应的权限菜单树型选择器
-     */
-    Result getRoleMenuTreeSelect(Long roleId);
 
     /**
      * 给角色分配菜单权限
@@ -56,10 +43,12 @@ public interface IRoleService extends IService<Role> {
     /**
      * 查询角色被授予的用户
      */
-    Result getRoleUsers(Long roleId);
+    Result getUsersByRoleId(Long roleId);
 
     /**
      * 解绑角色对应的所有用户
      */
     Result unbindRoleUsers(Long roleId);
+
+    Result deleteRoles(Long[] roleIds);
 }

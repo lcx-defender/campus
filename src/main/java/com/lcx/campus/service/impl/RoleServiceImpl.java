@@ -2,7 +2,6 @@ package com.lcx.campus.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lcx.campus.domain.*;
-import com.lcx.campus.domain.dto.PageQuery;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.domain.vo.PageVo;
 import com.lcx.campus.domain.vo.RoleMenusVo;
@@ -10,7 +9,6 @@ import com.lcx.campus.mapper.MenuMapper;
 import com.lcx.campus.mapper.RoleMapper;
 import com.lcx.campus.mapper.RoleMenuMapper;
 import com.lcx.campus.mapper.UserRoleMapper;
-import com.lcx.campus.service.IMenuService;
 import com.lcx.campus.service.IRoleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lcx.campus.utils.SecurityUtils;
@@ -40,8 +38,6 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     private MenuMapper menuMapper;
     @Resource
     private UserRoleMapper userRoleMapper;
-    @Resource
-    private IMenuService menuService;
 
     @Override
     public List<Role> selectRoleByUserId(Long userId) {
@@ -63,7 +59,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     /**
-     * @return
+     * 获取当前登录用户的角色信息
      */
     @Override
     public Result getCurrentRole() {
@@ -89,37 +85,15 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
-    public Result getRoleMenu(Long roleId) {
-        return Result.success(menuMapper.selectMenuPermsByRoleId(roleId));
-    }
-
-    @Override
-    public Result addRoleMenu(RoleMenu roleMenu) {
-        // 先查询对应的roleID和MenuId是否存在
-        Role role = roleMapper.selectById(roleMenu.getRoleId());
-        Menu menu = menuMapper.selectById(roleMenu.getMenuId());
-        if (StringUtils.isNull(role)) {
-            return Result.fail("角色不存在");
+    public Result getMenusByRoleId(Long roleId) {
+        // 如果是admin角色，返回所有权限菜单
+        Role role = roleMapper.selectById(roleId);
+        if(role.getRoleKey().equals("admin")) {
+            return Result.success(menuMapper.selectMenuList(new Menu()));
         }
-        if (StringUtils.isNull(menu)) {
-            return Result.fail("菜单不存在");
-        }
-        int insert = roleMenuMapper.insert(roleMenu);
-        if (insert > 0) {
-            return Result.success("添加成功");
-        } else {
-            return Result.fail("添加失败");
-        }
+        List<Menu> menus = menuMapper.selectMenusByRoleId(roleId);
+        return Result.success(menus);
     }
-
-    /**
-     * 统计所有角色使用菜单的数量
-     */
-    @Override
-    public int countRoleWithMenu(Long menuId) {
-        return roleMenuMapper.countRoleWithMenu(menuId);
-    }
-
 
     /**
      * 通过用户id获取角色信息
@@ -128,40 +102,6 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     public Result getUserRole(Long userId) {
         List<Role> roles = roleMapper.selectRoleByUserId(userId);
         return Result.success(roles);
-    }
-
-    /**
-     * 删除角色信息
-     */
-    @Override
-    public Result deleteRole(Long roleId) {
-        // 检查是否还存在绑定的用户,若有则删除失败
-        List<UserRole> userRoles = userRoleMapper.selectByRoleId(roleId);
-        if (userRoles.size() > 0) {
-            return Result.fail("该角色已绑定用户,请先解除绑定");
-        }
-        // 检查是否角色绑定了菜单，若有直接解除绑定
-        List<RoleMenu> roleMenus = roleMenuMapper.selectByRoleId(roleId);
-        if (roleMenus.size() > 0) {
-            roleMenuMapper.deleteRoleMenuByRoleId(roleId);
-        }
-        int count = roleMapper.deleteById(roleId);
-        if (count > 0) {
-            return Result.success("删除成功");
-        } else {
-            return Result.fail("删除失败");
-        }
-    }
-
-    /**
-     * 查询角色对应的权限菜单树型选择器
-     */
-    @Override
-    public Result getRoleMenuTreeSelect(Long roleId) {
-        // 查询所有菜单
-        List<Menu> menus = menuMapper.selectAllMenuListByRoleId(roleId);
-        // 构建treeSelect
-        return Result.success(menuService.buildMenuTreeSelect(menus));
     }
 
     /**
@@ -191,7 +131,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
         // 删除原有的菜单权限
         List<Long> oldMenuIds = menuMapper.selectMenuIdsByRoleId(roleMenusVo.getRoleId());
         boolean isSuccess = roleMenuMapper.deleteRoleMenuByRoleId(roleMenusVo.getRoleId());
-        if(!isSuccess && oldMenuIds.size() > 0) {
+        if (!isSuccess && oldMenuIds.size() > 0) {
             return Result.fail("删除角色原有菜单权限失败");
         }
         // 添加角色新的菜单权限
@@ -205,7 +145,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
      * 查询角色被授予的用户
      */
     @Override
-    public Result getRoleUsers(Long roleId) {
+    public Result getUsersByRoleId(Long roleId) {
         List<User> users = userRoleMapper.selectUserByRoleId(roleId);
         return Result.success(users);
     }
@@ -225,5 +165,26 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
         return isSuccess ?
                 Result.success("解绑成功") :
                 Result.fail("解绑失败");
+    }
+
+    @Override
+    public Result deleteRoles(Long[] roleIds) {
+        roleIds = Arrays.stream(roleIds)
+                .distinct()
+                .toArray(Long[]::new); // 先对数组进行去重
+        List<User> users = userRoleMapper.selectByRoleIds(roleIds); // 检查当前角色有无被用户使用
+        if(users.size() > 0) {
+            return Result.fail("当前角色已被用户使用,不允许删除");
+        }
+        // 检查是否有roleKey为admin的角色
+        boolean isAdmin = Arrays.stream(roleIds)
+                .map(roleMapper::selectById)
+                .anyMatch(role -> role.getRoleKey().equals("admin"));
+        if (isAdmin) {
+            return Result.fail("无法删除超级管理员角色");
+        }
+        roleMenuMapper.deleteRoleMenuByRoleIds(roleIds); // 删除角色对应的菜单权限
+        boolean isSuccess = removeBatchByIds(Arrays.asList(roleIds)); // 删除角色
+        return isSuccess ? Result.success() : Result.fail("角色删除失败");
     }
 }

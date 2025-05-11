@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 /**
  * <p>
@@ -31,7 +32,7 @@ public class RoleController {
     private IRoleService roleService;
 
     /**
-     * * 获取当前登录用户的角色信息
+     * 获取当前登录用户的角色信息
      */
     @GetMapping("/getCurrentRole")
     public Result getCurrentRole() {
@@ -71,9 +72,9 @@ public class RoleController {
      * 删除角色信息
      */
     @PreAuthorize("hasAnyAuthority('system:role:remove')")
-    @DeleteMapping("/deleteRole/{roleId}")
-    public Result deleteRole(@PathVariable Long roleId) {
-        return roleService.deleteRole(roleId);
+    @DeleteMapping("/deleteRole/{roleIds}")
+    public Result deleteRole(@PathVariable Long[] roleIds) {
+        return roleService.deleteRoles(roleIds);
     }
 
     /**
@@ -97,29 +98,21 @@ public class RoleController {
     }
 
     /**
-     * 查询角色对应的权限字符
+     * 查询角色对应的权限菜单
      */
-    @GetMapping("/getRoleMenu/{roleId}")
-    public Result getRoleMenu(@PathVariable Long roleId) {
-        return roleService.getRoleMenu(roleId);
-    }
-
-    /**
-     * 查询角色对应的权限菜单树型选择器
-     */
-    @GetMapping("/getRoleMenuTreeSelect/{roleId}")
+    @GetMapping("/getMenusByRoleId/{roleId}")
     @PreAuthorize("hasAnyAuthority('system:role:query')")
-    public Result getRoleMenuTreeSelect(@PathVariable Long roleId) {
-        return roleService.getRoleMenuTreeSelect(roleId);
+    public Result getMenusByRoleId(@PathVariable Long roleId) {
+        return roleService.getMenusByRoleId(roleId);
     }
 
     /**
      * 查询角色被授予的用户
      */
-    @GetMapping("/getRoleUsers/{roleId}")
+    @GetMapping("/getUsers/{roleId}")
     @PreAuthorize("hasAnyAuthority('system:role:query')")
-    public Result getRoleUsers(@PathVariable Long roleId) {
-        return roleService.getRoleUsers(roleId);
+    public Result getUsersByRoleId(@PathVariable Long roleId) {
+        return roleService.getUsersByRoleId(roleId);
     }
 
     /**

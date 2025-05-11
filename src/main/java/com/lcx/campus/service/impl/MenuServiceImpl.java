@@ -9,6 +9,8 @@ import com.lcx.campus.domain.vo.MetaVo;
 import com.lcx.campus.domain.vo.RouterVo;
 import com.lcx.campus.domain.vo.TreeSelect;
 import com.lcx.campus.mapper.MenuMapper;
+import com.lcx.campus.mapper.RoleMapper;
+import com.lcx.campus.mapper.RoleMenuMapper;
 import com.lcx.campus.service.IMenuService;
 import com.lcx.campus.service.IRoleService;
 import com.lcx.campus.utils.StringUtils;
@@ -32,7 +34,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     @Resource
     private MenuMapper menuMapper;
     @Resource
-    private IRoleService roleService;
+    private RoleMapper roleMapper;
+    @Resource
+    private RoleMenuMapper roleMenuMapper;
 
     /**
      * 根据用户ID查询权限字符穿
@@ -80,38 +84,19 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     /**
      * 查询系统菜单列表
      *
-     * @param menu 菜单信息
+     * @param menu 菜单信息筛选条件
      * @return 菜单列表
      */
     @Override
     public List<Menu> selectMenuList(Menu menu, Long userId) {
         List<Menu> menuList = null;
         // 管理员显示所有菜单信息
-        if (roleService.isAdmin(userId)) {
+        if (roleMapper.isAdminByUserId(userId)) {
             menuList = menuMapper.selectMenuList(menu);
         } else {
             menuList = menuMapper.selectMenuListByUserId(menu, userId);
         }
-//        System.out.println(menuList);
         return menuList;
-    }
-
-    /**
-     * 根据角色ID查询权限
-     *
-     * @param roleId 角色ID
-     * @return 权限列表
-     */
-    @Override
-    public Set<String> selectMenuPermsByRoleId(Long roleId) {
-        List<String> perms = menuMapper.selectMenuPermsByRoleId(roleId);
-        Set<String> permsSet = new HashSet<>();
-        for (String perm : perms) {
-            if (StringUtils.isNotEmpty(perm)) {
-                permsSet.addAll(Arrays.asList(perm.trim().split(",")));
-            }
-        }
-        return permsSet;
     }
 
     /**
@@ -123,7 +108,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     @Override
     public List<Menu> selectMenuTreeByUserId(Long userId) {
         List<Menu> menus = null;
-        if (roleService.isAdmin(userId)) {
+        if (roleMapper.isAdminByUserId(userId)) {
             menus = menuMapper.selectMenuTreeAll();
         } else {
             menus = menuMapper.selectMenuTreeByUserId(userId);
@@ -247,7 +232,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
      */
     @Override
     public boolean checkMenuExistRole(Long menuId) {
-        int result = roleService.countRoleWithMenu(menuId);
+        int result = roleMenuMapper.countRoleWithMenu(menuId);
         return result > 0;
     }
 
@@ -295,6 +280,19 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
             return UserConstants.NOT_UNIQUE;
         }
         return UserConstants.UNIQUE;
+    }
+
+    /**
+     * 删除与角色的绑定关系
+     */
+    @Override
+    public boolean deleteRoleMenuByMenuId(Long menuId) {
+        return roleMenuMapper.deleteRoleMenuByMenuId(menuId);
+    }
+
+    @Override
+    public List<Menu> selectMenuList(Menu menu) {
+        return menuMapper.selectMenuList(menu);
     }
 
 

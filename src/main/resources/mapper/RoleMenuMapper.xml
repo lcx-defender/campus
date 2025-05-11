@@ -29,4 +29,13 @@
     <delete id="deleteRoleMenuByRoleId" parameterType="java.lang.Long">
         DELETE FROM sys_role_menu WHERE role_id = #{roleId}
     </delete>
+    <delete id="deleteRoleMenuByMenuId">
+        DELETE FROM sys_role_menu WHERE menu_id = #{menuId}
+    </delete>
+    <delete id="deleteRoleMenuByRoleIds">
+        DELETE FROM sys_role_menu WHERE role_id IN
+        <foreach collection="roleIds" item="roleId" separator=",">
+            #{roleId}
+        </foreach>
+    </delete>
 </mapper>

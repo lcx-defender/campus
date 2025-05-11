@@ -36,4 +36,6 @@ public interface UserRoleMapper {
     List<User> selectUserByRoleId(Long roleId);
 
     boolean deleteByRoleId(Long roleId);
+
+    List<User> selectByRoleIds(Long[] roleIds);
 }

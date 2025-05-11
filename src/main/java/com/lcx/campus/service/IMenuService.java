@@ -29,7 +29,7 @@ public interface IMenuService extends IService<Menu> {
      * @param userId 用户ID
      * @return 菜单列表
      */
-    public List<Menu> selectMenuList(Long userId);
+    List<Menu> selectMenuList(Long userId);
 
     /**
      * 根据用户查询系统菜单列表
@@ -47,14 +47,6 @@ public interface IMenuService extends IService<Menu> {
      * @return 权限列表
      */
     public Set<String> selectMenuPermsByUserId(Long userId);
-
-    /**
-     * 根据角色ID查询权限
-     *
-     * @param roleId 角色ID
-     * @return 权限列表
-     */
-    public Set<String> selectMenuPermsByRoleId(Long roleId);
 
     /**
      * 根据用户ID查询菜单树信息
@@ -152,4 +144,13 @@ public interface IMenuService extends IService<Menu> {
      */
     public boolean checkMenuNameUnique(Menu menu);
 
+    /**
+     * 删除与角色的绑定关系
+     */
+    boolean deleteRoleMenuByMenuId(Long menuId);
+
+    /**
+     * 根据条件查询相关菜单
+     */
+    List<Menu> selectMenuList(Menu menu);
 }
