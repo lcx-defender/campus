@@ -47,8 +47,7 @@ public class MenuController {
     @GetMapping("/treeSelect")
     public Result treeSelect() {
         Menu menu = new Menu();
-        // TODO 设置菜单状态之后建立treeSelect就失败了，还未处理
-//        menu.setMenuStatus(MenuStatus.NORMAL.getValue());
+        menu.setMenuStatus(MenuStatus.NORMAL.getValue());
         List<Menu> menus = menuService.selectMenuList(menu); // 获取所有状态正常的菜单
         return Result.success(menuService.buildMenuTreeSelect(menus));
     }

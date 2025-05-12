@@ -118,10 +118,16 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
         Long[] menuIds = Arrays.stream(roleMenusVo.getMenuIds())
                 .distinct()
                 .toArray(Long[]::new);
+        // 检查角色是否存在旧的权限菜单
+        List<Menu> oldMenus = menuMapper.selectMenusByRoleId(roleMenusVo.getRoleId());
         if (menuIds.length == 0) {
+            // 如果没有新的权限菜单，删除旧的权限菜单
+            if (oldMenus.size() == 0) {
+                return Result.success("角色已经没有权限菜单", null);
+            }
             return roleMenuMapper.deleteRoleMenuByRoleId(roleMenusVo.getRoleId()) ?
-                    Result.success("删除成功") :
-                    Result.fail("删除失败");
+                    Result.success("角色权限菜单已清空", null) :
+                    Result.fail("删除角色原有菜单权限失败");
         }
         // 检查菜单是否都存在
         List<Menu> menus = menuMapper.selectBatchIds(Arrays.asList(menuIds));
@@ -129,15 +135,14 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
             return Result.fail("有菜单不存在");
         }
         // 删除原有的菜单权限
-        List<Long> oldMenuIds = menuMapper.selectMenuIdsByRoleId(roleMenusVo.getRoleId());
         boolean isSuccess = roleMenuMapper.deleteRoleMenuByRoleId(roleMenusVo.getRoleId());
-        if (!isSuccess && oldMenuIds.size() > 0) {
+        if (!isSuccess && oldMenus.size() > 0) {
             return Result.fail("删除角色原有菜单权限失败");
         }
         // 添加角色新的菜单权限
         int rows = roleMenuMapper.insertBatchRoleMenu(roleMenusVo.getRoleId(), menuIds);
         return rows == menuIds.length ?
-                Result.success("授权成功") :
+                Result.success("授权成功", null) :
                 Result.fail("授权失败");
     }
 

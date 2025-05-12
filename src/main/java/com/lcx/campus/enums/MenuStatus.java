@@ -15,7 +15,7 @@ public enum MenuStatus {
 
     private final String value;
 
-    MenuStatus(String label, String value) {
+    MenuStatus(String value, String label) {
         this.label = label;
         this.value = value;
     }
