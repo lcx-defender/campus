@@ -56,20 +56,47 @@ public class Menu implements Serializable {
     private Long parentId;
 
     /**
+     * 菜单图标
+     */
+    private String icon;
+
+    /**
      * 显示顺序
      */
     @NotNull(message = "显示顺序不能为空")
     private Integer orderNum;
 
     /**
-     * 路由地址
+     * 权限标识
      */
-    private String routerPath;
+    private String perms;
 
     /**
      * 组件路径
      */
     private String component;
+
+    /**
+     * 子菜单
+     */
+    @TableField(exist = false)
+    private List<Menu> children = new ArrayList<Menu>();
+
+    /**
+     * 菜单类型（M目录 C菜单 F按钮）
+     */
+    @NotBlank(message = "菜单类型不能为空")
+    private String menuType;
+
+    /**
+     * 菜单状态（0正常 1停用）
+     */
+    private String menuStatus;
+
+    /**
+     * 路由地址
+     */
+    private String routerPath;
 
     /**
      * 路由参数
@@ -90,30 +117,6 @@ public class Menu implements Serializable {
      * 是否缓存（0缓存 1不缓存）
      */
     private Integer isCache;
-
-    /**
-     * 菜单类型（M目录 C菜单 F按钮）
-     */
-    @NotBlank(message = "菜单类型不能为空")
-    private String menuType;
-
-    /**
-     * 菜单状态（0正常 1停用）
-     */
-    private String menuStatus;
-
-    /**
-     * 权限标识
-     */
-    private String perms;
-
-    /**
-     * 菜单图标
-     */
-    private String icon;
-
-    @TableField(exist = false)
-    private List<Menu> children = new ArrayList<Menu>();
 
     /**
      * 创建者
@@ -139,6 +142,4 @@ public class Menu implements Serializable {
      * 备注
      */
     private String remark;
-
-
 }

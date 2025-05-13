@@ -129,4 +129,6 @@ public class User extends PageQuery implements Serializable {
     public interface AddUserGroup {}
 
     public interface UpdateUserGroup {}
+
+    public interface UpdateAvatarGroup {}
 }

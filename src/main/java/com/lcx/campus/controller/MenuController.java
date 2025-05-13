@@ -34,9 +34,9 @@ public class MenuController {
      * 获取菜单列表
      */
     @PreAuthorize("hasAnyAuthority('system:menu:list')")
-    @GetMapping("/getMenuTree")
-    public Result getMenuTree() {
-        List<Menu> menus = menuService.selectMenuList(SecurityUtils.getUserId());
+    @PostMapping("/getMenuTree")
+    public Result getMenuTree(@RequestBody Menu menu) {
+        List<Menu> menus = menuService.selectMenuList(menu);
         return Result.success(menuService.buildMenuTree(menus));
     }
 
@@ -53,24 +53,11 @@ public class MenuController {
     }
 
     /**
-     * 加载对应角色菜单列表树
-     */
-    @PreAuthorize("hasAnyAuthority('system:menu:list')")
-    @GetMapping(value = "/roleMenuTreeselect/{roleId}")
-    public Result roleMenuTreeSelect(@PathVariable("roleId") Long roleId) {
-        List<Menu> menus = menuService.selectMenuList(SecurityUtils.getUserId());
-        Map<String, Object> ajax = new HashMap<>();
-        ajax.put("checkedKeys", menuService.selectMenuListByRoleId(roleId));
-        ajax.put("menus", menuService.buildMenuTreeSelect(menus));
-        return Result.success(ajax);
-    }
-
-    /**
      * 新增菜单
      */
     @PreAuthorize("hasAnyAuthority('system:menu:add')")
-    @PostMapping
-    public Result add(@Validated @RequestBody Menu menu) {
+    @PostMapping("/addMenu")
+    public Result addMenu(@Validated @RequestBody Menu menu) {
         if (menuService.checkMenuNameUnique(menu)) {
             return Result.fail("新增菜单'" + menu.getMenuName() + "'失败,菜单名称已存在");
         }
@@ -78,38 +65,31 @@ public class MenuController {
     }
 
     /**
-     * 删除菜单
+     * 根据menuId删除菜单
      */
     @PreAuthorize("hasAnyAuthority('system:menu:remove')")
-    @DeleteMapping("/{menuId}")
-    public Result remove(@PathVariable Long menuId) {
-        if (menuService.hasChildByMenuId(menuId)) {
-            return Result.fail("存在子菜单,不允许删除");
-        }
-        if (menuService.checkMenuExistRole(menuId)) {
-            // 删除与角色的绑定关系
-            boolean isSuccess= menuService.deleteRoleMenuByMenuId(menuId);
-        }
-        return Result.success(menuService.removeById(menuId));
+    @DeleteMapping("/delete/{menuId}")
+    public Result removeById(@PathVariable Long menuId) {
+        return menuService.removeMenuById(menuId);
     }
 
     /**
      * 修改菜单
      */
     @PreAuthorize("hasAnyAuthority('system:menu:edit')")
-    @PutMapping
+    @PutMapping("/editMenu")
     public Result edit(@Validated @RequestBody Menu menu) {
         if (menuService.checkMenuNameUnique(menu)) {
             return Result.fail("修改菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
         }
-        return Result.success(menuService.updateById(menu));
+        return menuService.updateById(menu) ? Result.success() : Result.fail("修改菜单'" + menu.getMenuName() + "'失败");
     }
 
     /**
      * 根据菜单编号获取详细信息
      */
     @PreAuthorize("hasAnyAuthority('system:menu:query')")
-    @GetMapping("/{menuId}")
+    @GetMapping("/queryMenu/{menuId}")
     public Result getInfo(@PathVariable Long menuId) {
         return Result.success(menuService.getById(menuId));
     }

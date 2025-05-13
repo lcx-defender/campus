@@ -63,6 +63,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
         return Set.copyOf(menus);
     }
 
+    /**
+     * 获取登录用户的前端路由
+     */
     @Override
     public Result getRouters(Long userId) {
         List<Menu> menus = selectMenuTreeByUserId(userId);
@@ -114,14 +117,6 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
             menus = menuMapper.selectMenuTreeByUserId(userId);
         }
         return getChildPerms(menus, 0);
-    }
-
-    /**
-     * 根据角色ID查询菜单树信息
-     */
-    @Override
-    public List<Long> selectMenuListByRoleId(Long roleId) {
-        return menuMapper.selectMenuIdsByRoleId(roleId);
     }
 
     /**
@@ -205,17 +200,6 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     }
 
     /**
-     * 根据菜单ID查询信息
-     *
-     * @param menuId 菜单ID
-     * @return 菜单信息
-     */
-    @Override
-    public Menu selectMenuById(Long menuId) {
-        return menuMapper.selectById(menuId);
-    }
-
-    /**
      * 是否存在菜单子节点
      *
      * @param menuId 菜单ID
@@ -237,40 +221,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     }
 
     /**
-     * 新增保存菜单信息
-     */
-    @Override
-    public int insertMenu(Menu menu) {
-        return menuMapper.insert(menu);
-    }
-
-    /**
-     * 修改保存菜单信息
-     *
-     * @param menu 菜单信息
-     * @return 结果
-     */
-    @Override
-    public int updateMenu(Menu menu) {
-        return menuMapper.updateById(menu);
-    }
-
-    /**
-     * 删除菜单管理信息
-     *
-     * @param menuId 菜单ID
-     * @return 结果
-     */
-    @Override
-    public int deleteMenuById(Long menuId) {
-        return menuMapper.deleteById(menuId);
-    }
-
-    /**
      * 校验菜单名称是否唯一
-     *
-     * @param menu 菜单信息
-     * @return 结果
      */
     @Override
     public boolean checkMenuNameUnique(Menu menu) {
@@ -295,6 +246,18 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
         return menuMapper.selectMenuList(menu);
     }
 
+    @Override
+    public Result removeMenuById(Long menuId) {
+        if (hasChildByMenuId(menuId)) {
+            return Result.fail("存在子菜单,不允许删除");
+        }
+        // 查询是否存在角色绑定菜单
+        if (checkMenuExistRole(menuId)) {
+            deleteRoleMenuByMenuId(menuId);
+        }
+        boolean isSuccess = removeById(menuId);
+        return isSuccess ? Result.success() : Result.fail("删除菜单失败");
+    }
 
     /**
      * 获取路由名称

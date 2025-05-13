@@ -277,7 +277,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public Result updateUser(User user) {
-        return updateById(user) ? Result.success("更新用户信息成功") : Result.fail("更新用户信息失败");
+        return updateById(user) ? Result.success("更新用户信息成功", null) : Result.fail("更新用户信息失败");
     }
 
     /**
