@@ -8,6 +8,7 @@ import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -37,17 +38,17 @@ public class OperateLogController {
      * 删除操作记录
      */
     @PreAuthorize("hasAnyAuthority('monitor:operatelog:remove')")
-    @DeleteMapping("/remove")
-    public Result remove(@RequestBody List<Long> operateIds) {
-        return operateLogService.removeByIds(operateIds)? Result.success() : Result.fail("删除失败");
+    @DeleteMapping("/remove/{operateIds}")
+    public Result remove(@PathVariable Long[] operateIds) {
+        return operateLogService.removeByIds(Arrays.asList(operateIds))? Result.success() : Result.fail("删除失败");
     }
 
     /**
      * 清空操作记录
      */
     @PreAuthorize("hasAnyAuthority('monitor:operatelog:remove')")
-    @DeleteMapping("/clean")
-    public Result clean() {
+    @DeleteMapping("/removeAll")
+    public Result removeAll() {
         return operateLogService.clean() ? Result.success() : Result.fail("清空失败");
     }
 }

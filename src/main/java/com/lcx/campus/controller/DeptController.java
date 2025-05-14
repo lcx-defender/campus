@@ -36,19 +36,10 @@ public class DeptController {
     /**
      * 查询部门列表,树型结构
      */
-    @GetMapping("/selectDeptTreeList")
+    @PostMapping("/selectDeptTreeList")
     @PreAuthorize("hasAnyAuthority('system:dept:list')")
-    public Result selectDeptTreeList() {
-        return deptService.selectDeptTreeList();
-    }
-
-    /**
-     * 查询部门详情
-     */
-    @GetMapping("/getDeptInfo/{deptId}")
-    @PreAuthorize("hasAnyAuthority('system:dept:query')")
-    public Result getDeptInfo(@PathVariable Long deptId) {
-        return deptService.getDeptInfo(deptId);
+    public Result selectDeptTreeList(@RequestBody Dept dept) {
+        return deptService.selectDeptTreeList(dept);
     }
 
     /**
@@ -61,6 +52,15 @@ public class DeptController {
     }
 
     /**
+     * 删除单个部门
+     */
+    @DeleteMapping("/deleteDept/{deptId}")
+    @PreAuthorize("hasAnyAuthority('system:dept:remove')")
+    public Result deleteDept(@PathVariable Long deptId) {
+        return deptService.deleteDept(deptId);
+    }
+
+    /**
      * 修改部门
      */
     @PutMapping("/updateDept")
@@ -70,11 +70,20 @@ public class DeptController {
     }
 
     /**
-     * 删除单个部门
+     * 仅更改部门状态
      */
-    @DeleteMapping("/deleteDept/{deptId}")
-    @PreAuthorize("hasAnyAuthority('system:dept:remove')")
-    public Result deleteDept(@PathVariable Long deptId) {
-        return deptService.deleteDept(deptId);
+    @PutMapping("/updateDeptStatus")
+    @PreAuthorize("hasAnyAuthority('system:dept:edit')")
+    public Result updateDeptStatus(@RequestParam Long deptId, @RequestParam String status) {
+        return deptService.updateDeptStatus(deptId, status);
+    }
+
+    /**
+     * 查询部门详情
+     */
+    @GetMapping("/getDeptInfo/{deptId}")
+    @PreAuthorize("hasAnyAuthority('system:dept:query')")
+    public Result getDeptInfo(@PathVariable Long deptId) {
+        return deptService.getDeptInfo(deptId);
     }
 }

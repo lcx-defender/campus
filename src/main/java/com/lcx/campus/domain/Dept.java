@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.validation.constraints.NotNull;
@@ -51,7 +52,7 @@ public class Dept implements Serializable {
      * 子部门
      */
     @TableField(exist = false)
-    private List<Dept> children;
+    private List<Dept> children = new ArrayList<>();
 
     /**
      * 部门名称
@@ -106,9 +107,6 @@ public class Dept implements Serializable {
      * 备注
      */
     private String remark;
-
     public interface insert {}
-
     public interface update {}
-
 }

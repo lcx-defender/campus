@@ -54,18 +54,28 @@ public interface IDeptService extends IService<Dept> {
     /**
      * 查询部门列表，以树型结构返回
      */
-    Result selectDeptTreeList();
+    Result selectDeptTreeList(Dept dept);
 
     Result addDept(Dept dept);
 
     Result updateDept(Dept dept);
 
     /**
+     * 递归更新子部门
+     */
+    boolean updateDeptChildren(Dept dept);
+
+    /**
      * 判断当前部门的父部门是否存在
      */
     boolean isParentDeptExist(Long deptId);
 
-    Result deleteDept(Long deptId);
 
+    Result deleteDept(Long deptId);
+    /**
+     * 判断当前部门是否存在未被删除的子部门
+     */
     boolean hasChildByDeptId(Long deptId);
+
+    Result updateDeptStatus(Long deptId, String status);
 }

@@ -4,6 +4,7 @@ import com.lcx.campus.domain.Dept;
 import com.lcx.campus.domain.User;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.domain.vo.TreeSelect;
+import com.lcx.campus.enums.DeptStatus;
 import com.lcx.campus.enums.UserType;
 import com.lcx.campus.mapper.DeptMapper;
 import com.lcx.campus.mapper.StudentMapper;
@@ -13,8 +14,10 @@ import com.lcx.campus.service.IDeptService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lcx.campus.utils.SecurityUtils;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +33,7 @@ import java.util.stream.Collectors;
  * @since 2025-03-04
  */
 @Service
+@Slf4j
 public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements IDeptService {
 
     @Resource
@@ -89,6 +93,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
 
     @Override
     public Result treeSelect() {
+        // 查询所有部门,去除掉delFlag=1 且 部门的状态已经停用的部门
         List<Dept> depts = list().stream().filter(dept -> dept.getDelFlag().equals("0")).toList();
         return Result.success(buildDeptTreeSelect(depts));
     }
@@ -128,9 +133,13 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
     }
 
     @Override
-    public Result selectDeptTreeList() {
+    public Result selectDeptTreeList(Dept dept) {
         // 查询所有部门,去除掉delFlag=1的部门
-        List<Dept> list = list().stream().filter(dept -> dept.getDelFlag().equals("0")).toList();
+        List<Dept> list = lambdaQuery()
+                .eq(Dept::getDelFlag, "0")
+                .eq(dept.getDeptName() != null, Dept::getDeptName, dept.getDeptName())
+                .eq(dept.getStatus() != null, Dept::getStatus, dept.getStatus())
+                .list();
         return Result.success(buildDeptTree(list));
     }
 
@@ -138,7 +147,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
     public Result addDept(Dept dept) {
         // 先判断父部门是否存在
         if (dept.getParentId() != null && !isParentDeptExist(dept.getParentId())) {
-            return Result.fail("父部门不存在");
+            return Result.fail("父部门不存在 或 已经删除");
         }
         // 判断当前部门是否存在
         Dept existingDept = lambdaQuery()
@@ -166,35 +175,71 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
     public Result updateDept(Dept dept) {
         // 先判断父部门是否存在
         if (dept.getParentId() != null && !isParentDeptExist(dept.getParentId())) {
-            return Result.fail("父部门不存在");
+            log.info("父部门ID={}不存在", dept.getParentId());
+            return Result.fail("父部门不存在，或已经删除");
         }
         // 判断当前部门是否存在
         Dept existingDept = lambdaQuery()
                 .eq(Dept::getDeptName, dept.getDeptName())
                 .eq(Dept::getParentId, dept.getParentId())
                 .one();
-        if (existingDept != null) {
+        if (existingDept != null && !existingDept.getDeptId().equals(dept.getDeptId())) {
+            if (existingDept.getDelFlag().equals("1")) {
+                log.info("部门已存在,当前状态被删除，deptId={}", existingDept.getDeptId());
+            }
+            log.info("存在相同的部门，deptId={}", existingDept.getDeptId());
             return Result.fail("当前部门已存在");
         }
-        // 更新部门
-        return updateById(dept) ? Result.success("部门修改成功") : Result.fail("部门修改失败");
+        if(dept.getStatus().equals(DeptStatus.DISABLED.getCode())){
+            // 如果当前部门被禁用,则将所有子部门也禁用
+            List<Dept> childDepts = lambdaQuery()
+                    .eq(Dept::getParentId, dept.getDeptId())
+                    .list();
+            for (Dept childDept : childDepts) {
+                childDept.setStatus(DeptStatus.DISABLED.getCode());
+                updateDeptChildren(childDept);
+            }
+        } else if(dept.getStatus().equals(DeptStatus.ACTIVE.getCode())){
+            // 如果当前部门被启用
+            // 先检查是否有祖先部门未被启用，如果有，则不允许启用
+            Long parentId = dept.getParentId();
+            while(parentId != null && parentId != 0) {
+                Dept parentDept = getById(parentId);
+                if (parentDept == null || parentDept.getStatus().equals(DeptStatus.DISABLED.getCode())) {
+                    return Result.fail("存在当前部门的上级部门未启用，无法启用当前部门");
+                }
+                parentId = parentDept.getParentId();
+            }
+        }
+        return updateById(dept) ? Result.success("部门修改成功", null) : Result.fail("部门修改失败");
+    }
+
+    /**
+     * 递归更新dept的子部门状态
+     */
+    @Override
+    public boolean updateDeptChildren(Dept dept) {
+        List<Dept> childDepts = lambdaQuery()
+                .eq(Dept::getParentId, dept.getDeptId())
+                .list();
+        for (Dept childDept : childDepts) {
+            childDept.setStatus(DeptStatus.DISABLED.getCode());
+            if(!updateDeptChildren(childDept)) {
+                return false;
+            }
+        }
+        return updateById(dept);
     }
 
     @Override
     public boolean isParentDeptExist(Long deptId) {
         if (deptId == 0) return true;
         Dept dept = getById(deptId);
-        if (dept == null) {
-            return false;
-        }
-        return true;
+        return dept != null && dept.getDelFlag().equals("0");
     }
 
     /**
      * 删除部门
-     *
-     * @param deptId 部门id
-     * @return 结果
      */
     @Override
     public Result deleteDept(Long deptId) {
@@ -207,9 +252,12 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
         Dept dept = new Dept();
         dept.setDeptId(deptId);
         dept.setDelFlag("1");
-        return updateById(dept) ? Result.success("部门删除成功") : Result.fail("部门删除失败");
+        return updateById(dept) ? Result.success("部门删除成功", null) : Result.fail("部门删除失败");
     }
 
+    /**
+     * 判断当前部门是否存在未被删除的子部门
+     */
     @Override
     public boolean hasChildByDeptId(Long deptId) {
         // 查询当前部门是否存在子部门
@@ -218,6 +266,19 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
                 .eq(Dept::getDelFlag, "0")
                 .count();
         return count > 0;
+    }
+
+    @Override
+    public Result updateDeptStatus(Long deptId, String status) {
+        // 判断当前部门是否存在
+        Dept dept = getById(deptId);
+        if (dept == null) {
+            return Result.fail("部门不存在");
+        }
+        // 更新部门状态
+        dept.setStatus(status);
+        dept.setUpdateTime(LocalDateTime.now());
+        return updateById(dept) ? Result.success("部门状态修改成功") : Result.fail("部门状态修改失败");
     }
 
     /**
