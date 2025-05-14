@@ -11,6 +11,7 @@ import com.lcx.campus.utils.StringUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -34,8 +35,8 @@ public class LoginInfoServiceImpl extends ServiceImpl<LoginInfoMapper, LoginInfo
     }
 
     @Override
-    public Result deleteLoginInfo(Long infoId) {
-        boolean isSuccess = removeById(infoId);
+    public Result deleteLoginInfo(Long[] infoIds) {
+        boolean isSuccess = removeByIds(Arrays.asList(infoIds));
         return isSuccess ? Result.success("删除成功", null) : Result.fail("删除登录记录失败，请检查登录记录ID是否正确或记录是否存在");
     }
 
@@ -61,7 +62,7 @@ public class LoginInfoServiceImpl extends ServiceImpl<LoginInfoMapper, LoginInfo
     }
 
     @Override
-    public Result clear() {
+    public Result clearLoginInfo() {
         loginInfoMapper.clearAll();
         return Result.success("清空登录记录成功", null);
     }

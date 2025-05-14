@@ -28,37 +28,27 @@ public class LoginInfoController {
     /**
      * 分页查询全体登录记录
      */
-    @GetMapping("/pageList")
-    @PreAuthorize("hasAnyAuthority('monitor:logininfor:list')")
+    @PostMapping("/pageList")
+    @PreAuthorize("hasAnyAuthority('monitor:logininfo:list')")
     public Result getLoginInfoList(@RequestBody LoginInfo loginInfo) {
         return loginInfoService.getLoginInfoList(loginInfo);
     }
 
-
     /**
      * 删除单个登录记录
      */
-    @DeleteMapping("/delete")
-    @PreAuthorize("hasAnyAuthority('monitor:logininfor:remove')")
-    public Result deleteLoginInfo(Long infoId) {
-        return loginInfoService.deleteLoginInfo(infoId);
-    }
-
-    /**
-     * 批量删除登录记录
-     */
-    @DeleteMapping("/deleteBatch")
-    @PreAuthorize("hasAnyAuthority('monitor:logininfor:remove')")
-    public Result deleteLoginInfoBatch(@RequestBody List<Long> infoIds) {
-        return loginInfoService.deleteLoginInfoBatch(infoIds);
+    @DeleteMapping("/delete/{infoIds}")
+    @PreAuthorize("hasAnyAuthority('monitor:logininfo:remove')")
+    public Result deleteLoginInfo(@PathVariable Long[] infoIds) {
+        return loginInfoService.deleteLoginInfo(infoIds);
     }
 
     /**
      * 清空登录记录
      */
     @DeleteMapping("/clear")
-    @PreAuthorize("hasAnyAuthority('monitor:logininfor:remove')")
+    @PreAuthorize("hasAnyAuthority('monitor:logininfo:remove')")
     public Result clearLoginInfo() {
-        return loginInfoService.clear();
+        return loginInfoService.clearLoginInfo();
     }
 }

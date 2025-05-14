@@ -1,8 +1,10 @@
 package com.lcx.campus.controller;
 
 
+import com.lcx.campus.annotation.Log;
 import com.lcx.campus.domain.Dept;
 import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.enums.BusinessType;
 import com.lcx.campus.service.IDeptService;
 import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +30,7 @@ public class DeptController {
      * 查询部门列表，封装成TreeSelect
      */
     @GetMapping("/treeSelect")
+    @Log(title = "获取部门选择菜单", businessType = BusinessType.QUERY)
     @PreAuthorize("hasAnyAuthority('system:dept:list')")
     public Result treeSelect() {
         return deptService.treeSelect();
@@ -38,6 +41,7 @@ public class DeptController {
      */
     @PostMapping("/selectDeptTreeList")
     @PreAuthorize("hasAnyAuthority('system:dept:list')")
+    @Log(title = "部门管理", businessType = BusinessType.QUERY)
     public Result selectDeptTreeList(@RequestBody Dept dept) {
         return deptService.selectDeptTreeList(dept);
     }
@@ -47,6 +51,7 @@ public class DeptController {
      */
     @PostMapping("/addDept")
     @PreAuthorize("hasAnyAuthority('system:dept:add')")
+    @Log(title = "部门新增", businessType = BusinessType.INSERT)
     public Result addDept(@Validated({Dept.insert.class}) @RequestBody Dept dept) {
         return deptService.addDept(dept);
     }
@@ -56,6 +61,7 @@ public class DeptController {
      */
     @DeleteMapping("/deleteDept/{deptId}")
     @PreAuthorize("hasAnyAuthority('system:dept:remove')")
+    @Log(title = "部门删除", businessType = BusinessType.DELETE)
     public Result deleteDept(@PathVariable Long deptId) {
         return deptService.deleteDept(deptId);
     }
@@ -65,6 +71,7 @@ public class DeptController {
      */
     @PutMapping("/updateDept")
     @PreAuthorize("hasAnyAuthority('system:dept:edit')")
+    @Log(title = "部门更新", businessType = BusinessType.UPDATE)
     public Result updateDept(@Validated({Dept.update.class}) @RequestBody Dept dept) {
         return deptService.updateDept(dept);
     }
@@ -74,6 +81,7 @@ public class DeptController {
      */
     @PutMapping("/updateDeptStatus")
     @PreAuthorize("hasAnyAuthority('system:dept:edit')")
+    @Log(title = "部门状态更新", businessType = BusinessType.UPDATE)
     public Result updateDeptStatus(@RequestParam Long deptId, @RequestParam String status) {
         return deptService.updateDeptStatus(deptId, status);
     }
@@ -83,6 +91,7 @@ public class DeptController {
      */
     @GetMapping("/getDeptInfo/{deptId}")
     @PreAuthorize("hasAnyAuthority('system:dept:query')")
+    @Log(title = "部门详情查询", businessType = BusinessType.QUERY)
     public Result getDeptInfo(@PathVariable Long deptId) {
         return deptService.getDeptInfo(deptId);
     }

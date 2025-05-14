@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import java.util.Map;
  * @since 2025-03-04
  */
 @Data
+@NoArgsConstructor
 public class PageQuery {
     /**
      * 当前页码

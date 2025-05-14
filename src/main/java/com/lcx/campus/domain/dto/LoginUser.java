@@ -3,6 +3,7 @@ package com.lcx.campus.domain.dto;
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.lcx.campus.domain.User;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
  * @since 2025-03-04
  */
 @Data
+@ToString
 public class LoginUser implements UserDetails {
 
     private static final long serialVersionUID = 1L;

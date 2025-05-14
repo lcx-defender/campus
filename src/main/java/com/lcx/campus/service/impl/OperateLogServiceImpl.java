@@ -40,13 +40,16 @@ public class OperateLogServiceImpl extends ServiceImpl<OperateLogMapper, Operate
                 .eq(operateLog.getRequestMethod() != null, OperateLog::getRequestMethod, operateLog.getRequestMethod())
                 .eq(operateLog.getUserId() != null, OperateLog::getUserId, operateLog.getUserId())
                 .eq(operateLog.getOperateUrl() != null, OperateLog::getOperateUrl, operateLog.getOperateUrl())
+                // 开始和结束时间
+                .ge(operateLog.getBeginTime() != null, OperateLog::getCreateTime, operateLog.getBeginTime())
+                .le(operateLog.getEndTime() != null, OperateLog::getCreateTime, operateLog.getEndTime())
                 .page(queryPage);
         PageVo<OperateLog> res = PageVo.of(resPage);
         return Result.success(res);
     }
 
     @Override
-    public boolean clean() {
-        return operateLogMapper.clearAll();
+    public void clean() {
+        operateLogMapper.cleanOperateLog();
     }
 }

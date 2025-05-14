@@ -1,8 +1,10 @@
 package com.lcx.campus.controller;
 
 
+import com.lcx.campus.annotation.Log;
 import com.lcx.campus.domain.Menu;
 import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.enums.BusinessType;
 import com.lcx.campus.enums.MenuStatus;
 import com.lcx.campus.service.IMenuService;
 import com.lcx.campus.utils.SecurityUtils;
@@ -35,6 +37,7 @@ public class MenuController {
      */
     @PreAuthorize("hasAnyAuthority('system:menu:list')")
     @PostMapping("/getMenuTree")
+    @Log(title = "获取菜单列表", businessType = BusinessType.QUERY)
     public Result getMenuTree(@RequestBody Menu menu) {
         List<Menu> menus = menuService.selectMenuList(menu);
         return Result.success(menuService.buildMenuTree(menus));
@@ -45,6 +48,7 @@ public class MenuController {
      */
     @PreAuthorize("hasAnyAuthority('system:menu:list')")
     @GetMapping("/treeSelect")
+    @Log(title = "获取菜单下拉树列表", businessType = BusinessType.QUERY)
     public Result treeSelect() {
         Menu menu = new Menu();
         menu.setMenuStatus(MenuStatus.NORMAL.getValue());

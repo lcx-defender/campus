@@ -29,7 +29,7 @@ public class OperateLogController {
      * 分页查询操作记录
      */
     @PreAuthorize("hasAnyAuthority('monitor:operatelog:list')")
-    @GetMapping("/pageList")
+    @PostMapping("/pageList")
     public Result pageList(@RequestBody OperateLog operateLog) {
         return operateLogService.pageList(operateLog);
     }
@@ -49,6 +49,7 @@ public class OperateLogController {
     @PreAuthorize("hasAnyAuthority('monitor:operatelog:remove')")
     @DeleteMapping("/removeAll")
     public Result removeAll() {
-        return operateLogService.clean() ? Result.success() : Result.fail("清空失败");
+        operateLogService.clean();
+        return Result.success();
     }
 }

@@ -1,7 +1,9 @@
 package com.lcx.campus.controller;
 
+import com.lcx.campus.annotation.Log;
 import com.lcx.campus.domain.User;
 import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.enums.BusinessType;
 import com.lcx.campus.service.IUserService;
 import com.lcx.campus.utils.FileUploadUtils;
 import com.lcx.campus.utils.MimeTypeUtils;
@@ -34,6 +36,7 @@ public class FileUploadController {
     }
 
     @PostMapping("/avatar")
+    @Log(title = "上传头像", businessType = BusinessType.OTHER)
     public Result uploadAvatar(@RequestParam("avatar") MultipartFile file) {
         if(file.isEmpty()) {
             return Result.fail("上传失败，请选择文件");

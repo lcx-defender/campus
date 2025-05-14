@@ -69,6 +69,5 @@ public class PageVo<T> {
             pageVo.setList(records.stream().map(converter).collect(Collectors.toList()));
         }
         return pageVo;
-
     }
 }

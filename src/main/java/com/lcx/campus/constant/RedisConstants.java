@@ -24,5 +24,4 @@ public class RedisConstants {
      * dict数据字典缓存前缀
      */
     public static final String SYS_DICT_KEY = "sys_dict_type:";
-
 }

@@ -18,11 +18,11 @@ public interface ILoginInfoService extends IService<LoginInfo> {
 
     Result insertLoginInfo(LoginInfo loginInfo);
 
-    Result deleteLoginInfo(Long infoId);
+    Result deleteLoginInfo(Long[] infoIds);
 
     Result deleteLoginInfoBatch(List<Long> infoIds);
 
     Result getLoginInfoList(LoginInfo loginInfo);
 
-    Result clear();
+    Result clearLoginInfo();
 }

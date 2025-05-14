@@ -1,5 +1,6 @@
 package com.lcx.campus.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -99,12 +100,19 @@ public class OperateLog extends PageQuery implements Serializable {
     /**
      * 操作时间
      */
-    private LocalDateTime operateTime;
+    private LocalDateTime createTime;
 
     /**
      * 消耗时间
      */
     private Long costTime;
 
+    /**
+     * 查询用的其他参数
+     */
+    @TableField(exist = false)
+    private LocalDateTime beginTime;
 
+    @TableField(exist = false)
+    private LocalDateTime endTime;
 }

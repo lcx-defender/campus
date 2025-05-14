@@ -18,5 +18,5 @@ public interface IOperateLogService extends IService<OperateLog> {
 
     Result pageList(OperateLog operateLog);
 
-    boolean clean();
+    void clean();
 }

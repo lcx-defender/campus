@@ -40,14 +40,14 @@ public class DictDataServiceImpl extends ServiceImpl<DictDataMapper, DictData> i
 
     @Override
     public Result pageList(DictData dictData) {
-        Page<DictData> dictDataPage = dictData.toMpPage();
-        Page<DictData> page = lambdaQuery()
+        Page<DictData> queryPage = dictData.toMpPage();
+        Page<DictData> resPage = lambdaQuery()
                 .eq(dictData.getDictType() != null, DictData::getDictType, dictData.getDictType())
                 .eq(dictData.getDictStatus() != null, DictData::getDictStatus, dictData.getDictStatus())
                 .like(dictData.getDictLabel() != null, DictData::getDictLabel, dictData.getDictLabel())
-                .page(dictDataPage);
-        PageVo<DictData> pageVo = PageVo.of(page);
-        return Result.success(pageVo);
+                .page(queryPage);
+        PageVo<DictData> res = PageVo.of(resPage);
+        return Result.success(res);
     }
 
     @Override

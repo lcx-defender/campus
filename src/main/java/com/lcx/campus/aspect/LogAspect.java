@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Map;
 
@@ -107,6 +108,8 @@ public class LogAspect {
             getControllerMethodDescription(joinPoint, controllerLog, operateLog, jsonResult);
             // 设置消耗时间
             operateLog.setCostTime(System.currentTimeMillis() - TIME_THREADLOCAL.get());
+            // 设置操作时间
+            operateLog.setCreateTime(LocalDateTime.now());
             // 保存数据库
             AsyncManager.me().execute(AsyncFactory.recordOperate(operateLog));
         } catch (Exception exp) {
