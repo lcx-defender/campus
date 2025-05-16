@@ -28,7 +28,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("sys_user")
 public class User extends PageQuery implements Serializable {
-
     private static final long serialVersionUID = 1L;
     /**
      * 用户ID

@@ -37,10 +37,6 @@ public class Result {
         return new Result(SUCCESS, message, data);
     }
 
-    public static Result success(String message, Object data, Long total) {
-        return new Result(SUCCESS, message, data);
-    }
-
     public static Result fail() {
         return new Result(FAIL, "fail", null);
     }

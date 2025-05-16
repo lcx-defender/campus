@@ -257,6 +257,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             // 1.1 用户存在，更新用户信息
             user.setUserId(userId);
             user.setUpdateTime(LocalDateTime.now());
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             isSuccess = updateById(user);
         } else {
             // 2. 用户不存在，插入用户

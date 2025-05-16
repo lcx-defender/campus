@@ -4,6 +4,10 @@ import com.lcx.campus.domain.Student;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lcx.campus.domain.User;
 import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.dto.StudentUser;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * <p>
@@ -17,7 +21,15 @@ public interface IStudentService extends IService<Student> {
 
     Result addStudent(User user, Student student);
 
+    /**
+     * 通过Excel批量新增学生类型用户
+     */
+    Result batchAddStudent(List<StudentUser> studentUsers);
+
     Result pageList(Student student);
 
     Result editStudent(Student student);
+
+
+    List<StudentUser> selectStudentUserList(StudentUser studentUser);
 }

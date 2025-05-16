@@ -31,4 +31,13 @@ public enum UserType {
         return code;
     }
 
+    public String getUserTypeByName(String name) {
+        for (UserType userType : UserType.values()) {
+            if (userType.getName().equals(name)) {
+                return userType.getCode();
+            }
+        }
+        return null;
+    }
+
 }

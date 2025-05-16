@@ -5,4 +5,86 @@
     <select id="selectClassByUserId" resultType="java.lang.Long" parameterType="java.lang.Long">
         select class_id from student where user_id = #{userId}
     </select>
+    <select id="selectStudentUserList" resultType="com.lcx.campus.domain.dto.StudentUser">
+        SELECT
+        s.student_id,
+        s.student_name,
+        s.class_id,
+        s.major_id,
+        s.institute_id,
+        s.university_id,
+        s.current_grade,
+        s.admit_time,
+        s.graduate_time,
+        s.academic_status,
+        s.high_school,
+        s.home_address,
+        u.user_id,
+        u.nickname,
+        u.email,
+        u.phone,
+        u.sex,
+        u.avatar,
+        u.user_status,
+        u.identity,
+        u.create_time
+        FROM student s
+        LEFT JOIN sys_user u ON s.user_id = u.user_id
+        <where>
+            <if test="studentId != null and studentId != ''">
+                AND s.student_id = #{studentId}
+            </if>
+            <if test="studentName != null and studentName != ''">
+                AND s.student_name LIKE CONCAT('%', #{studentName}, '%')
+            </if>
+            <if test="classId != null">
+                AND s.class_id = #{classId}
+            </if>
+            <if test="majorId != null">
+                AND s.major_id = #{majorId}
+            </if>
+            <if test="instituteId != null">
+                AND s.institute_id = #{instituteId}
+            </if>
+            <if test="universityId != null">
+                AND s.university_id = #{universityId}
+            </if>
+            <if test="currentGrade != null and currentGrade != ''">
+                AND s.current_grade = #{currentGrade}
+            </if>
+            <if test="admitTime != null">
+                AND s.admit_time = #{admitTime}
+            </if>
+            <if test="graduateTime != null">
+                AND s.graduate_time = #{graduateTime}
+            </if>
+            <if test="academicStatus != null">
+                AND s.academic_status = #{academicStatus}
+            </if>
+            <if test="highSchool != null and highSchool != ''">
+                AND s.high_school LIKE CONCAT('%', #{highSchool}, '%')
+            </if>
+            <if test="homeAddress != null and homeAddress != ''">
+                AND s.home_address LIKE CONCAT('%', #{homeAddress}, '%')
+            </if>
+            <if test="nickname != null and nickname != ''">
+                AND u.nickname LIKE CONCAT('%', #{nickname}, '%')
+            </if>
+            <if test="email != null and email != ''">
+                AND u.email LIKE CONCAT('%', #{email}, '%')
+            </if>
+            <if test="phone != null and phone != ''">
+                AND u.phone = #{phone}
+            </if>
+            <if test="sex != null and sex != ''">
+                AND u.sex = #{sex}
+            </if>
+            <if test="userStatus != null and userStatus != ''">
+                AND u.user_status = #{userStatus}
+            </if>
+            <if test="identity != null and identity != ''">
+                AND u.identity = #{identity}
+            </if>
+        </where>
+    </select>
 </mapper>

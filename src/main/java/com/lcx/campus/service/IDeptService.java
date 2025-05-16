@@ -2,6 +2,7 @@ package com.lcx.campus.service;
 
 import com.lcx.campus.domain.Dept;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lcx.campus.domain.Student;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.domain.vo.TreeSelect;
 
@@ -78,4 +79,9 @@ public interface IDeptService extends IService<Dept> {
     boolean hasChildByDeptId(Long deptId);
 
     Result updateDeptStatus(Long deptId, String status);
+
+    /**
+     * 校验学生的单位信息是否合规
+     */
+    boolean validateDept(Student student);
 }

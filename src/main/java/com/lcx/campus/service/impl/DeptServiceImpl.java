@@ -1,6 +1,7 @@
 package com.lcx.campus.service.impl;
 
 import com.lcx.campus.domain.Dept;
+import com.lcx.campus.domain.Student;
 import com.lcx.campus.domain.User;
 import com.lcx.campus.domain.dto.Result;
 import com.lcx.campus.domain.vo.TreeSelect;
@@ -13,6 +14,7 @@ import com.lcx.campus.mapper.UserMapper;
 import com.lcx.campus.service.IDeptService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lcx.campus.utils.SecurityUtils;
+import com.lcx.campus.utils.StringUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -279,6 +281,31 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
         dept.setStatus(status);
         dept.setUpdateTime(LocalDateTime.now());
         return updateById(dept) ? Result.success("部门状态修改成功") : Result.fail("部门状态修改失败");
+    }
+
+    @Override
+    public boolean validateDept(Student student) {
+        Long universityId = student.getUniversityId();
+        Long instituteId = student.getInstituteId();
+        Long majorId = student.getMajorId();
+        Long classId = student.getClassId();
+        // 上下比较是否是父子关系
+        if(universityId != null && instituteId != null) {
+            if(!isParentDept(universityId, instituteId)) {
+                return false;
+            }
+            if (majorId != null) {
+                if (!isParentDept(instituteId, majorId)) {
+                    return false;
+                }
+                if (classId != null) {
+                    if (!isParentDept(majorId, classId)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**

@@ -59,9 +59,9 @@ public class MenuController {
     @PostMapping("/addMenu")
     public Result addMenu(@Validated @RequestBody Menu menu) {
         if (menuService.checkMenuNameUnique(menu)) {
-            return Result.fail("新增菜单'" + menu.getMenuName() + "'失败,菜单名称已存在");
+            return menuService.save(menu) ? Result.success() : Result.fail("新增菜单'" + menu.getMenuName() + "'失败");
         }
-        return Result.success(menuService.save(menu));
+        return Result.fail("新增菜单'" + menu.getMenuName() + "'失败,菜单名称已存在");
     }
     /**
      * 根据menuId删除菜单

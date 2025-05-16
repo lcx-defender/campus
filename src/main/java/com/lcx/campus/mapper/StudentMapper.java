@@ -2,6 +2,7 @@ package com.lcx.campus.mapper;
 
 import com.lcx.campus.domain.Student;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.lcx.campus.domain.dto.StudentUser;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -46,4 +47,6 @@ public interface StudentMapper extends BaseMapper<Student> {
      */
     @Select("SELECT * FROM student WHERE class_id = #{classId}")
     List<Student> selectStudentListByClassId(Long classId);
+
+    List<StudentUser> selectStudentUserList(StudentUser studentUser);
 }
