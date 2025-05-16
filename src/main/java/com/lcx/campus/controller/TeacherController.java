@@ -25,10 +25,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/teacher")
 public class TeacherController {
-
     @Resource
     private ITeacherService teacherService;
-
     /**
      * 分页查询教师列表
      */
@@ -38,7 +36,6 @@ public class TeacherController {
     public Result listTeacher(@RequestBody Teacher teacher) {
         return teacherService.pageListTeacher(teacher);
     }
-
     /**
      * 新建教师类型用户
      */
@@ -50,7 +47,6 @@ public class TeacherController {
         user.setUserType(UserType.TEACHER.getCode());
         return teacherService.addTeacher(user, teacher);
     }
-
     /**
      * 修改教师部分信息
      */

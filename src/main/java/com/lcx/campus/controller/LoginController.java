@@ -27,13 +27,20 @@ public class LoginController {
     private IMenuService menuService;
 
     /**
-     * 根据用户名和密码登录方式
-     * @param loginBody 登录提交表单
+     * 根据用户名(身份证号、手机号 或 邮箱)和密码登录方式
      * @return 登录令牌
      */
     @PostMapping("/loginByUsername")
     public Result loginByUsername(@RequestBody LoginBody loginBody) {
         return userService.loginByUsername(loginBody);
+    }
+
+    /**
+     * 学生特有根据学号和密码登录方式
+     */
+    @PostMapping("/loginByStudentId")
+    public Result loginByStudentId(@RequestBody LoginBody loginBody) {
+        return userService.loginByStudentId(loginBody);
     }
 
     /**

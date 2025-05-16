@@ -38,10 +38,8 @@ import java.util.List;
 public class UserController {
     @Resource
     private IUserService userService;
-
     @Resource
     private IRoleService roleService;
-
     /**
      * 分页查询所有自己部门之下的用户信息
      * 通过用户昵称、用户类型、邮箱、手机号、用户状态去多条件查询
@@ -51,7 +49,6 @@ public class UserController {
     public Result pageUserList(@RequestBody User user) {
         return userService.pageUserList(user);
     }
-
     /**
      * 新建系统用户, userTye 为 SYSTEM
      */
@@ -62,7 +59,6 @@ public class UserController {
         user.setUserType(UserType.SYSTEM.getCode());
         return userService.addUserOfAdmin(user);
     }
-
     /**
      * 注销用户(逻辑)
      */
@@ -85,7 +81,6 @@ public class UserController {
         }
         return userService.updateBatchById(users) ? Result.success() : Result.fail("用户删除失败");
     }
-
     /**
      * 管理员修改他人信息
      */
@@ -98,7 +93,6 @@ public class UserController {
         }
         return userService.updateUser(user);
     }
-
     /**
      * 用户修改个人信息，只允许个人修改 nickname、email、phone、sex 这四个字段，根据uderId更新
      */
@@ -107,7 +101,6 @@ public class UserController {
     public Result updateSelfInfo(@RequestBody User user) {
         return userService.updateSelfInfo(user);
     }
-
     /**
      * 获取指定用户信息
      */
@@ -121,7 +114,6 @@ public class UserController {
         user.setPassword(null); // 隐藏密码
         return Result.success(user);
     }
-
     /**
      * 通过用户id获取角色信息
      */
@@ -130,7 +122,6 @@ public class UserController {
     public Result getUserRole(@PathVariable Long userId) {
         return roleService.getUserRole(userId);
     }
-
     /**
      * 获取当前登录用户个人信息
      */
@@ -138,7 +129,6 @@ public class UserController {
     public Result getSelfInfo() {
         return userService.getSelfInfo();
     }
-
     /**
      * 管理员修改他人密码
      */
@@ -152,7 +142,6 @@ public class UserController {
         }
         return userService.resetPassword(passwordBody);
     }
-
     /**
      * 修改自己密码
      */
@@ -162,7 +151,6 @@ public class UserController {
             @Validated(PasswordBody.UserUpdateGroup.class) @RequestBody PasswordBody passwordBody, HttpServletRequest request) {
         return userService.updatePassword(passwordBody, request);
     }
-
     /**
      * 封禁用户
      */
@@ -185,7 +173,6 @@ public class UserController {
         }
         return userService.updateBatchById(users) ? Result.success() : Result.fail("用户封禁失败");
     }
-
     /**
      * 恢复用户状态为正常
      */
@@ -207,7 +194,6 @@ public class UserController {
         }
         return userService.updateBatchById(users) ? Result.success() : Result.fail("用户恢复失败");
     }
-
     /**
      * 管理员修改用户角色信息
      */

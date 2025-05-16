@@ -58,4 +58,6 @@ public interface IUserService extends IService<User> {
      * 管理员修改用户角色信息
      */
     Result updateUserRoles(UserRolesVo userRolesVo);
+
+    Result loginByStudentId(LoginBody loginBody);
 }

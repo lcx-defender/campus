@@ -28,10 +28,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/menu")
 public class MenuController {
-
     @Resource
     private IMenuService menuService;
-
     /**
      * 获取菜单列表
      */
@@ -42,7 +40,6 @@ public class MenuController {
         List<Menu> menus = menuService.selectMenuList(menu);
         return Result.success(menuService.buildMenuTree(menus));
     }
-
     /**
      * 获取菜单下拉树列表
      */
@@ -55,7 +52,6 @@ public class MenuController {
         List<Menu> menus = menuService.selectMenuList(menu); // 获取所有状态正常的菜单
         return Result.success(menuService.buildMenuTreeSelect(menus));
     }
-
     /**
      * 新增菜单
      */
@@ -67,7 +63,6 @@ public class MenuController {
         }
         return Result.success(menuService.save(menu));
     }
-
     /**
      * 根据menuId删除菜单
      */
@@ -76,7 +71,6 @@ public class MenuController {
     public Result removeById(@PathVariable Long menuId) {
         return menuService.removeMenuById(menuId);
     }
-
     /**
      * 修改菜单
      */
@@ -88,7 +82,6 @@ public class MenuController {
         }
         return menuService.updateById(menu) ? Result.success() : Result.fail("修改菜单'" + menu.getMenuName() + "'失败");
     }
-
     /**
      * 根据菜单编号获取详细信息
      */

@@ -71,6 +71,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private RoleMapper roleMapper;
     @Resource
     private UserRoleMapper userRoleMapper;
+    @Resource
+    private StudentMapper studentMapper;
 
     /**
      * 通过登陆界面用户名查询用户信息
@@ -84,13 +86,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     /**
-     * @param loginBody
-     * @return 返回Result携带Jwt令牌
+     * 根据用户名(身份证号、手机号 或 邮箱)和密码登录方式
+     * @return 登录令牌
      */
     @Override
     public Result loginByUsername(LoginBody loginBody) {
+        return login(loginBody);
+    }
+
+    @Override
+    public Result loginByStudentId(LoginBody loginBody) {
+        if(StringUtils.isNull(loginBody.getStudentId()) || StringUtils.isNull(loginBody.getPassword())) {
+            return Result.fail("学号或密码不能为空");
+        }
+        // 根据学号查询用户
+        User user = userMapper.selectUserByStudentId(loginBody.getStudentId());
+        if(StringUtils.isNull(user)) {
+            return Result.fail("用户不存在");
+        }
+        loginBody.setUsername(user.getIdentity());
+        return login(loginBody);
+    }
+
+    private Result login(LoginBody loginBody) {
         LoginUser loginUser = (LoginUser) userDetailsService.loadUserByUsername(loginBody.getUsername());
-        // 验证码校验
         validateCaptcha(loginUser.getUserId(), loginBody.getCode(), loginBody.getUuid());
         // security 认证
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginBody.getUsername(), loginBody.getPassword(), loginUser.getAuthorities());
@@ -115,11 +134,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         stringRedisTemplate.delete(key);
         // 比较验证码时，希望忽略大小写
         if (!code.equalsIgnoreCase(cacheCode)) {
-            AsyncManager.me().execute(AsyncFactory.recordLoginInfo(userId, Constants.LOGIN_FAIL, "验证码错误,应为" + cacheCode + "提交为" + code));
+            AsyncManager.me().execute(AsyncFactory.recordLoginInfo(userId, Constants.LOGIN_FAIL, "验证码错误,应为" + cacheCode + ",提交为" + code));
             throw new WrongCaptchaCodeException("验证码错误");
         }
     }
-
     /**
      * 记录登录信息
      *
@@ -133,13 +151,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         sysUser.setUpdateTime(LocalDateTime.now());
         updateUserProfile(sysUser);
     }
-
     @Override
     public Result updateUserProfile(User user) {
         boolean isSuccess = updateById(user);
         return isSuccess ? Result.success("更新用户信息成功") : Result.fail("更新用户信息失败");
     }
-
     /**
      * 获取当前登录用户的信息
      *
@@ -331,7 +347,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         int rows = userRoleMapper.insertBatch(userRolesVo.getUserId(), roleIds);
         return rows == roles.size() ? Result.success("修改用户角色成功") : Result.fail("修改用户角色失败");
     }
-
     @Override
     public Result addUserOfAdmin(User user) {
         // 1. 校验用户是否存在

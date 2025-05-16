@@ -24,7 +24,6 @@ import java.util.List;
 public class OperateLogController {
     @Resource
     private IOperateLogService operateLogService;
-
     /**
      * 分页查询操作记录
      */
@@ -33,7 +32,6 @@ public class OperateLogController {
     public Result pageList(@RequestBody OperateLog operateLog) {
         return operateLogService.pageList(operateLog);
     }
-
     /**
      * 删除操作记录
      */
@@ -42,7 +40,6 @@ public class OperateLogController {
     public Result remove(@PathVariable Long[] operateIds) {
         return operateLogService.removeByIds(Arrays.asList(operateIds))? Result.success() : Result.fail("删除失败");
     }
-
     /**
      * 清空操作记录
      */

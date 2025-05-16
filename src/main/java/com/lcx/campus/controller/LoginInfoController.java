@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * <p>
- * 系统登录记录 前端控制器
+ * 系统登录日志
  * </p>
  *
  * @author 刘传星
@@ -21,10 +21,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/login-info")
 public class LoginInfoController {
-
     @Resource
     private ILoginInfoService loginInfoService;
-
     /**
      * 分页查询全体登录记录
      */
@@ -33,7 +31,6 @@ public class LoginInfoController {
     public Result getLoginInfoList(@RequestBody LoginInfo loginInfo) {
         return loginInfoService.getLoginInfoList(loginInfo);
     }
-
     /**
      * 删除单个登录记录
      */
@@ -42,7 +39,6 @@ public class LoginInfoController {
     public Result deleteLoginInfo(@PathVariable Long[] infoIds) {
         return loginInfoService.deleteLoginInfo(infoIds);
     }
-
     /**
      * 清空登录记录
      */

@@ -23,4 +23,5 @@ public interface UserMapper extends BaseMapper<User> {
     User selectUserByUserName(String username);
 
 
+    User selectUserByStudentId(String studentId);
 }

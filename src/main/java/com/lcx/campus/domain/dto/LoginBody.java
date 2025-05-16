@@ -12,6 +12,9 @@ public class LoginBody {
     // 登录账户名
     private String username;
 
+    // 学号信息
+    private String studentId;
+
     // 登录密码
     private String password;
 

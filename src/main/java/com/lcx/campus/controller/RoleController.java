@@ -27,10 +27,8 @@ import java.util.Arrays;
 @RestController
 @RequestMapping("/role")
 public class RoleController {
-
     @Resource
     private IRoleService roleService;
-
     /**
      * 获取当前登录用户的角色信息
      */
@@ -38,7 +36,6 @@ public class RoleController {
     public Result getCurrentRole() {
         return roleService.getCurrentRole();
     }
-
     /**
      * 获取所有角色信息
      */
@@ -47,7 +44,6 @@ public class RoleController {
     public Result getAllRole() {
         return Result.success(roleService.list());
     }
-
     /**
      * 分页查询角色信息
      */
@@ -56,7 +52,6 @@ public class RoleController {
     public Result getPageList(@RequestBody Role role) {
         return roleService.getPageList(role);
     }
-
     /**
      * 添加新的角色信息
      */
@@ -67,7 +62,6 @@ public class RoleController {
         role.setCreateTime(LocalDateTime.now());
         return Result.success(roleService.save(role));
     }
-
     /**
      * 删除角色信息
      */
@@ -76,7 +70,6 @@ public class RoleController {
     public Result deleteRole(@PathVariable Long[] roleIds) {
         return roleService.deleteRoles(roleIds);
     }
-
     /**
      * 修改角色信息
      */
@@ -87,7 +80,6 @@ public class RoleController {
         role.setUpdateTime(LocalDateTime.now());
         return Result.success(roleService.updateById(role));
     }
-
     /**
      * 通过 roleId 获取角色详细信息
      */
@@ -96,7 +88,6 @@ public class RoleController {
     public Result getRoleById(@PathVariable Long roleId) {
         return Result.success(roleService.getById(roleId));
     }
-
     /**
      * 查询角色对应的权限菜单
      */
@@ -105,7 +96,6 @@ public class RoleController {
     public Result getMenusByRoleId(@PathVariable Long roleId) {
         return roleService.getMenusByRoleId(roleId);
     }
-
     /**
      * 查询角色被授予的用户
      */
@@ -114,7 +104,6 @@ public class RoleController {
     public Result getUsersByRoleId(@PathVariable Long roleId) {
         return roleService.getUsersByRoleId(roleId);
     }
-
     /**
      * 给角色分配菜单权限
      */
@@ -123,7 +112,6 @@ public class RoleController {
     public Result grantRoleMenus(@Validated @RequestBody RoleMenusVo roleMenusVo) {
         return roleService.grantRoleMenus(roleMenusVo);
     }
-
     /**
      * 解绑角色对应的所有用户
      */

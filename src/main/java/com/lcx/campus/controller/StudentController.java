@@ -24,12 +24,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/student")
 public class StudentController {
-
     @Resource
     private IStudentService studentService;
-
     /**
-     * 新建学生类型用户
+     * 分页查询学生信息
+     */
+    @GetMapping("/pageList")
+    @PreAuthorize("hasAnyAuthority('system:student:list')")
+    public Result pageList(@RequestBody Student student) {
+        return studentService.pageList(student);
+    }
+    /**
+     * 新增学生类型用户
      */
     @Log(title = "新建学生类型用户", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAnyAuthority('system:student:add')")
@@ -38,7 +44,10 @@ public class StudentController {
         user.setUserType(UserType.STUDENT.getCode());
         return studentService.addStudent(user, student);
     }
-
+    /**
+     * 通过Excel批量新增学生类型用户
+     */
+    // TODO 通过Excel批量新增学生类型用户
     /**
      * 修改学生信息
      */
@@ -47,14 +56,5 @@ public class StudentController {
     @PutMapping("/editStudent")
     public Result editStudent(@RequestBody Student student) {
         return studentService.editStudent(student);
-    }
-
-    /**
-     * 分页查询学生信息
-     */
-    @GetMapping("/pageList")
-    @PreAuthorize("hasAnyAuthority('system:student:list')")
-    public Result pageList(@RequestBody Student student) {
-        return studentService.pageList(student);
     }
 }

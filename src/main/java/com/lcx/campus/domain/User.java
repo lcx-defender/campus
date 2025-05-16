@@ -30,19 +30,16 @@ import lombok.experimental.Accessors;
 public class User extends PageQuery implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     /**
      * 用户ID
      */
     @TableId(value = "user_id", type = IdType.AUTO)
     @NotNull(message = "用户ID不能为空", groups = {User.UpdateUserGroup.class})
     private Long userId;
-
     /**
      * 用户昵称
      */
     private String nickname;
-
     /**
      * 用户类型（0系统管理&程序员;1教师;2学生） 数据字典
      */
@@ -53,14 +50,13 @@ public class User extends PageQuery implements Serializable {
      */
     @NotNull(message = "身份证号不能为空", groups = {User.AddUserGroup.class})
     private String identity;
-
     /**
      * 用户邮箱
      */
     private String email;
 
     /**
-     * 手机号码-适应国际化号码
+     * 手机号码
      */
     private String phone;
 
@@ -68,23 +64,19 @@ public class User extends PageQuery implements Serializable {
      * 用户性别（0男 1女 2未知）数据字典
      */
     private String sex;
-
     /**
      * 头像地址
      */
     private String avatar;
-
     /**
      * 密码
      */
     @NotNull(message = "密码不能为空", groups = {User.AddUserGroup.class})
     private String password;
-
     /**
      * 帐号状态（0正常 1封禁 2删除）数据字典
      */
     private String userStatus;
-
     /**
      * 最后登录IP
      */

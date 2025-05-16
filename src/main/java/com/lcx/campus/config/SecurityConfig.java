@@ -51,6 +51,9 @@ public class SecurityConfig {
      */
     @Resource
     private AuthenticationEntryPointImpl unauthorizedHandler;
+    /**
+     * 权限不足处理类
+     */
     @Resource
     private AccessDeniedHandlerImpl accessDeniedHandler;
 
@@ -67,7 +70,7 @@ public class SecurityConfig {
                             .accessDeniedHandler(accessDeniedHandler);
                 })
                 .authorizeHttpRequests((requests) -> {
-                    // 对于登录login 注册register 验证码captchaImage 允许匿名访问
+                    // 对于登录、获取验证码允许匿名访问
                     requests.requestMatchers("/loginByUsername", "/captchaImage").permitAll()
                             // 静态资源，可匿名访问
                             .requestMatchers(HttpMethod.GET, "/", "/*.html", "/**.html", "/**.css", "/**.js", "/profile/**")
@@ -77,11 +80,11 @@ public class SecurityConfig {
                             // 除上面外的所有请求全部需要鉴权认证
                             .anyRequest().authenticated();
                 })
-                // 添加Logout filter
+                // 添加Logout filter->退出登录过滤器，处理用户退出登录逻辑
                 .logout(logout -> logout.logoutUrl("/user/logout").logoutSuccessHandler(logoutSuccessHandler))
-                // 添加JWT filter
+                // 添加JWT filter，验证请求头中的token是否存在并刷新令牌有效时间
                 .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                // 添加CORS filter
+                // 添加CORS filter，解决跨域问题
                 .addFilterBefore(corsFilter(), JwtAuthenticationTokenFilter.class)
                 .addFilterBefore(corsFilter(), LogoutFilter.class)
                 .build();
@@ -96,6 +99,9 @@ public class SecurityConfig {
         return new ProviderManager(daoAuthenticationProvider);
     }
 
+    /**
+     * 使用Spring Security的密码加密
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

@@ -33,107 +33,85 @@ public class Student extends PageQuery implements Serializable {
      */
     @TableId(value = "user_id", type = IdType.INPUT)
     private Long userId;
-
     /**
      * 学号
      */
     private String studentId;
-
     /**
      * 姓名
      */
     private String studentName;
-
     /**
      * 查询条件：deptId
      */
     @TableField(exist = false)
     private Long deptId;
-
     /**
      * 学校代码
      */
     private Long universityId;
-
     /**
      * 学院代码
      */
     private Long instituteId;
-
     /**
      * 专业代码
      */
     private Long majorId;
-
     /**
      * 班级代码
      */
     private Long classId;
-
     /**
      * 当前年级
      */
     private String currentGrade;
-
     /**
      * 入学时间
      */
     private LocalDateTime admitTime;
-
     /**
      * 毕业时间
      */
     private LocalDateTime graduateTime;
-
     /**
      * 政治面貌
      */
     private String politicalStatus;
-
     /**
      * 民族
      */
     private String ethnic;
-
     /**
      * 学籍状态（0未注册、1在籍、2保留学籍、3休学、4退学、5毕业、6结业、7肄业） 数据字典
      */
     private Integer academicStatus;
-
     /**
      * 高中
      */
     private String highSchool;
-
     /**
      * 家庭住址
      */
     private String homeAddress;
-
     /**
      * 创建者
      */
     private String createBy;
-
     /**
      * 创建时间
      */
     private LocalDateTime createTime;
-
     /**
      * 更新者
      */
     private String updateBy;
-
     /**
      * 更新时间
      */
     private LocalDateTime updateTime;
-
     /**
      * 备注
      */
     private String remark;
-
-
 }
