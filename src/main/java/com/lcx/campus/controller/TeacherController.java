@@ -39,6 +39,15 @@ public class TeacherController {
         return teacherService.pageListTeacher(teacher);
     }
     /**
+     * 分页查询教师列表
+     */
+    @Log(title = "查询教师用户列表", businessType = BusinessType.QUERY)
+    @PreAuthorize("hasAnyAuthority('campus:teacher:list')")
+    @PostMapping("/pageTeacherUser")
+    public Result pageTeacherUser(@RequestBody TeacherUser teacherUser) {
+        return teacherService.pageListTeacherUser(teacherUser);
+    }
+    /**
      * 新建教师类型用户
      */
     @Log(title = "新建教师类型用户", businessType = BusinessType.INSERT)

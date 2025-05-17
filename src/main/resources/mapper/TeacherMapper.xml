@@ -3,23 +3,26 @@
 <mapper namespace="com.lcx.campus.mapper.TeacherMapper">
 
     <select id="selectDeptIdByUserId" parameterType="java.lang.Long" resultType="java.lang.Long">
-        select dept_id from teacher where user_id = #{userId}
+        select dept_id
+        from teacher
+        where user_id = #{userId}
     </select>
 
     <select id="selectDeptByUserId" resultType="com.lcx.campus.domain.Dept" parameterType="java.lang.Long">
-        select d.* from sys_dept d
-        left join teacher t on d.dept_id = t.dept_id
+        select d.*
+        from sys_dept d
+                 left join teacher t on d.dept_id = t.dept_id
         where t.user_id = #{userId}
     </select>
     <select id="pageListTeacherUser" resultType="com.lcx.campus.domain.dto.TeacherUser">
         SELECT
-            u.user_id, u.nickname, u.user_type, u.identity, u.email, u.phone, u.sex, u.avatar,
-            u.password, u.user_status, u.create_time,
-            t.teacher_id, t.teacher_name, t.dept_id, t.title, t.office, t.admit_time, t.position_status
+        u.user_id, u.nickname, u.user_type, u.identity, u.email, u.phone, u.sex, u.avatar,
+        u.password, u.user_status, u.create_time,
+        t.teacher_id, t.teacher_name, t.dept_id, t.title, t.office, t.admit_time, t.position_status
         FROM
-            sys_user u
-                LEFT JOIN
-            teacher t ON u.user_id = t.user_id
+        teacher t
+        LEFT JOIN
+        sys_user u ON u.user_id = t.user_id
         <where>
             <if test="teacherUser.nickname != null and teacherUser.nickname != ''">
                 AND u.nickname LIKE CONCAT('%', #{teacherUser.nickname}, '%')
