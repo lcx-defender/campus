@@ -41,13 +41,13 @@ public class StudentController {
     @Resource
     private IStudentService studentService;
     /**
-     * 分页查询学生信息
+     * 分页查询学生用户信息
      */
-    @PostMapping("/pageList")
+    @PostMapping("/pageStudentUser")
     @PreAuthorize("hasAnyAuthority('campus:student:list')")
-    @Log(title = "分页查询学生信息", businessType = BusinessType.QUERY)
-    public Result pageList(@RequestBody Student student) {
-        return studentService.pageList(student);
+    @Log(title = "分页查询学生用户信息", businessType = BusinessType.QUERY)
+    public Result pageStudentUser(@RequestBody StudentUser studentUser) {
+        return studentService.pageStudentUser(studentUser);
     }
     /**
      * 新增学生类型用户
@@ -113,7 +113,7 @@ public class StudentController {
     @Log(title = "修改学生信息", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAnyAuthority('campus:student:edit')")
     @PutMapping("/editStudent")
-    public Result editStudent(@RequestBody Student student) {
-        return studentService.editStudent(student);
+    public Result editStudent(@RequestBody StudentUser studentUser) {
+        return studentService.editStudent(studentUser);
     }
 }

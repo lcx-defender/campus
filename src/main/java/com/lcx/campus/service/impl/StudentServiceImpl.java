@@ -46,7 +46,42 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     private TeacherMapper teacherMapper;
     @Resource
     private IDeptService deptService;
-
+    /**
+     * 分页查询学生用户信息
+     */
+    @Override
+    public Result pageStudentUser(StudentUser studentUser) {
+        // 根据用户类型进行不同的查询
+        User currentUser = userMapper.selectById(SecurityUtils.getUserId());
+        if (currentUser.getUserType().equals(UserType.SYSTEM.getCode())) {
+            // 系统用户查询所有部门
+            studentUser.setUniversityId(null);
+            studentUser.setInstituteId(null);
+            studentUser.setMajorId(null);
+            studentUser.setClassId(null);
+        } else if(currentUser.getUserType().equals(UserType.TEACHER.getCode())) {
+            // 教师用户查询自己所在的部门
+            Dept dept = teacherMapper.selectDeptByUserId(currentUser.getUserId());
+            if (dept.getLevel().equals(DeptLevel.UNIVERSITY.getLevel())) {
+                studentUser.setUniversityId(dept.getDeptId());
+                studentUser.setInstituteId(null);
+                studentUser.setMajorId(null);
+                studentUser.setClassId(null);
+            } else if (dept.getLevel().equals(DeptLevel.INSTITUTE.getLevel())) {
+                studentUser.setInstituteId(dept.getDeptId());
+            } else if (dept.getLevel().equals(DeptLevel.MAJOR.getLevel())) {
+                studentUser.setMajorId(dept.getDeptId());
+            } else if (dept.getLevel().equals(DeptLevel.CLAZZ.getLevel())) {
+                studentUser.setClassId(dept.getDeptId());
+            }
+        }
+        Page<StudentUser> queryPage  = studentUser.toMpPage();
+//        List<StudentUser> studentUsers = studentMapper.selectStudentUserPage(queryPage, studentUser);
+//        PageVo<StudentUser> res = PageVo.of(queryPage.setRecords(studentUsers));
+        Page<StudentUser> resPage = studentMapper.selectStudentUserPage(queryPage, studentUser);
+        PageVo<StudentUser> res = PageVo.of(resPage);
+        return Result.success("查询成功", res);
+    }
     @Override
     public Result addStudent(User user, Student student) {
         user.setUserType(UserType.STUDENT.getCode());
@@ -66,113 +101,6 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         }
         return Result.success("添加学生成功", userId);
     }
-
-    @Override
-    public Result pageList(Student student) {
-        // 解析分页查询条件
-        Page<Student> queryPage = student.toMpPage();
-        // 获取当前用户的userID
-        Long userId = SecurityUtils.getUserId();
-        User user = userMapper.selectById(userId);
-        Page<Student> resPage;
-        if (user.getUserType().equals(UserType.STUDENT.getCode())) {
-            // 如果是学生用户，查询当前用户的班级
-            Student currentStudent = studentMapper.selectById(userId);
-            if (student.getDeptId() != null && currentStudent.getClassId() != null && student.getDeptId().equals(currentStudent.getClassId())) {
-                // 如果传入的班级ID和当前用户的班级ID相同，则查询该班级的学生
-                resPage = lambdaQuery()
-                        .eq(Student::getClassId, currentStudent.getClassId())
-                        .like(student.getStudentName() != null, Student::getStudentName, student.getStudentName())
-                        .page(queryPage);
-            } else {
-                return Result.fail("学生用户没有权限查看其他班级的学生信息");
-            }
-        } else if(user.getUserType().equals(UserType.TEACHER.getCode())) {
-            // 查询当前教师所属dept
-            Dept dept = teacherMapper.selectDeptByUserId(userId);
-            if (StringUtils.isNull(dept)) {
-                return Result.fail("用户没有可查看的学生信息");
-            }
-
-            if (student.getDeptId() == null) {
-                // 如果没有传入班级ID，则查询该教师所在部门的所有学生
-                Integer currentLevel = dept.getLevel();
-                if (currentLevel.equals(DeptLevel.UNIVERSITY.getLevel())) {
-                    // 如果是大学级别，则查询大学所有学生
-                    resPage = lambdaQuery()
-                            .eq(Student::getUniversityId, dept.getDeptId())
-                            .like(student.getStudentName() != null, Student::getStudentName, student.getStudentName())
-                            .page(queryPage);
-                } else if (currentLevel.equals(DeptLevel.INSTITUTE.getLevel())) {
-                    // 如果是学院级别，则查询该学院的所有学生
-                    resPage = lambdaQuery()
-                            .eq(Student::getInstituteId, dept.getDeptId())
-                            .like(student.getStudentName() != null, Student::getStudentName, student.getStudentName())
-                            .page(queryPage);
-                } else if (currentLevel.equals(DeptLevel.MAJOR.getLevel())) {
-                    // 如果是专业级别，则查询该专业的所有学生
-                    resPage = lambdaQuery()
-                            .eq(Student::getMajorId, dept.getDeptId())
-                            .like(student.getStudentName() != null, Student::getStudentName, student.getStudentName())
-                            .page(queryPage);
-                } else if (currentLevel.equals(DeptLevel.CLAZZ.getLevel())) {
-                    // 查询班级级别的学生
-                    resPage = lambdaQuery()
-                            .eq(Student::getClassId, dept.getDeptId())
-                            .like(student.getStudentName() != null, Student::getStudentName, student.getStudentName())
-                            .page(queryPage);
-                } else {
-                    return Result.fail("用户没有可查看的学生信息");
-                }
-            } else if (deptService.isParentDept(dept.getDeptId(), student.getDeptId())) {
-                // 如果传入了查询deptId，并且是当前用户的子部门，则查询该部门的所有学生
-                Dept stuDept = (Dept) deptService.getDeptInfo(student.getDeptId()).getData();
-                if (stuDept.getLevel().equals(DeptLevel.UNIVERSITY.getLevel())) {
-                    // 如果是大学级别，则查询大学所有学生
-                    resPage = lambdaQuery()
-                            .eq(Student::getUniversityId, stuDept.getDeptId())
-                            .like(student.getStudentName() != null, Student::getStudentName, student.getStudentName())
-                            .page(queryPage);
-                } else if (stuDept.getLevel().equals(DeptLevel.INSTITUTE.getLevel())) {
-                    // 如果是学院级别，则查询该学院的所有学生
-                    resPage = lambdaQuery()
-                            .eq(Student::getInstituteId, stuDept.getDeptId())
-                            .like(student.getStudentName() != null, Student::getStudentName, student.getStudentName())
-                            .page(queryPage);
-                } else if (stuDept.getLevel().equals(DeptLevel.MAJOR.getLevel())) {
-                    // 如果是专业级别，则查询该专业的所有学生
-                    resPage = lambdaQuery()
-                            .eq(Student::getMajorId, stuDept.getDeptId())
-                            .like(student.getStudentName() != null, Student::getStudentName, student.getStudentName())
-                            .page(queryPage);
-                } else if (stuDept.getLevel().equals(DeptLevel.CLAZZ.getLevel())) {
-                    // 查询班级级别的学生
-                    resPage = lambdaQuery()
-                            .eq(Student::getClassId, stuDept.getDeptId())
-                            .like(student.getStudentName() != null, Student::getStudentName, student.getStudentName())
-                            .page(queryPage);
-                } else {
-                    return Result.fail("用户没有可查看的学生信息");
-                }
-            } else {
-                return Result.fail("用户没有可查看的学生信息");
-            }
-        } else {
-            // 管理员查询所有学生
-            resPage = lambdaQuery()
-                    .like(student.getStudentName() != null, Student::getStudentName, student.getStudentName())
-                    .page(queryPage);
-        }
-
-        PageVo<Student> res = PageVo.of(resPage);
-        return Result.success("查询成功", res);
-    }
-
-    @Override
-    public Result editStudent(Student student) {
-        return updateById(student) ? Result.success("修改成功", null) : Result.fail("修改失败");
-    }
-
     @Override
     public Result batchAddStudent(List<StudentUser> studentUsers) {
         // 插入用户
@@ -193,7 +121,15 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         }
         return saveBatch(students)? Result.success("添加学生成功", null) : Result.fail("添加学生失败");
     }
-
+    @Override
+    public Result editStudent(StudentUser studentUser) {
+        User user = new User();
+        Student student = new Student();
+        BeanUtils.copyProperties(studentUser, user);
+        BeanUtils.copyProperties(studentUser, student);
+        userService.updateUser(user);
+        return updateById(student) ? Result.success("修改成功", null) : Result.fail("修改失败");
+    }
     @Override
     public List<StudentUser> selectStudentUserList(StudentUser studentUser) {
         return studentMapper.selectStudentUserList(studentUser);

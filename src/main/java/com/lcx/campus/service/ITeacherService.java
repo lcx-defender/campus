@@ -24,6 +24,8 @@ public interface ITeacherService extends IService<Teacher> {
      * 分页查询教师用户列表
      */
     Result pageListTeacherUser(TeacherUser teacherUser);
-
-    Result editTeacher(Teacher teacher);
+    /**
+     * 修改教师用户信息
+     */
+    Result editTeacherUser(TeacherUser teacherUser);
 }

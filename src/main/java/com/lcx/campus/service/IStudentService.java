@@ -18,18 +18,23 @@ import java.util.List;
  * @since 2025-03-04
  */
 public interface IStudentService extends IService<Student> {
-
+    /**
+     * 新增学生类型用户
+     */
     Result addStudent(User user, Student student);
-
     /**
      * 通过Excel批量新增学生类型用户
      */
     Result batchAddStudent(List<StudentUser> studentUsers);
 
-    Result pageList(Student student);
+    Result editStudent(StudentUser studentUser);
 
-    Result editStudent(Student student);
-
-
+    /**
+     * 条件查询所有学生用户信息
+     */
     List<StudentUser> selectStudentUserList(StudentUser studentUser);
+    /**
+     * 分页条件查询学生用户信息
+     */
+    Result pageStudentUser(StudentUser studentUser);
 }

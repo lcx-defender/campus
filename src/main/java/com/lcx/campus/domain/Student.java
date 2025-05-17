@@ -99,10 +99,6 @@ public class Student extends PageQuery implements Serializable {
      */
     private String createBy;
     /**
-     * 创建时间
-     */
-    private LocalDateTime createTime;
-    /**
      * 更新者
      */
     private String updateBy;

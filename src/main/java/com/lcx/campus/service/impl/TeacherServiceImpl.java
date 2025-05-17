@@ -15,6 +15,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lcx.campus.service.IUserService;
 import com.lcx.campus.utils.SecurityUtils;
 import jakarta.annotation.Resource;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -88,10 +89,19 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
         PageVo<TeacherUser> res = PageVo.of(queryPage.setRecords(teacherUsers));
         return Result.success("查询成功", res);
     }
-
+    /**
+     * 修改教师用户信息
+     */
     @Override
-    public Result editTeacher(Teacher teacher) {
+    public Result editTeacherUser(TeacherUser teacherUser) {
+        Teacher teacher = new Teacher();
+        User user = new User();
+        BeanUtils.copyProperties(teacherUser, teacher);
+        BeanUtils.copyProperties(teacherUser, user);
+        user.setUpdateTime(LocalDateTime.now());
+        userService.updateById(user);
         teacher.setUpdateTime(LocalDateTime.now());
-        return updateById(teacher) ? Result.success("修改成功") : Result.fail("修改失败");
+        teacherMapper.updateById(teacher);
+        return Result.success("修改成功", null);
     }
 }

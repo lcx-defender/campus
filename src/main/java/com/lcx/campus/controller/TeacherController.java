@@ -62,12 +62,12 @@ public class TeacherController {
         return teacherService.addTeacher(user, teacher);
     }
     /**
-     * 修改教师部分信息
+     * 修改教师用户信息
      */
     @Log(title = "修改教师信息", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAnyAuthority('campus:teacher:edit')")
     @PutMapping("/editTeacher")
-    public Result editTeacher(@Validated(Teacher.updateInfo.class) @RequestBody Teacher teacher) {
-        return teacherService.editTeacher(teacher);
+    public Result editTeacher(@RequestBody TeacherUser teacherUser) {
+        return teacherService.editTeacherUser(teacherUser);
     }
 }

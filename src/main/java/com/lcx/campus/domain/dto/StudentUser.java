@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentUser implements Serializable {
+public class StudentUser extends PageQuery implements Serializable {
 
     private static final long serialVersionUID = 1L;
     /**

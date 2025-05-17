@@ -1,8 +1,10 @@
 package com.lcx.campus.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lcx.campus.domain.Student;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lcx.campus.domain.dto.StudentUser;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -18,9 +20,7 @@ import java.util.List;
 public interface StudentMapper extends BaseMapper<Student> {
 
     /**
-     *
-     * @param userId
-     * @return
+     * 根据用户id查询学生班级id
      */
     Long selectClassByUserId(Long userId);
 
@@ -49,4 +49,7 @@ public interface StudentMapper extends BaseMapper<Student> {
     List<Student> selectStudentListByClassId(Long classId);
 
     List<StudentUser> selectStudentUserList(StudentUser studentUser);
+
+    //    List<StudentUser> selectStudentUserPage(Page<StudentUser> queryPage, StudentUser studentUser);
+    Page<StudentUser> selectStudentUserPage(Page<StudentUser> queryPage, StudentUser studentUser);
 }
