@@ -40,7 +40,6 @@ import java.util.Map;
 public class StudentController {
     @Resource
     private IStudentService studentService;
-
     /**
      * 分页查询学生信息
      */
@@ -50,7 +49,6 @@ public class StudentController {
     public Result pageList(@RequestBody Student student) {
         return studentService.pageList(student);
     }
-
     /**
      * 新增学生类型用户
      */
@@ -65,7 +63,6 @@ public class StudentController {
         BeanUtils.copyProperties(studentUser, student);
         return studentService.addStudent(user, student);
     }
-
     /**
      * 通过Excel批量新增学生类型用户
      */
@@ -83,7 +80,6 @@ public class StudentController {
         }
         return Result.success("批量添加学生成功", null);
     }
-
     /**
      * 批量导出学生用户信息
      */
@@ -92,10 +88,10 @@ public class StudentController {
     @PostMapping("/exportStudent")
     public void exportStudent(HttpServletResponse response, @RequestBody StudentUser studentUser) throws IOException {
         try {
-            response.setContentType("application/vnd.ms-excel");
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             response.setCharacterEncoding("utf-8");
-            String fileName = URLEncoder.encode("学生用户信息", "UTF-8");
-            response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+            String fileName = URLEncoder.encode("学生用户信息", "UTF-8").replaceAll("\\+", "%20");;
+            response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
             List<StudentUser> studentUsers = studentService.selectStudentUserList(studentUser);
             System.out.println(studentUsers.size() + "-----------------");
             EasyExcel.write(response.getOutputStream(), StudentUser.class)
@@ -111,7 +107,6 @@ public class StudentController {
             response.getWriter().println(JSON.toJSONString(map));
         }
     }
-
     /**
      * 修改学生信息
      */

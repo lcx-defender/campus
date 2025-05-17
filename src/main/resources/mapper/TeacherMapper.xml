@@ -11,6 +11,32 @@
         left join teacher t on d.dept_id = t.dept_id
         where t.user_id = #{userId}
     </select>
+    <select id="pageListTeacherUser" resultType="com.lcx.campus.domain.dto.TeacherUser">
+        SELECT
+            u.user_id, u.nickname, u.user_type, u.identity, u.email, u.phone, u.sex, u.avatar,
+            u.password, u.user_status, u.create_time,
+            t.teacher_id, t.teacher_name, t.dept_id, t.title, t.office, t.admit_time, t.position_status
+        FROM
+            sys_user u
+                LEFT JOIN
+            teacher t ON u.user_id = t.user_id
+        <where>
+            <if test="teacherUser.nickname != null and teacherUser.nickname != ''">
+                AND u.nickname LIKE CONCAT('%', #{teacherUser.nickname}, '%')
+            </if>
+            <if test="teacherUser.teacherName != null and teacherUser.teacherName != ''">
+                AND t.teacher_name LIKE CONCAT('%', #{teacherUser.teacherName}, '%')
+            </if>
+            <if test="teacherUser.deptId != null">
+                AND t.dept_id = #{teacherUser.deptId}
+            </if>
+            <if test="teacherUser.positionStatus != null">
+                AND t.position_status = #{teacherUser.positionStatus}
+            </if>
+        </where>
+        ORDER BY
+        u.create_time DESC
+    </select>
 
 
 </mapper>

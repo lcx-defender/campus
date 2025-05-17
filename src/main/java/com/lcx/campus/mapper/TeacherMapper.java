@@ -1,8 +1,13 @@
 package com.lcx.campus.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lcx.campus.domain.Dept;
 import com.lcx.campus.domain.Teacher;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.lcx.campus.domain.dto.TeacherUser;
+import com.lcx.campus.domain.vo.PageVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -23,4 +28,6 @@ public interface TeacherMapper extends BaseMapper<Teacher> {
      * 根据用户ID查询教师所在部门详细
      */
     Dept selectDeptByUserId(Long userId);
+
+    List<TeacherUser> pageListTeacherUser(Page<TeacherUser> queryPage, TeacherUser teacherUser);
 }

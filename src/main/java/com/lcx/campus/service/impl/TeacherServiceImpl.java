@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lcx.campus.domain.Teacher;
 import com.lcx.campus.domain.User;
 import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.dto.TeacherUser;
 import com.lcx.campus.domain.vo.PageVo;
 import com.lcx.campus.enums.UserType;
 import com.lcx.campus.mapper.TeacherMapper;
@@ -17,6 +18,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -54,7 +56,6 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
         }
         // 2. 插入教师信息
         teacher.setUserId(userId); // 将用户信息与教师信息绑定
-        teacher.setCreateTime(LocalDateTime.now());
         int insert = teacherMapper.insert(teacher);
         if (insert <= 0) {
             return Result.fail("添加教师信息失败");
@@ -77,6 +78,14 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
                 .eq(teacher.getTitle() != null, Teacher::getTitle, teacher.getTitle())
                 .page(queryPage);
         PageVo<Teacher> res = PageVo.of(resPage);
+        return Result.success("查询成功", res);
+    }
+
+    @Override
+    public Result pageListTeacherUser(TeacherUser teacherUser) {
+        Page<TeacherUser> queryPage = teacherUser.toMpPage();
+        List<TeacherUser> teacherUsers = teacherMapper.pageListTeacherUser(queryPage, teacherUser);
+        PageVo<TeacherUser> res = PageVo.of(queryPage.setRecords(teacherUsers));
         return Result.success("查询成功", res);
     }
 

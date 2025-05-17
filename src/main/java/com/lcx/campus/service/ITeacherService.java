@@ -4,6 +4,7 @@ import com.lcx.campus.domain.Teacher;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lcx.campus.domain.User;
 import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.dto.TeacherUser;
 
 /**
  * <p>
@@ -18,6 +19,11 @@ public interface ITeacherService extends IService<Teacher> {
     Result addTeacher(User user, Teacher teacher);
 
     Result pageListTeacher(Teacher teacher);
+
+    /**
+     * 分页查询教师用户列表
+     */
+    Result pageListTeacherUser(TeacherUser teacherUser);
 
     Result editTeacher(Teacher teacher);
 }
