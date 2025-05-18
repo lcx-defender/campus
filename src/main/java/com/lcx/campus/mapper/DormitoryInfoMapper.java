@@ -2,7 +2,7 @@ package com.lcx.campus.mapper;
 
 import com.lcx.campus.domain.DormitoryInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -15,10 +15,17 @@ import java.util.List;
  * @since 2025-03-04
  */
 public interface DormitoryInfoMapper extends BaseMapper<DormitoryInfo> {
+    /**
+     * 查询是否当前床位是否已经有人居住
+     */
+    DormitoryInfo selectDormitoryInfoByLocation(DormitoryInfo dormitoryInfo);
+    /**
+     * 查询当前用户的宿舍信息
+     */
+    DormitoryInfo selectDormitoryInfoByUserId(Long userId);
 
-    @Update("UPDATE dormitory_info SET student_id = NULL WHERE id = #{id}")
-    boolean clearStudent(Long id);
+    @Select("SELECT * FROM dormitory_info WHERE student_id = #{studentId}")
+    DormitoryInfo selectDormitoryInfoByStudentId(String studentId);
 
-    @Update("UPDATE dormitory_info SET student_id = NULL WHERE id IN (${ids})")
-    boolean clearBatch(List<Long> ids);
+    List<DormitoryInfo> selectDormitoryInfoList(DormitoryInfo dormitoryInfo, List<String> studentIds);
 }

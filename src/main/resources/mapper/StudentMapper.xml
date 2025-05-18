@@ -137,4 +137,80 @@
             </if>
         </where>
     </select>
+    <select id="selectStudentList" resultType="com.lcx.campus.domain.Student">
+        SELECT * FROM student
+        <where>
+            <if test="studentId != null and studentId != ''">
+                AND student_id = #{studentId}
+            </if>
+            <if test="studentName != null and studentName != ''">
+                AND student_name LIKE CONCAT('%', #{studentName}, '%')
+            </if>
+            <if test="classId != null">
+                AND class_id = #{classId}
+            </if>
+            <if test="majorId != null">
+                AND major_id = #{majorId}
+            </if>
+            <if test="instituteId != null">
+                AND institute_id = #{instituteId}
+            </if>
+            <if test="universityId != null">
+                AND university_id = #{universityId}
+            </if>
+            <if test="currentGrade != null and currentGrade != ''">
+                AND current_grade = #{currentGrade}
+            </if>
+            <if test="admitTime != null">
+                AND admit_time = #{admitTime}
+            </if>
+            <if test="graduateTime != null">
+                AND graduate_time = #{graduateTime}
+            </if>
+            <if test="academicStatus != null">
+                AND academic_status = #{academicStatus}
+            </if>
+            <if test="highSchool != null and highSchool != ''">
+                AND high_school LIKE CONCAT('%', #{highSchool}, '%')
+            </if>
+            <if test="homeAddress != null and homeAddress != ''">
+                AND home_address LIKE CONCAT('%', #{homeAddress}, '%')
+            </if>
+        </where>
+    </select>
+    <select id="selectStudent" resultType="com.lcx.campus.domain.Student">
+        select * from student
+        <where>
+            <if test="studentId != null and studentId != ''">
+                AND student_id = #{studentId}
+            </if>
+            <if test="studentName != null and studentName != ''">
+                AND student_name LIKE CONCAT('%', #{studentName}, '%')
+            </if>
+            <if test="classId != null">
+                AND class_id = #{classId}
+            </if>
+            <if test="majorId != null">
+                AND major_id = #{majorId}
+            </if>
+            <if test="instituteId != null">
+                AND institute_id = #{instituteId}
+            </if>
+            <if test="universityId != null">
+                AND university_id = #{universityId}
+            </if>
+            <if test="currentGrade != null and currentGrade != ''">
+                AND current_grade = #{currentGrade}
+            </if>
+            <if test="admitTime != null">
+                AND admit_time = #{admitTime}
+            </if>
+            <if test="graduateTime != null">
+                AND graduate_time = #{graduateTime}
+            </if>
+            <if test="academicStatus != null">
+                AND academic_status = #{academicStatus}
+            </if>
+        </where>
+    </select>
 </mapper>

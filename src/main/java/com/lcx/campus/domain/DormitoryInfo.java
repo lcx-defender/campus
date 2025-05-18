@@ -1,5 +1,7 @@
 package com.lcx.campus.domain;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -27,44 +29,44 @@ import lombok.experimental.Accessors;
 public class DormitoryInfo extends PageQuery implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     /**
      * 主键ID
      */
     @TableId(value = "id", type = IdType.AUTO)
-    @NotNull(message = "主键ID不能为空")
+    @NotNull(message = "主键ID不能为空", groups = {DormitoryInfo.update.class})
+    @ExcelIgnore
     private Long Id;
-
     /**
      * 学号
      */
-    @NotNull(message = "学号不能为空", groups = {DormitoryInfo.insert.class})
+    @NotNull(message = "学号不能为空", groups = {DormitoryInfo.insert.class, DormitoryInfo.update.class})
+    @ExcelProperty(value = "学号")
     private String studentId;
-
     /**
      * 宿舍楼号
      */
-    @NotNull(message = "宿舍楼号不能为空", groups = {DormitoryInfo.insert.class})
+    @NotNull(message = "宿舍楼号不能为空", groups = {DormitoryInfo.insert.class, DormitoryInfo.update.class})
+    @ExcelProperty(value = "宿舍楼号")
     private String dormitoryId;
-
     /**
      * 房间号
      */
-    @NotNull(message = "房间号不能为空", groups = {DormitoryInfo.insert.class})
+    @ExcelProperty(value = "房间号")
+    @NotNull(message = "房间号不能为空", groups = {DormitoryInfo.insert.class, DormitoryInfo.update.class})
     private String roomId;
-
     /**
      * 床位号
      */
-    @NotNull(message = "床位号不能为空", groups = {DormitoryInfo.insert.class})
+    @ExcelProperty(value = "床位号")
+    @NotNull(message = "床位号不能为空", groups = {DormitoryInfo.insert.class, DormitoryInfo.update.class})
     private String bedId;
-
     /**
-     * 查询条件:部门编号
+     * 学生姓名
      */
     @TableField(exist = false)
-    private Long deptId;
+    @ExcelProperty(value = "学生姓名")
+    private String studentName;
 
     public interface insert {}
-
+    public interface update {}
 }

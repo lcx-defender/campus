@@ -119,13 +119,11 @@ public class StudentUser extends PageQuery implements Serializable {
      * 入学时间
      */
     @ExcelProperty("入学时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime admitTime;
     /**
      * 毕业时间
      */
     @ExcelProperty("毕业时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime graduateTime;
     /**
      * 政治面貌

@@ -163,6 +163,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
             return Result.fail("当前部门已存在");
         }
         // 插入新部门
+        dept.setCreateTime(LocalDateTime.now());
         save(dept);
         return Result.success("部门添加成功");
     }

@@ -1,16 +1,32 @@
 package com.lcx.campus.controller;
 
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.fastjson2.JSON;
+import com.lcx.campus.annotation.Log;
 import com.lcx.campus.domain.DormitoryInfo;
+import com.lcx.campus.domain.User;
 import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.dto.StudentUser;
+import com.lcx.campus.enums.BusinessType;
+import com.lcx.campus.enums.UserType;
+import com.lcx.campus.listener.ExcelListener;
+import com.lcx.campus.mapper.DormitoryInfoMapper;
 import com.lcx.campus.service.IDormitoryInfoService;
 import com.lcx.campus.utils.SecurityUtils;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -28,65 +44,90 @@ public class DormitoryInfoController {
     private IDormitoryInfoService dormitoryInfoService;
 
     /**
-     * 学生个人宿舍信息
+     * 获取宿舍信息列表
      */
-    @GetMapping("/{studentId}")
-    @PreAuthorize("hasAnyAuthority('system:dormitory:query')")
-    public Result getStudentDormitoryInfo(@PathVariable String studentId) {
-        return dormitoryInfoService.getStudentDormitoryInfo(studentId);
+    @PreAuthorize("hasAnyAuthority('campus:dormitory:list')")
+    @PostMapping("/getDormitoryInfoPage")
+    @Log(title = "获取宿舍信息列表", businessType = BusinessType.QUERY)
+    public Result getDormitoryInfoPage(@RequestBody DormitoryInfo dormitoryInfo) {
+        return dormitoryInfoService.getDormitoryInfoPage(dormitoryInfo);
     }
-
     /**
-     * 获取当前登录用户的宿舍信息
+     * 单独增加宿舍信息
      */
-    @GetMapping("/getSelfDormitoryInfo")
-    public Result getSelfDormitoryInfo() {
-        Long userId = SecurityUtils.getUserId();
-        return dormitoryInfoService.getSelfDormitoryInfo(userId);
+    @PreAuthorize("hasAnyAuthority('campus:dormitory:add')")
+    @PostMapping("/addDormitoryInfo")
+    @Log(title = "单独增加宿舍信息", businessType = BusinessType.INSERT)
+    public Result addDormitoryInfo(@Validated(DormitoryInfo.insert.class) @RequestBody DormitoryInfo dormitoryInfo) {
+        return dormitoryInfoService.addDormitoryInfo(dormitoryInfo);
     }
-
     /**
-     * 分页查询宿舍信息
+     * excel批量增加宿舍信息
      */
-    @GetMapping("/pageList")
-    @PreAuthorize("hasAnyAuthority('system:dormitory:list')")
-    public Result pageList(@RequestBody DormitoryInfo dormitoryInfo) {
-        return dormitoryInfoService.pageList(dormitoryInfo);
+    @PreAuthorize("hasAnyAuthority('campus:dormitory:add')")
+    @PostMapping("/addDormitoryInfoBatch")
+    @Log(title = "excel批量增加宿舍信息", businessType = BusinessType.INSERT)
+    public Result batchAddDormitoryInfo(MultipartFile file) {
+        try {
+            EasyExcel.read(file.getInputStream(), DormitoryInfo.class,
+                    new ExcelListener<DormitoryInfo>(
+                            list -> dormitoryInfoService.addBatchDormitoryInfo((List<DormitoryInfo>)list)
+                    )).sheet().doRead();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return Result.success("批量添加学生成功", null);
     }
-
     /**
-     * 添加宿舍信息
+     * 删除宿舍信息
      */
-    @PostMapping
-    @PreAuthorize("hasAnyAuthority('system:dormitory:add')")
-    public Result add(@Validated({DormitoryInfo.insert.class}) @RequestBody DormitoryInfo dormitoryInfo) {
-        return dormitoryInfoService.add(dormitoryInfo);
+    @PreAuthorize("hasAnyAuthority('campus:dormitory:remove')")
+    @Log(title = "删除宿舍信息", businessType = BusinessType.DELETE)
+    @DeleteMapping("/deleteDormitoryInfo/{dormitoryIds}")
+    public Result deleteDormitoryInfo(@PathVariable Long[] dormitoryIds) {
+        return dormitoryInfoService.removeBatchByIds(Arrays.asList(dormitoryIds)) ? Result.success("删除宿舍信息成功", null) : Result.fail("删除宿舍信息失败");
     }
-
     /**
      * 修改宿舍信息
      */
-    @PutMapping
-    @PreAuthorize("hasAnyAuthority('system:dormitory:edit')")
-    public Result edit(@Validated @RequestBody DormitoryInfo dormitoryInfo) {
-        return dormitoryInfoService.edit(dormitoryInfo);
+    @PreAuthorize("hasAnyAuthority('campus:dormitory:edit')")
+    @Log(title = "修改宿舍信息", businessType = BusinessType.UPDATE)
+    @PutMapping("/updateDormitoryInfo")
+    public Result updateDormitoryInfo(@Validated @RequestBody DormitoryInfo dormitoryInfo) {
+        return dormitoryInfoService.update(dormitoryInfo);
     }
-
     /**
-     * 清空宿舍信息：有学生退宿且暂无学生入住时，将studentId置空
+     * 批量导出宿舍信息
      */
-    @PutMapping("/clear/{id}")
-    @PreAuthorize("hasAnyAuthority('system:dormitory:edit')")
-    public Result clear(@PathVariable Long id) {
-        return dormitoryInfoService.clear(id);
+    @PreAuthorize("hasAnyAuthority('campus:dormitory:export')")
+    @Log(title = "批量导出宿舍信息", businessType = BusinessType.EXPORT)
+    @PostMapping("/exportDormitoryInfo")
+    public void exportDormitoryInfo(HttpServletResponse response, @RequestBody DormitoryInfo dormitoryInfo) throws IOException {
+        try {
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setCharacterEncoding("utf-8");
+            String fileName = URLEncoder.encode("学生住宿信息", "UTF-8").replaceAll("\\+", "%20");;
+            response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+            List<DormitoryInfo> infoList = dormitoryInfoService.selectDormitoryInfoList(dormitoryInfo);
+            EasyExcel.write(response.getOutputStream(), DormitoryInfo.class)
+                    .autoCloseStream(Boolean.FALSE)
+                    .sheet("学生住宿信息").doWrite(infoList);
+        } catch (Exception e) {
+            response.reset();
+            response.setContentType("application/json");
+            response.setCharacterEncoding("utf-8");
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("status", "failure");
+            map.put("message", "下载文件失败" + e.getMessage());
+            response.getWriter().println(JSON.toJSONString(map));
+        }
     }
-
     /**
-     * 批量清空宿舍信息中的学生信息
+     * 获取当前用户的宿舍信息
      */
-    @PutMapping("/clearBatch")
-    @PreAuthorize("hasAnyAuthority('system:dormitory:edit')")
-    public Result clearBatch(@RequestBody List<Long> ids) {
-        return dormitoryInfoService.clearBatch(ids);
+    @Log(title = "获取当前用户的宿舍信息", businessType = BusinessType.QUERY)
+    @GetMapping("/getSelfDormitoryInfo")
+    public Result getCurrentUserDormitoryInfo() {
+        return dormitoryInfoService.getCurrentUserDormitoryInfo();
     }
 }

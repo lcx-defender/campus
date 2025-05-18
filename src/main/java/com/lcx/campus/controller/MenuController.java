@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +60,7 @@ public class MenuController {
     @PostMapping("/addMenu")
     public Result addMenu(@Validated @RequestBody Menu menu) {
         if (menuService.checkMenuNameUnique(menu)) {
+            menu.setCreateTime(LocalDateTime.now());
             return menuService.save(menu) ? Result.success() : Result.fail("新增菜单'" + menu.getMenuName() + "'失败");
         }
         return Result.fail("新增菜单'" + menu.getMenuName() + "'失败,菜单名称已存在");

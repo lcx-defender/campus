@@ -52,7 +52,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     @Override
     public Result pageStudentUser(StudentUser studentUser) {
         // 根据用户类型进行不同的查询
-        User currentUser = userMapper.selectById(SecurityUtils.getUserId());
+        User currentUser = SecurityUtils.getLoginUser().getUser();
         if (currentUser.getUserType().equals(UserType.SYSTEM.getCode())) {
             // 系统用户查询所有部门
             studentUser.setUniversityId(null);

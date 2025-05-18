@@ -4,21 +4,20 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lcx.campus.domain.Dept;
 import com.lcx.campus.domain.DormitoryInfo;
 import com.lcx.campus.domain.Student;
+import com.lcx.campus.domain.User;
 import com.lcx.campus.domain.dto.Result;
-import com.lcx.campus.domain.vo.PageVo;
 import com.lcx.campus.enums.DeptLevel;
-import com.lcx.campus.mapper.DeptMapper;
-import com.lcx.campus.mapper.DormitoryInfoMapper;
-import com.lcx.campus.mapper.StudentMapper;
-import com.lcx.campus.mapper.UserMapper;
+import com.lcx.campus.enums.UserType;
+import com.lcx.campus.mapper.*;
 import com.lcx.campus.service.IDormitoryInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lcx.campus.utils.SecurityUtils;
 import com.lcx.campus.utils.StringUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -34,136 +33,184 @@ public class DormitoryInfoServiceImpl extends ServiceImpl<DormitoryInfoMapper, D
     @Resource
     private DormitoryInfoMapper dormitoryInfoMapper;
     @Resource
-    private UserMapper userMapper;
+    private TeacherMapper teacherMapper;
     @Resource
     private StudentMapper studentMapper;
-    @Resource
-    private DeptMapper deptMapper;
-
-    @Override
-    public Result getStudentDormitoryInfo(String studentId) {
-        DormitoryInfo dormitoryInfo = dormitoryInfoMapper.selectOne(
-                lambdaQuery()
-                        .eq(DormitoryInfo::getStudentId, studentId)
-        );
-        if(dormitoryInfo == null) {
-            return Result.fail("未找到当前学生宿舍信息");
-        }
-        return Result.success(dormitoryInfo);
-    }
-
-    @Override
-    public Result getSelfDormitoryInfo(Long userId) {
-        // 获取学生ID
-        Student student = studentMapper.selectById(userId);
-        if(student == null) {
-            return Result.fail("未找到当前用户学生信息");
-        }
-        String studentId = student.getStudentId();
-        if(StringUtils.isEmpty(studentId)) {
-            return Result.fail("未找到当前用户学生信息");
-        }
-        return getStudentDormitoryInfo(studentId);
-    }
 
     /**
-     * 分页查询宿舍信息
+     * 获取宿舍信息列表
      */
     @Override
-    public Result pageList(DormitoryInfo dormitoryInfo) {
+    public Result getDormitoryInfoPage(DormitoryInfo dormitoryInfo) {
         Page<DormitoryInfo> queryPage = dormitoryInfo.toMpPage();
-        // 设置查询条件
-        List<String> studentIds = null;
-        if(dormitoryInfo.getDeptId() != null) {
-            // 根据部门ID查询学生ID
-            Long deptId= dormitoryInfo.getDeptId();
-            Dept dept = deptMapper.selectById(deptId);
-            if(dept == null) {
-                return Result.fail("未找到部门信息");
-            }
-            if(dept.getLevel() == DeptLevel.UNIVERSITY.getLevel()) {
-                List<Student> students = studentMapper.selectStudentListByUniversityId(deptId);
-                // 过滤只留下在读学生ID
-                studentIds = students.stream()
-                        .map(Student::getStudentId)
-                        .filter(studentId -> studentId != null)
-                        .collect(Collectors.toList());
-            } else if(dept.getLevel() == DeptLevel.INSTITUTE.getLevel()) {
-                List<Student> students = studentMapper.selectStudentListByInstituteId(deptId);
-                // 过滤只留下在读学生ID
-                studentIds = students.stream()
-                        .map(Student::getStudentId)
-                        .filter(studentId -> studentId != null)
-                        .collect(Collectors.toList());
-            } else if(dept.getLevel() == DeptLevel.MAJOR.getLevel()) {
-                List<Student> students = studentMapper.selectStudentListByMajorId(deptId);
-                // 过滤只留下在读学生ID
-                studentIds = students.stream()
-                        .map(Student::getStudentId)
-                        .filter(studentId -> studentId != null)
-                        .collect(Collectors.toList());
-            } else if(dept.getLevel() == DeptLevel.CLAZZ.getLevel()) {
-                List<Student> students = studentMapper.selectStudentListByClassId(deptId);
-                // 过滤只留下在读学生ID
-                studentIds = students.stream()
-                        .map(Student::getStudentId)
-                        .filter(studentId -> studentId != null)
-                        .collect(Collectors.toList());
-            }
+        Student student = new Student();
+        if (StringUtils.isNotEmpty(dormitoryInfo.getStudentName())) {
+            student.setStudentName(dormitoryInfo.getStudentName());
         }
-        Page<DormitoryInfo> page = lambdaQuery()
+        if (StringUtils.isNotNull(dormitoryInfo.getStudentId())) {
+            student.setStudentId(dormitoryInfo.getStudentId());
+        }
+        List<Student> students = new ArrayList<>();
+        User user = SecurityUtils.getLoginUser().getUser();
+        if (user.getUserType().equals(UserType.TEACHER.getCode())) {
+            Dept dept = teacherMapper.selectDeptByUserId(SecurityUtils.getUserId());
+            if (dept.getLevel().equals(DeptLevel.UNIVERSITY.getLevel())) {
+                student.setUniversityId(dept.getDeptId());
+                students = studentMapper.selectStudentList(student);
+            } else if (dept.getLevel().equals(DeptLevel.INSTITUTE.getLevel())) {
+                student.setInstituteId(dept.getDeptId());
+                students = studentMapper.selectStudentList(student);
+            } else if (dept.getLevel().equals(DeptLevel.MAJOR.getLevel())) {
+                student.setMajorId(dept.getDeptId());
+                students = studentMapper.selectStudentList(student);
+            } else {
+                student.setClassId(dept.getDeptId());
+                students = studentMapper.selectStudentList(student);
+            }
+
+        } else if(user.getUserType().equals(UserType.STUDENT.getCode())) {
+            return Result.fail("查询方式不正确");
+        } else {
+            students = studentMapper.selectStudentList(student);
+        }
+        // 获取这些学生studentId
+        List<String> studentIds = students.stream().map(Student::getStudentId).toList();
+        // 分页查询学生的宿舍信息
+        Page<DormitoryInfo> resPage = lambdaQuery()
                 .eq(dormitoryInfo.getDormitoryId() != null, DormitoryInfo::getDormitoryId, dormitoryInfo.getDormitoryId())
                 .eq(dormitoryInfo.getRoomId() != null, DormitoryInfo::getRoomId, dormitoryInfo.getRoomId())
                 .eq(dormitoryInfo.getBedId() != null, DormitoryInfo::getBedId, dormitoryInfo.getBedId())
-                .in(studentIds != null && !studentIds.isEmpty(), DormitoryInfo::getStudentId, studentIds)
+                .in(DormitoryInfo::getStudentId, studentIds)
                 .page(queryPage);
-        PageVo<DormitoryInfo> res = PageVo.of(page);
-        return Result.success(res);
+        return Result.success(resPage);
+    }
+
+    /**
+     * 单独增加宿舍信息
+     */
+    @Override
+    public Result addDormitoryInfo(DormitoryInfo dormitoryInfo) {
+        // 查询是否当前床位是否已经有人居住
+        DormitoryInfo info = dormitoryInfoMapper.selectDormitoryInfoByLocation(dormitoryInfo);
+        if (StringUtils.isNotNull(info)) {
+            return Result.fail("当前床位已经有人居住");
+        }
+        // 查询学生是否已经拥有床位
+        DormitoryInfo existingInfo = dormitoryInfoMapper.selectDormitoryInfoByStudentId(dormitoryInfo.getStudentId());
+        if (StringUtils.isNotNull(existingInfo)) {
+            return Result.fail("当前学生已经拥有床位");
+        }
+        // 查询当前学生是否存在
+        Student student = new Student();
+        student.setStudentId(dormitoryInfo.getStudentId());
+        student = studentMapper.selectStudent(student);
+        if (StringUtils.isNull(student)) {
+            return Result.fail("当前学生不存在");
+        }
+        return save(dormitoryInfo) ? Result.success("添加成功", null) : Result.fail("添加失败");
     }
 
     @Override
-    public Result add(DormitoryInfo dormitoryInfo) {
-        // 检查是否已经存在当前宿舍楼、宿舍号、床位号相同的宿舍信息；若存在，更新为当前新增信息
-        DormitoryInfo existingDormitoryInfo = dormitoryInfoMapper.selectOne(
-                lambdaQuery()
-                        .eq(DormitoryInfo::getDormitoryId, dormitoryInfo.getDormitoryId())
-                        .eq(DormitoryInfo::getRoomId, dormitoryInfo.getRoomId())
-                        .eq(DormitoryInfo::getBedId, dormitoryInfo.getBedId())
-        );
-        if (existingDormitoryInfo != null) {
-            if(existingDormitoryInfo.getStudentId() != null) {
-                // 如果已有学生入住，则不允许重复添加
-                return Result.fail("宿舍信息已有学生入驻，请勿重复添加");
+    public void addBatchDormitoryInfo(List<DormitoryInfo> list) {
+        List<DormitoryInfo> conflictList = new ArrayList<>();
+        for (DormitoryInfo dormitoryInfo : list) {
+            // 查询数据库中是否存在冲突
+            DormitoryInfo existingInfo = dormitoryInfoMapper.selectDormitoryInfoByLocation(dormitoryInfo);
+            if (existingInfo != null) {
+                conflictList.add(dormitoryInfo);
             }
-            // 更新已有宿舍信息
-            existingDormitoryInfo.setStudentId(dormitoryInfo.getStudentId());
-            dormitoryInfoMapper.updateById(existingDormitoryInfo);
-            return Result.success("更新宿舍信息成功");
-        } else {
-            // 插入新的宿舍信息
-            dormitoryInfoMapper.insert(dormitoryInfo);
-            return Result.success("添加宿舍信息成功");
+            // 查询学生是否已经拥有床位
+            DormitoryInfo existingStudentInfo = dormitoryInfoMapper.selectDormitoryInfoByStudentId(dormitoryInfo.getStudentId());
+            if (existingStudentInfo != null) {
+                conflictList.add(dormitoryInfo);
+            }
+            // 查询当前学生是否存在
+            Student student = new Student();
+            student.setStudentId(dormitoryInfo.getStudentId());
+            student = studentMapper.selectStudent(student);
+            if (StringUtils.isNull(student)) {
+                throw new RuntimeException("当前学生不存在: " + dormitoryInfo.getStudentId());
+            }
         }
+        // 如果存在冲突，抛出异常或返回冲突信息
+        if (!conflictList.isEmpty()) {
+            throw new RuntimeException("以下宿舍信息存在冲突: " + conflictList);
+        }
+        // 批量保存数据
+        saveBatch(list);
+    }
+
+    /**
+     * 获取当前用户的宿舍信息
+     */
+    @Override
+    public Result getCurrentUserDormitoryInfo() {
+        User user = SecurityUtils.getLoginUser().getUser();
+        if (!user.getUserType().equals(UserType.STUDENT.getCode())) {
+            return Result.fail("当前用户不是学生");
+        }
+        DormitoryInfo dormitoryInfo = dormitoryInfoMapper.selectDormitoryInfoByUserId(user.getUserId());
+        return Result.success(dormitoryInfo);
     }
 
     /**
      * 修改宿舍信息
-     * @param dormitoryInfo
-     * @return
      */
     @Override
-    public Result edit(DormitoryInfo dormitoryInfo) {
-        return updateById(dormitoryInfo) ? Result.success("修改宿舍信息成功") : Result.fail("修改宿舍信息失败");
+    public Result update(DormitoryInfo dormitoryInfo) {
+        // 查询是否当前床位是否已经有人居住
+        DormitoryInfo info = dormitoryInfoMapper.selectDormitoryInfoByLocation(dormitoryInfo);
+        if (StringUtils.isNotNull(info) && !info.getId().equals(dormitoryInfo.getId())) {
+            return Result.fail("当前床位已经有人居住");
+        }
+        DormitoryInfo dormitoryInfo1 = dormitoryInfoMapper.selectDormitoryInfoByStudentId(dormitoryInfo.getStudentId());
+        if (StringUtils.isNotNull(dormitoryInfo1) && !dormitoryInfo1.getId().equals(dormitoryInfo.getId())) {
+            return Result.fail("当前学生已经拥有床位");
+        }
+        // 查询当前学生是否存在
+        Student student = new Student();
+        student.setStudentId(dormitoryInfo.getStudentId());
+        student = studentMapper.selectStudent(student);
+        if (StringUtils.isNull(student)) {
+            return Result.fail("当前学生不存在");
+        }
+        return updateById(dormitoryInfo) ? Result.success("修改成功", null) : Result.fail("修改失败");
     }
 
     @Override
-    public Result clear(Long id) {
-        return dormitoryInfoMapper.clearStudent(id) ? Result.success("清空宿舍信息成功") : Result.fail("清空宿舍信息失败");
+    public List<DormitoryInfo> selectDormitoryInfoList(DormitoryInfo dormitoryInfo) {
+        Student student = new Student();
+        if (StringUtils.isNotEmpty(dormitoryInfo.getStudentName())) {
+            student.setStudentName(dormitoryInfo.getStudentName());
+        }
+        if (StringUtils.isNotNull(dormitoryInfo.getStudentId())) {
+            student.setStudentId(dormitoryInfo.getStudentId());
+        }
+        List<Student> students = new ArrayList<>();
+        User user = SecurityUtils.getLoginUser().getUser();
+        if (user.getUserType().equals(UserType.TEACHER.getCode())) {
+            Dept dept = teacherMapper.selectDeptByUserId(SecurityUtils.getUserId());
+            if (dept.getLevel().equals(DeptLevel.UNIVERSITY.getLevel())) {
+                student.setUniversityId(dept.getDeptId());
+                students = studentMapper.selectStudentList(student);
+            } else if (dept.getLevel().equals(DeptLevel.INSTITUTE.getLevel())) {
+                student.setInstituteId(dept.getDeptId());
+                students = studentMapper.selectStudentList(student);
+            } else if (dept.getLevel().equals(DeptLevel.MAJOR.getLevel())) {
+                student.setMajorId(dept.getDeptId());
+                students = studentMapper.selectStudentList(student);
+            } else {
+                student.setClassId(dept.getDeptId());
+                students = studentMapper.selectStudentList(student);
+            }
+        } else if(user.getUserType().equals(UserType.STUDENT.getCode())) {
+            return List.of();
+        } else {
+            students = studentMapper.selectStudentList(student);
+        }
+        // 获取这些学生studentId
+        List<String> studentIds = students.stream().map(Student::getStudentId).toList();
+        // 条件查询学生的宿舍信息
+        return dormitoryInfoMapper.selectDormitoryInfoList(dormitoryInfo, studentIds);
     }
-
-    @Override
-    public Result clearBatch(List<Long> ids) {
-        return dormitoryInfoMapper.clearBatch(ids) ? Result.success("批量清空宿舍信息成功") : Result.fail("批量清空宿舍信息失败");
-    }
-
 }

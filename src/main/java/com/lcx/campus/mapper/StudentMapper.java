@@ -29,27 +29,33 @@ public interface StudentMapper extends BaseMapper<Student> {
      */
     @Select("SELECT * FROM student WHERE university_id = #{universityId}")
     List<Student> selectStudentListByUniversityId(Long universityId);
-
     /**
      * 根据学院id查询学生列表
      */
     @Select("SELECT * FROM student WHERE institute_id = #{instituteId}")
     List<Student> selectStudentListByInstituteId(Long instituteId);
-
     /**
      * 根据专业id查询学生列表
      */
     @Select("SELECT * FROM student WHERE major_id = #{majorId}")
     List<Student> selectStudentListByMajorId(Long majorId);
-
     /**
      * 根据班级id查询学生列表
      */
     @Select("SELECT * FROM student WHERE class_id = #{classId}")
     List<Student> selectStudentListByClassId(Long classId);
+    /**
+     * 根据学生条件查询学生信息列表
+     */
+    List<Student> selectStudentList(Student student);
 
+    /**
+     * 根据学生用户条件查询学生用户列表
+     */
     List<StudentUser> selectStudentUserList(StudentUser studentUser);
 
     //    List<StudentUser> selectStudentUserPage(Page<StudentUser> queryPage, StudentUser studentUser);
     Page<StudentUser> selectStudentUserPage(Page<StudentUser> queryPage, StudentUser studentUser);
+
+    Student selectStudent(Student student);
 }

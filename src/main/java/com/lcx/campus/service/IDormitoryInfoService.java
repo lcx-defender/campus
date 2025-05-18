@@ -15,39 +15,27 @@ import java.util.List;
  * @since 2025-03-04
  */
 public interface IDormitoryInfoService extends IService<DormitoryInfo> {
-
     /**
-     * 学生个人宿舍信息
-     * @param studentId
-     * @return
+     * 获取宿舍信息列表
      */
-    Result getStudentDormitoryInfo(String studentId);
-
+    Result getDormitoryInfoPage(DormitoryInfo dormitoryInfo);
     /**
-     * 根据用户ID查询宿舍信息
-     * @param userId
-     * @return
+     * 单独增加宿舍信息
      */
-    Result getSelfDormitoryInfo(Long userId);
+    Result addDormitoryInfo(DormitoryInfo dormitoryInfo);
 
+    void addBatchDormitoryInfo(List<DormitoryInfo> list);
     /**
-     * 分页查询宿舍信息
+     * 获取当前用户的宿舍信息
      */
-    Result pageList(DormitoryInfo dormitoryInfo);
-
-    /**
-     * 添加宿舍信息
-     */
-    Result add(DormitoryInfo dormitoryInfo);
-
+    Result getCurrentUserDormitoryInfo();
     /**
      * 修改宿舍信息
-     * @param dormitoryInfo
-     * @return
      */
-    Result edit(DormitoryInfo dormitoryInfo);
+    Result update(DormitoryInfo dormitoryInfo);
 
-    Result clear(Long id);
-
-    Result clearBatch(List<Long> ids);
+    /**
+     * 条件查询宿舍信息
+     */
+    List<DormitoryInfo> selectDormitoryInfoList(DormitoryInfo dormitoryInfo);
 }
