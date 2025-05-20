@@ -14,6 +14,7 @@ import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.observation.ChatModelObservationConvention;
+import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.model.SimpleApiKey;
 import org.springframework.ai.model.tool.ToolCallingManager;
 import org.springframework.ai.openai.OpenAiChatModel;
@@ -43,35 +44,40 @@ public class ChatAiConfig {
         return new InMemoryChatMemory();
     }
     /**
-     * 向量存储(本地简易存储)
+     * 向量数据库
      */
     @Bean
     public VectorStore vectorStore(OpenAiEmbeddingModel embeddingModel) {
-        return SimpleVectorStore.builder(embeddingModel).build();
+        return SimpleVectorStore.builder(embeddingModel).build(); // 将向量库与向量模型结合起来
+    }
+
+    /**
+     * deepseek的聊天模型
+     */
+    @Bean
+    public ChatClient chatClient(AlibabaOpenAiChatModel model, ChatMemory chatMemory) {
+        return ChatClient
+                .builder(model)
+                .defaultOptions(ChatOptions.builder().model("qwen-omni-turbo").build())
+                .defaultSystem("你是一个热心、可爱的智能助手，你的名字叫智慧小星，请以智慧小星的身份和语气回答并帮助用户解决问题。")
+                .defaultAdvisors(
+                        new SimpleLoggerAdvisor(), // 简单的日志
+                        new MessageChatMemoryAdvisor(chatMemory)
+                )
+                .build();
     }
 
     /**
      * 结合向量模型的聊天模型
      */
     @Bean
-    public ChatClient serviceChatClient(OpenAiChatModel model, ChatMemory chatMemory, CampusTools campusTools) {
+    public ChatClient serviceChatClient(OpenAiChatModel model, ChatMemory chatMemory, CampusTools campusTools, VectorStore vectorStore) {
         return ChatClient
                 .builder(model)
                 .defaultSystem(Constants.SERVICE_SYSTEM_PROMPT)
                 .defaultAdvisors(
                         new SimpleLoggerAdvisor(),
-                        new MessageChatMemoryAdvisor(chatMemory)
-                )
-                .defaultTools(campusTools)
-                .build();
-    }
-    @Bean
-    public ChatClient pdfChatClient(OpenAiChatModel model, VectorStore vectorStore) {
-        return ChatClient
-                .builder(model)
-                .defaultSystem(Constants.CHAT_SYSTEM_PROMPT)
-                .defaultAdvisors(
-                        new SimpleLoggerAdvisor(),
+                        new MessageChatMemoryAdvisor(chatMemory),
                         new QuestionAnswerAdvisor(
                                 vectorStore,
                                 SearchRequest.builder()
@@ -80,6 +86,7 @@ public class ChatAiConfig {
                                         .build()
                         )
                 )
+                .defaultTools(campusTools)
                 .build();
     }
     @Bean

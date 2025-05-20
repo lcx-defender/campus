@@ -71,7 +71,7 @@ public class SecurityConfig {
                 })
                 .authorizeHttpRequests((requests) -> {
                     // 对于登录、获取验证码允许匿名访问
-                    requests.requestMatchers("/loginByUsername", "/captchaImage").permitAll()
+                    requests.requestMatchers("/loginByUsername", "/loginByStudentId", "/captchaImage").permitAll()
                             // 静态资源，可匿名访问
                             .requestMatchers(HttpMethod.GET, "/", "/*.html", "/**.html", "/**.css", "/**.js", "/profile/**")
                             .permitAll()

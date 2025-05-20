@@ -23,6 +23,11 @@ public interface IDeptService extends IService<Dept> {
      */
     Long getDeptIdByUserId(Long userId);
 
+    /**
+     * 根据用户id查询所属学校
+     */
+    Long getUniversityIdByUserId(Long userId);
+
     boolean isParentDept(Long deptId1, Long deptId2);
 
     /**

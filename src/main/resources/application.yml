@@ -1,15 +1,19 @@
 server:
   # 后端服务运行端口号
   port: 8088
+  tomcat:
+    max-swallow-size: 20MB
 
 spring:
   profiles:
     active: dev
-
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 mybatis-plus:
   mapperLocations: classpath*:mapper/**/*Mapper.xml
   typeAliasesPackage: com.lcx.domain
-
 logging:
   level:
     com.lcx: debug

@@ -2,9 +2,11 @@ package com.lcx.campus.service.impl;
 
 import com.lcx.campus.domain.Dept;
 import com.lcx.campus.domain.Student;
+import com.lcx.campus.domain.Teacher;
 import com.lcx.campus.domain.User;
 import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.vo.TreeSelect;
+import com.lcx.campus.enums.DeptLevel;
 import com.lcx.campus.enums.DeptStatus;
 import com.lcx.campus.enums.UserType;
 import com.lcx.campus.mapper.DeptMapper;
@@ -47,9 +49,9 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
     private StudentMapper studentMapper;
 
     /**
-     * 根据用户id查询用户所在部门
+     * 根据用户id查询用户所在最低部门
      *
-     * @param userId
+     * @param userId 用户id
      * @return 部门信息
      */
     @Override
@@ -62,6 +64,28 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
             return studentMapper.selectClassByUserId(userId);
         } else {
             return null;
+        }
+    }
+    /**
+     * 根据用户id查询所属学校
+     */
+    @Override
+    public Long getUniversityIdByUserId(Long userId) {
+        User user = userMapper.selectById(userId);
+        String userType = user.getUserType();
+        if (userType.equals(UserType.TEACHER.getCode())) {
+            Teacher teacher = teacherMapper.selectById(userId);
+            Long deptId = teacher.getDeptId();
+            Dept dept = deptMapper.selectById(deptId);
+            while (dept.getLevel().equals(DeptLevel.UNIVERSITY.getLevel())) {
+                deptId = dept.getParentId();
+                dept = deptMapper.selectById(deptId);
+            }
+            return deptId;
+        } else if (userType.equals(UserType.STUDENT.getCode())) {
+            return studentMapper.selectById(userId).getUniversityId();
+        } else {
+            return 0L;
         }
     }
 

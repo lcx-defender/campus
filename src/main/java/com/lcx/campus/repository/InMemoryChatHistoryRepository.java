@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.lcx.campus.domain.Msg;
+import com.lcx.campus.utils.SecurityUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
@@ -35,7 +36,9 @@ public class InMemoryChatHistoryRepository implements ChatHistoryRepository {
     private ChatMemory chatMemory;
     @Override
     public void save(String type, String chatId) {
-        List<String> chatIds = chatHistory.computeIfAbsent(type, k -> new ArrayList<>());
+        Long userId = SecurityUtils.getUserId();
+        String memoryKey = userId + ":" + type;
+        List<String> chatIds = chatHistory.computeIfAbsent(memoryKey, k -> new ArrayList<>());
         if (chatIds.contains(chatId)) {
             return;
         }
@@ -44,7 +47,9 @@ public class InMemoryChatHistoryRepository implements ChatHistoryRepository {
 
     @Override
     public List<String> getChatIds(String type) {
-        return chatHistory.getOrDefault(type, List.of());
+        Long userId = SecurityUtils.getUserId();
+        String memoryKey = userId + ":" + type;
+        return chatHistory.getOrDefault(memoryKey, List.of());
     }
 
     @PostConstruct
