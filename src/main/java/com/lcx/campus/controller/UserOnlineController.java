@@ -2,7 +2,7 @@ package com.lcx.campus.controller;
 
 import com.lcx.campus.annotation.Log;
 import com.lcx.campus.domain.UserOnline;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.enums.BusinessType;
 import com.lcx.campus.service.IUserOnlineService;
 import jakarta.annotation.Resource;

@@ -1,10 +1,9 @@
 package com.lcx.campus.controller;
 
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.service.impl.CaptchaServiceImpl;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

@@ -4,7 +4,7 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.IdUtil;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.redis.core.StringRedisTemplate;

@@ -2,7 +2,7 @@ package com.lcx.campus.controller;
 
 
 import com.lcx.campus.domain.DictType;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.service.IDictTypeService;
 import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;

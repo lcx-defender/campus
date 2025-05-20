@@ -2,9 +2,7 @@ package com.lcx.campus.controller;
 
 
 import com.lcx.campus.domain.Role;
-import com.lcx.campus.domain.RoleMenu;
-import com.lcx.campus.domain.dto.PageQuery;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.vo.RoleMenusVo;
 import com.lcx.campus.service.IRoleService;
 import com.lcx.campus.utils.SecurityUtils;
@@ -14,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 /**
  * <p>

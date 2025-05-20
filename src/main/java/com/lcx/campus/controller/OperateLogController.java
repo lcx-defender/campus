@@ -2,14 +2,13 @@ package com.lcx.campus.controller;
 
 
 import com.lcx.campus.domain.OperateLog;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.service.IOperateLogService;
 import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * <p>

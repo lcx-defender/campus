@@ -3,8 +3,10 @@ package com.lcx.campus.service;
 import com.lcx.campus.domain.Teacher;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lcx.campus.domain.User;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.dto.TeacherUser;
+
+import java.util.List;
 
 /**
  * <p>
@@ -28,4 +30,6 @@ public interface ITeacherService extends IService<Teacher> {
      * 修改教师用户信息
      */
     Result editTeacherUser(TeacherUser teacherUser);
+
+    List<Teacher> getTeacherList(Teacher teacher);
 }

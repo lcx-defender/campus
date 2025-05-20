@@ -3,7 +3,7 @@ package com.lcx.campus.controller;
 
 import com.lcx.campus.annotation.Log;
 import com.lcx.campus.domain.DictData;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.enums.BusinessType;
 import com.lcx.campus.service.IDictDataService;
 import jakarta.annotation.Resource;

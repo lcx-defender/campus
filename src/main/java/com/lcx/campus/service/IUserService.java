@@ -1,12 +1,10 @@
 package com.lcx.campus.service;
 
-import com.lcx.campus.domain.Student;
-import com.lcx.campus.domain.Teacher;
 import com.lcx.campus.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lcx.campus.domain.dto.LoginBody;
 import com.lcx.campus.domain.dto.PasswordBody;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.vo.UserRolesVo;
 import jakarta.servlet.http.HttpServletRequest;
 

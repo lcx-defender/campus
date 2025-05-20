@@ -2,7 +2,7 @@ package com.lcx.campus.controller;
 
 import com.lcx.campus.annotation.Log;
 import com.lcx.campus.domain.User;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.enums.BusinessType;
 import com.lcx.campus.service.IUserService;
 import com.lcx.campus.utils.FileUploadUtils;
@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.security.Security;
 
 @RestController
 @RequestMapping("/upload")

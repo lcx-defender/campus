@@ -10,6 +10,11 @@ mybatis-plus:
   mapperLocations: classpath*:mapper/**/*Mapper.xml
   typeAliasesPackage: com.lcx.domain
 
+logging:
+  level:
+    com.lcx: debug
+    org.springframework.ai: debug
+
 # Redis配置(已放入application-dev.yml)
 # MySQL配置(已放入application-dev.yml)
 # 文件存储配置(已放入application-dev.yml)

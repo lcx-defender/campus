@@ -5,7 +5,8 @@ import com.lcx.campus.domain.Dept;
 import com.lcx.campus.domain.DormitoryInfo;
 import com.lcx.campus.domain.Student;
 import com.lcx.campus.domain.User;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.PageVo;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.enums.DeptLevel;
 import com.lcx.campus.enums.UserType;
 import com.lcx.campus.mapper.*;
@@ -82,7 +83,7 @@ public class DormitoryInfoServiceImpl extends ServiceImpl<DormitoryInfoMapper, D
                 .eq(dormitoryInfo.getBedId() != null, DormitoryInfo::getBedId, dormitoryInfo.getBedId())
                 .in(DormitoryInfo::getStudentId, studentIds)
                 .page(queryPage);
-        return Result.success(resPage);
+        return Result.success(PageVo.of(resPage));
     }
 
     /**
@@ -139,20 +140,6 @@ public class DormitoryInfoServiceImpl extends ServiceImpl<DormitoryInfoMapper, D
         // 批量保存数据
         saveBatch(list);
     }
-
-    /**
-     * 获取当前用户的宿舍信息
-     */
-    @Override
-    public Result getCurrentUserDormitoryInfo() {
-        User user = SecurityUtils.getLoginUser().getUser();
-        if (!user.getUserType().equals(UserType.STUDENT.getCode())) {
-            return Result.fail("当前用户不是学生");
-        }
-        DormitoryInfo dormitoryInfo = dormitoryInfoMapper.selectDormitoryInfoByUserId(user.getUserId());
-        return Result.success(dormitoryInfo);
-    }
-
     /**
      * 修改宿舍信息
      */
@@ -176,7 +163,6 @@ public class DormitoryInfoServiceImpl extends ServiceImpl<DormitoryInfoMapper, D
         }
         return updateById(dormitoryInfo) ? Result.success("修改成功", null) : Result.fail("修改失败");
     }
-
     @Override
     public List<DormitoryInfo> selectDormitoryInfoList(DormitoryInfo dormitoryInfo) {
         Student student = new Student();
@@ -204,7 +190,7 @@ public class DormitoryInfoServiceImpl extends ServiceImpl<DormitoryInfoMapper, D
                 students = studentMapper.selectStudentList(student);
             }
         } else if(user.getUserType().equals(UserType.STUDENT.getCode())) {
-            return List.of();
+            return List.of(dormitoryInfoMapper.selectDormitoryInfoByUserId(SecurityUtils.getUserId()));
         } else {
             students = studentMapper.selectStudentList(student);
         }
@@ -212,5 +198,17 @@ public class DormitoryInfoServiceImpl extends ServiceImpl<DormitoryInfoMapper, D
         List<String> studentIds = students.stream().map(Student::getStudentId).toList();
         // 条件查询学生的宿舍信息
         return dormitoryInfoMapper.selectDormitoryInfoList(dormitoryInfo, studentIds);
+    }
+    /**
+     * 获取当前用户的宿舍信息
+     */
+    @Override
+    public Result getCurrentUserDormitoryInfo() {
+        User user = SecurityUtils.getLoginUser().getUser();
+        if (!user.getUserType().equals(UserType.STUDENT.getCode())) {
+            return Result.fail("当前用户不是学生");
+        }
+        DormitoryInfo dormitoryInfo = dormitoryInfoMapper.selectDormitoryInfoByUserId(user.getUserId());
+        return Result.success(dormitoryInfo);
     }
 }

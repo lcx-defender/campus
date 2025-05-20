@@ -1,7 +1,7 @@
 package com.lcx.campus.handler;
 
 import com.lcx.campus.constant.Constants;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.utils.AsyncFactory;
 import com.lcx.campus.utils.AsyncManager;
 import com.lcx.campus.utils.SecurityUtils;

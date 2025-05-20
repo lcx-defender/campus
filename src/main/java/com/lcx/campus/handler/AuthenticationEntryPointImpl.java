@@ -2,7 +2,7 @@ package com.lcx.campus.handler;
 
 import com.alibaba.fastjson2.JSON;
 import com.lcx.campus.constant.HttpStatus;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.utils.ServletUtils;
 import com.lcx.campus.utils.StringUtils;
 import jakarta.servlet.ServletException;

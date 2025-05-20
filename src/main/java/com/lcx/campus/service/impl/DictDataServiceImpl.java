@@ -3,7 +3,7 @@ package com.lcx.campus.service.impl;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lcx.campus.domain.DictData;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.vo.PageVo;
 import com.lcx.campus.mapper.DictDataMapper;
 import com.lcx.campus.mapper.DictTypeMapper;

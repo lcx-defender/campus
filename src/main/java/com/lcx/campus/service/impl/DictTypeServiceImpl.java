@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lcx.campus.domain.DictData;
 import com.lcx.campus.domain.DictType;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.vo.PageVo;
 import com.lcx.campus.enums.DictStatus;
 import com.lcx.campus.mapper.DictDataMapper;

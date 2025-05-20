@@ -1,7 +1,7 @@
 package com.lcx.campus.controller;
 
 import com.lcx.campus.domain.dto.LoginBody;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.service.IMenuService;
 import com.lcx.campus.service.IUserService;
 import com.lcx.campus.utils.SecurityUtils;

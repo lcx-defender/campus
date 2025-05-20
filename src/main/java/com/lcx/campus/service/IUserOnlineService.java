@@ -1,7 +1,7 @@
 package com.lcx.campus.service;
 
 import com.lcx.campus.domain.UserOnline;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 
 /**
  * 在线用户

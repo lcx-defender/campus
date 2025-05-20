@@ -3,20 +3,17 @@ package com.lcx.campus.controller;
 
 import com.lcx.campus.annotation.Log;
 import com.lcx.campus.domain.Menu;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.enums.BusinessType;
 import com.lcx.campus.enums.MenuStatus;
 import com.lcx.campus.service.IMenuService;
-import com.lcx.campus.utils.SecurityUtils;
 import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>

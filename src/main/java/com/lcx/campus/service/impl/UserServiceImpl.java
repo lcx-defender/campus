@@ -1,17 +1,14 @@
 package com.lcx.campus.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lcx.campus.constant.Constants;
 import com.lcx.campus.domain.Role;
-import com.lcx.campus.domain.Student;
-import com.lcx.campus.domain.Teacher;
 import com.lcx.campus.domain.User;
 import com.lcx.campus.domain.dto.LoginBody;
 import com.lcx.campus.domain.dto.LoginUser;
 import com.lcx.campus.domain.dto.PasswordBody;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.vo.PageVo;
 import com.lcx.campus.domain.vo.UserRolesVo;
 import com.lcx.campus.exception.BaseException;
@@ -22,12 +19,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lcx.campus.utils.*;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-import net.sf.jsqlparser.util.validation.metadata.NamedObject;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -42,7 +37,6 @@ import static com.lcx.campus.constant.Constants.LOGIN_SUCCESS;
 import static com.lcx.campus.constant.RedisConstants.CAPTCHA_CODE_KEY;
 import static com.lcx.campus.constant.UserConstants.DEFAULT_AVATAR;
 import static com.lcx.campus.constant.UserConstants.SYS_USER;
-import static net.sf.jsqlparser.util.validation.metadata.NamedObject.user;
 
 /**
  * <p>

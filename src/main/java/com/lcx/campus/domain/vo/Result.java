@@ -1,6 +1,5 @@
-package com.lcx.campus.domain.dto;
+package com.lcx.campus.domain.vo;
 
-import com.lcx.campus.constant.HttpStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

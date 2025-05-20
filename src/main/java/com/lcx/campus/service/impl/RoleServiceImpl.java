@@ -2,7 +2,7 @@ package com.lcx.campus.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lcx.campus.domain.*;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.vo.PageVo;
 import com.lcx.campus.domain.vo.RoleMenusVo;
 import com.lcx.campus.mapper.MenuMapper;

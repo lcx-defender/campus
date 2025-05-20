@@ -3,7 +3,7 @@ package com.lcx.campus.service;
 import com.lcx.campus.domain.Dept;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lcx.campus.domain.Student;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.vo.TreeSelect;
 
 import java.util.List;

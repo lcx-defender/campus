@@ -13,6 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.ai.tool.annotation.ToolParam;
 
 /**
  * <p>
@@ -41,30 +42,35 @@ public class DormitoryInfo extends PageQuery implements Serializable {
      */
     @NotNull(message = "学号不能为空", groups = {DormitoryInfo.insert.class, DormitoryInfo.update.class})
     @ExcelProperty(value = "学号")
+    @ToolParam(required = false, description = "学生学号")
     private String studentId;
     /**
      * 宿舍楼号
      */
     @NotNull(message = "宿舍楼号不能为空", groups = {DormitoryInfo.insert.class, DormitoryInfo.update.class})
     @ExcelProperty(value = "宿舍楼号")
+    @ToolParam(required = false, description = "宿舍楼号")
     private String dormitoryId;
     /**
      * 房间号
      */
     @ExcelProperty(value = "房间号")
     @NotNull(message = "房间号不能为空", groups = {DormitoryInfo.insert.class, DormitoryInfo.update.class})
+    @ToolParam(required = false, description = "房间号")
     private String roomId;
     /**
      * 床位号
      */
     @ExcelProperty(value = "床位号")
     @NotNull(message = "床位号不能为空", groups = {DormitoryInfo.insert.class, DormitoryInfo.update.class})
+    @ToolParam(required = false, description = "床位号")
     private String bedId;
     /**
      * 学生姓名
      */
     @TableField(exist = false)
     @ExcelProperty(value = "学生姓名")
+    @ToolParam(required = false, description = "学生姓名")
     private String studentName;
 
     public interface insert {}

@@ -3,7 +3,7 @@ package com.lcx.campus.handler;
 import com.alibaba.fastjson2.JSON;
 import com.lcx.campus.constant.Constants;
 import com.lcx.campus.domain.dto.LoginUser;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.service.impl.JwtTokenServiceImpl;
 import com.lcx.campus.utils.AsyncFactory;
 import com.lcx.campus.utils.AsyncManager;

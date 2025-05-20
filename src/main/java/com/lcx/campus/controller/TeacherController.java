@@ -4,8 +4,7 @@ package com.lcx.campus.controller;
 import com.lcx.campus.annotation.Log;
 import com.lcx.campus.domain.Teacher;
 import com.lcx.campus.domain.User;
-import com.lcx.campus.domain.dto.PageQuery;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.dto.TeacherUser;
 import com.lcx.campus.enums.BusinessType;
 import com.lcx.campus.enums.UserType;
@@ -69,5 +68,13 @@ public class TeacherController {
     @PutMapping("/editTeacher")
     public Result editTeacher(@RequestBody TeacherUser teacherUser) {
         return teacherService.editTeacherUser(teacherUser);
+    }
+    /**
+     * 学生视角查询教师信息
+     */
+    @Log(title = "学生检索查询教师信息", businessType = BusinessType.QUERY)
+    @PostMapping("/getTeacherInfo")
+    public Result getTeacherList(@RequestBody Teacher teacher) {
+        return Result.success(teacherService.getTeacherList(teacher));
     }
 }

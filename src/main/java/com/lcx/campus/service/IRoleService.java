@@ -2,9 +2,7 @@ package com.lcx.campus.service;
 
 import com.lcx.campus.domain.Role;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.lcx.campus.domain.RoleMenu;
-import com.lcx.campus.domain.dto.PageQuery;
-import com.lcx.campus.domain.dto.Result;
+import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.vo.RoleMenusVo;
 
 import java.util.List;
