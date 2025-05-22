@@ -20,6 +20,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author 15403
@@ -58,8 +59,30 @@ public class LeaveInfoServiceImpl extends ServiceImpl<LeaveInfoMapper, LeaveInfo
                 .eq(leaveInfo.getApplicant() != null, LeaveInfo::getApplicant, leaveInfo.getApplicant())
                 .eq(leaveInfo.getApprover() != null, LeaveInfo::getApprover, leaveInfo.getApprover())
                 .eq(leaveInfo.getApprovalStatus() != null, LeaveInfo::getApprovalStatus, leaveInfo.getApprovalStatus())
+                .orderByDesc(LeaveInfo::getCreateTime) // 按照创建时间降序排列
                 .page(queryPage);
         return PageVo.of(resPage);
+    }
+    @Override
+    public List<LeaveInfo> getLeaveInfoList(LeaveInfo leaveInfo) {
+        // 获取当前用户类型
+        User user = SecurityUtils.getLoginUser().getUser();
+        if (user.getUserType().equals(UserType.STUDENT.getCode())) {
+            Student student = studentMapper.selectById(user.getUserId());
+            leaveInfo.setApplicant(student.getStudentId());
+
+        } else if (user.getUserType().equals(UserType.TEACHER.getCode())) {
+            // 教师查询需要自己审批的请假信息
+            Teacher teacher = teacherMapper.selectById(user.getUserId());
+            leaveInfo.setApprover(teacher.getTeacherId());
+        }
+        return lambdaQuery()
+                .eq(leaveInfo.getLeaveType() != null, LeaveInfo::getLeaveType, leaveInfo.getLeaveType())
+                .eq(leaveInfo.getApplicant() != null, LeaveInfo::getApplicant, leaveInfo.getApplicant())
+                .eq(leaveInfo.getApprover() != null, LeaveInfo::getApprover, leaveInfo.getApprover())
+                .eq(leaveInfo.getApprovalStatus() != null, LeaveInfo::getApprovalStatus, leaveInfo.getApprovalStatus())
+                .orderByDesc(LeaveInfo::getCreateTime)
+                .list();
     }
 
     /**

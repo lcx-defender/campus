@@ -33,6 +33,15 @@ public class FileUploadController {
         return Result.success(imgUrl);
     }
 
+    @PostMapping("/attachImg")
+    public Result uploadAttachment(@RequestParam("attachImg") MultipartFile file) {
+        if(file.isEmpty()) {
+            return Result.fail("上传失败，请选择文件");
+        }
+        String imgUrl = FileUploadUtils.upload("attachImg/", file, MimeTypeUtils.IMAGE_EXTENSION, fileStorageService);
+        return Result.success(imgUrl);
+    }
+
     @PostMapping("/avatar")
     @Log(title = "上传头像", businessType = BusinessType.OTHER)
     public Result uploadAvatar(@RequestParam("avatar") MultipartFile file) {

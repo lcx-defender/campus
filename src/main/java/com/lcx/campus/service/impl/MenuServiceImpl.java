@@ -68,6 +68,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     @Override
     public Result getRouters(Long userId) {
         List<Menu> menus = selectMenuTreeByUserId(userId);
+//        System.out.println("menus = " + menus);
         List<RouterVo> routerVos = buildMenus(menus);
         return Result.success(routerVos);
     }
@@ -113,8 +114,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
         if (roleMapper.isAdminByUserId(userId)) {
             menus = menuMapper.selectMenuTreeAll();
         } else {
-            menus = menuMapper.selectMenuTreeByUserId(userId);
+            menus = menuMapper.selectMenuListByUserId(new Menu(), userId);
         }
+        System.out.println("menus = " + menus);
         return getChildPerms(menus, 0);
     }
 

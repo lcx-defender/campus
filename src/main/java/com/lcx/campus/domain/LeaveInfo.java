@@ -92,7 +92,7 @@ public class LeaveInfo extends PageQuery implements Serializable {
     private String attachmentUrl4;
 
     /**
-     * 申请学生学号
+     * 审批人
      */
     private String approver;
 

@@ -10,6 +10,7 @@ import com.lcx.campus.enums.BusinessType;
 import com.lcx.campus.enums.UserType;
 import com.lcx.campus.service.ITeacherService;
 import jakarta.annotation.Resource;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -73,8 +74,10 @@ public class TeacherController {
      * 学生视角查询教师信息
      */
     @Log(title = "学生检索查询教师信息", businessType = BusinessType.QUERY)
-    @PostMapping("/getTeacherInfo")
-    public Result getTeacherList(@RequestBody Teacher teacher) {
+    @GetMapping("/getTeacherInfo")
+    public Result getTeacherList(@PathParam("teacherName") String teacherName) {
+        Teacher teacher = new Teacher();
+        teacher.setTeacherName(teacherName);
         return Result.success(teacherService.getTeacherList(teacher));
     }
 }

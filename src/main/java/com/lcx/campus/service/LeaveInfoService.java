@@ -4,11 +4,12 @@ import com.lcx.campus.domain.LeaveInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lcx.campus.domain.vo.PageVo;
 
+import java.util.List;
+
 /**
-* @author 15403
-* @description 针对表【leave_info】的数据库操作Service
-* @createDate 2025-05-20 10:41:23
-*/
+ * @author 刘传星
+ * @since 2025-05-20
+ */
 public interface LeaveInfoService extends IService<LeaveInfo> {
     /**
      * 分页查询请假信息
@@ -27,4 +28,9 @@ public interface LeaveInfoService extends IService<LeaveInfo> {
      * 教师审批请假信息
      */
     boolean check(LeaveInfo leaveInfo);
+
+    /**
+     * 获取请假信息列表，按时间降序排列
+     */
+    List<LeaveInfo> getLeaveInfoList(LeaveInfo leaveInfo);
 }

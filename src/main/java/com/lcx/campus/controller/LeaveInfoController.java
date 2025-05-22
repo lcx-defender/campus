@@ -23,10 +23,15 @@ public class LeaveInfoController {
      * 教师/管理员分页查询请假信息，学生只能查询自己的请假信息
      */
     @PostMapping("/getLeaveInfoPage")
-//    @PreAuthorize("hasAnyAuthority('campus:leaveInfo:list')")
+    @PreAuthorize("hasAnyAuthority('campus:leaveInfo:list')")
     @Log(title = "分页查询请假信息", businessType = BusinessType.UPDATE)
     public Result getLeaveInfoPage(@RequestBody LeaveInfo leaveInfo) {
         return Result.success(leaveInfoService.getLeaveInfoPage(leaveInfo));
+    }
+    @GetMapping("/getLeaveInfoList")
+    @Log(title = "学生查询个人请假信息列表", businessType = BusinessType.UPDATE)
+    public Result getSelfLeaveInfoList() {
+        return Result.success(leaveInfoService.getLeaveInfoList(new LeaveInfo()));
     }
     /**
      * 学生提交请假信息
@@ -79,5 +84,17 @@ public class LeaveInfoController {
             return Result.success();
         }
         return Result.fail("请假信息拒绝失败");
+    }
+    /**
+     * 学生查询
+     */
+    @GetMapping("/getLeaveInfo/{leaveInfoId}")
+    @Log(title = "查询请假信息", businessType = BusinessType.QUERY)
+    public Result getLeaveInfo(@PathVariable Long leaveInfoId) {
+        LeaveInfo leaveInfo = leaveInfoService.getById(leaveInfoId);
+        if (leaveInfo == null) {
+            return Result.fail("请假信息不存在");
+        }
+        return Result.success(leaveInfo);
     }
 }

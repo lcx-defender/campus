@@ -2,6 +2,7 @@ package com.lcx.campus.mapper;
 
 import com.lcx.campus.domain.Menu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -18,13 +19,11 @@ public interface MenuMapper extends BaseMapper<Menu> {
 
     List<Menu> selectMenuList(Menu menu);
 
-    List<Menu> selectMenuListByUserId(Menu menu, Long userId);
+    List<Menu> selectMenuListByUserId(@Param("menu") Menu menu, @Param("userId") Long userId);
 
     List<String> selectMenuPermsByRoleId(Long roleId);
 
     List<Menu> selectMenuTreeAll();
-
-    List<Menu> selectMenuTreeByUserId(Long userId);
 
     List<Long> selectMenuIdsByRoleId(Long roleId);
 
