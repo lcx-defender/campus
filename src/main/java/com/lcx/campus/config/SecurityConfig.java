@@ -61,13 +61,11 @@ public class SecurityConfig {
     protected SecurityFilterChain filterChain(HttpSecurity httpSecurity)
             throws Exception {
         return httpSecurity
-                // 配置关闭csrf
-                .csrf(csrf -> csrf.disable())
-                // 基于token，所以不需要session
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(csrf -> csrf.disable()) // 配置关闭csrf
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 基于token，所以不需要session
                 .exceptionHandling(exception -> {
-                    exception.authenticationEntryPoint(unauthorizedHandler)
-                            .accessDeniedHandler(accessDeniedHandler);
+                    exception.authenticationEntryPoint(unauthorizedHandler) // 认证失败处理类
+                            .accessDeniedHandler(accessDeniedHandler); // 权限不足处理类
                 })
                 .authorizeHttpRequests((requests) -> {
                     // 对于登录、获取验证码允许匿名访问
