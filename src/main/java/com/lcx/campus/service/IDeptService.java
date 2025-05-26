@@ -36,7 +36,7 @@ public interface IDeptService extends IService<Dept> {
     Long getSelfDeptId();
 
     /**
-     * 查询部门列表，以树型结构返回
+     * 查询部门列表，封装成TreeSelect
      */
     Result treeSelect();
 

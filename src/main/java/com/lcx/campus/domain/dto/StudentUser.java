@@ -91,6 +91,11 @@ public class StudentUser extends PageQuery implements Serializable {
     @ExcelProperty("姓名")
     private String studentName;
     /**
+     * 查询条件：deptId
+     */
+    @ExcelIgnore
+    private Long deptId;
+    /**
      * 学校代码
      */
     @ExcelProperty("学校代码")

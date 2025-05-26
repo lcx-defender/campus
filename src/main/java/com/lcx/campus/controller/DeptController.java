@@ -35,17 +35,31 @@ public class DeptController {
     public Result treeSelect() {
         return deptService.treeSelect();
     }
-
     /**
      * 查询部门列表,树型结构
      */
-    @PostMapping("/selectDeptTreeList")
+    @PostMapping("/selectDeptTree")
     @PreAuthorize("hasAnyAuthority('system:dept:list')")
-    @Log(title = "部门管理", businessType = BusinessType.QUERY)
+    @Log(title = "获取部门树型列表", businessType = BusinessType.QUERY)
     public Result selectDeptTreeList(@RequestBody Dept dept) {
         return deptService.selectDeptTreeList(dept);
     }
-
+    /**
+     * 查询部门列表
+     */
+    @PostMapping("/getDeptList")
+    @PreAuthorize("hasAnyAuthority('system:dept:list')")
+    @Log(title = "获取部门列表", businessType = BusinessType.QUERY)
+    public Result getDeptList(@RequestBody Dept dept) {
+        return Result.success(
+                deptService.lambdaQuery()
+                        .eq(dept.getDeptName() != null, Dept::getDeptName, dept.getDeptName())
+                        .eq(dept.getParentId() != null, Dept::getParentId, dept.getParentId())
+                        .eq(dept.getLevel() != null, Dept::getLevel, dept.getLevel())
+                        .eq(dept.getStatus() != null, Dept::getStatus, dept.getStatus())
+                        .list()
+        );
+    }
     /**
      * 添加新的部门
      */

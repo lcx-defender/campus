@@ -115,11 +115,15 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
     public Long getSelfDeptId() {
         return getDeptIdByUserId(SecurityUtils.getUserId());
     }
-
+    /**
+     * 查询部门列表，封装成TreeSelect
+     */
     @Override
     public Result treeSelect() {
         // 查询所有部门,去除掉delFlag=1 且 部门的状态已经停用的部门
-        List<Dept> depts = list().stream().filter(dept -> dept.getDelFlag().equals("0")).toList();
+        List<Dept> depts = list()
+                .stream().filter(dept -> dept.getDelFlag().equals("0"))
+                .toList();
         return Result.success(buildDeptTreeSelect(depts));
     }
 
