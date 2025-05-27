@@ -166,7 +166,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         user.setUserType(UserType.STUDENT.getCode());
         Long userId = userService.creatUserIfNotExist(user);
         if (userId == null) {
-            return Result.fail("用户添加失败");
+            return Result.fail("学生用户添加失败，请检查用户信息是否完整或已存在");
         }
         student.setUserId(userId);
         // 校验学生的单位信息是否合规
@@ -192,7 +192,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
             user.setUserType(UserType.STUDENT.getCode());
             Long userId = userService.creatUserIfNotExist(user);
             if (userId == null) {
-                return Result.fail("用户添加失败");
+                return Result.fail("学生用户添加失败，请检查用户信息是否完整或已存在");
             }
             Student student = new Student();
             BeanUtils.copyProperties(studentUser, student);

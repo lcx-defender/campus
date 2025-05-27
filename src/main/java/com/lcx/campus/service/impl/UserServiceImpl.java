@@ -242,18 +242,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 1. 校验用户是否存在
         User existingUser = lambdaQuery()
                 .eq(User::getIdentity, user.getIdentity())
-                .eq(User::getUserType, user.getUserType())
                 .one();
         Long userId = null;
-        boolean isSuccess;
-        if (existingUser != null) {
-            userId = existingUser.getUserId();
-            // 1.1 用户存在，更新用户信息
-            user.setUserId(userId);
-            user.setUpdateTime(LocalDateTime.now());
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            isSuccess = updateById(user);
-        } else {
+        boolean isSuccess = false;
+        if (existingUser == null) {
             // 2. 用户不存在，插入用户
             if(StringUtils.isEmpty(user.getAvatar())) {
                 user.setAvatar(DEFAULT_AVATAR);
@@ -266,10 +258,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             isSuccess = save(user);
             userId = user.getUserId();
         }
-        if (!isSuccess) {
-            return null;
-        }
-        return userId;
+        // 1. 用户存在，返回null，新增失败
+        return isSuccess ? userId : null;
     }
 
     /**
@@ -347,7 +337,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 1. 校验用户是否存在
         Long userId = creatUserIfNotExist(user);
         if (StringUtils.isNull(userId)) {
-            return Result.fail("添加用户失败");
+            return Result.fail("管理员用户添加失败，请检查用户信息是否完整或已存在");
         }
         return Result.success("添加用户成功", userId);
     }
