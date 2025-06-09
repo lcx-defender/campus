@@ -7,9 +7,12 @@ import com.lcx.campus.enums.UserType;
 import com.lcx.campus.repository.FileRepository;
 import com.lcx.campus.service.IDeptService;
 import com.lcx.campus.service.IStudentService;
+import com.lcx.campus.utils.FileUploadUtils;
+import com.lcx.campus.utils.MimeTypeUtils;
 import com.lcx.campus.utils.SecurityUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.dromara.x.file.storage.core.FileStorageService;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.reader.ExtractedTextFormatter;
@@ -46,16 +49,19 @@ public class CustomerServiceController {
     private ChatClient serviceChatClient;
     @Resource
     private IDeptService deptService;
+    @Resource
+    private FileStorageService fileStorageService;
 
     @RequestMapping(value = "/service", produces = "text/html;charset=utf-8")
     public Flux<String> chat(String prompt) {
         // 根据用户需求，获取对应部门的文件
-        Long deptId = deptService.getUniversityIdByUserId(SecurityUtils.getLoginUser().getUserId());
+        /*Long deptId = deptService.getUniversityIdByUserId(SecurityUtils.getLoginUser().getUserId());
         org.springframework.core.io.Resource file = fileRepository.getFile(deptId);
         if (!file.exists()) {
             throw new RuntimeException("对应部门文件不存在！");
-        }
-        // 3.请求模型
+        }*/
+
+        // 请求模型
         return serviceChatClient.prompt()
                 .user(prompt)
 //                .advisors(a -> a.param(FILTER_EXPRESSION, "file_name == '" + file.getFilename() + "'"))
@@ -75,12 +81,14 @@ public class CustomerServiceController {
                 return Result.fail("只能上传PDF文件！");
             }
             // 2.保存文件
-            boolean success = fileRepository.save(deptId, file.getResource());
+            boolean success = fileRepository.save(deptId, file.getResource()); // 本地保存
             if (!success) {
                 return Result.fail("保存文件失败！");
             }
+//            String fileUrl = FileUploadUtils.upload("knowledge-base/", file, MimeTypeUtils.PDF, fileStorageService); // oss上传
+
             // 3.写入向量库
-            this.writeToVectorStore(file.getResource());
+            this.writeToVectorStore(file);
             return Result.success();
         } catch (Exception e) {
             log.error("Failed to upload PDF.", e);
@@ -88,10 +96,10 @@ public class CustomerServiceController {
         }
     }
 
-    private void writeToVectorStore(org.springframework.core.io.Resource resource) {
+    private void writeToVectorStore(MultipartFile file) {
         // 1.创建PDF的读取器
         PagePdfDocumentReader reader = new PagePdfDocumentReader(
-                resource, // 文件源
+                file.getResource(), // 文件源
                 PdfDocumentReaderConfig.builder()
                         .withPageExtractedTextFormatter(ExtractedTextFormatter.defaults())
                         .withPagesPerDocument(1) // 每1页PDF作为一个Document

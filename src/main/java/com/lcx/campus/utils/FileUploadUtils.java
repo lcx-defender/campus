@@ -36,8 +36,8 @@ public class FileUploadUtils {
     /**
      * 根据文件路径上传
      *
-     * @param baseDir 相对应用的基目录
-     * @param file 上传的文件
+     * @param baseDir            相对应用的基目录
+     * @param file               上传的文件
      * @param fileStorageService 文件存储服务
      * @return 文件名称
      * @throws IOException
@@ -46,8 +46,7 @@ public class FileUploadUtils {
             throws IOException {
         try {
             return upload(baseDir, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION, fileStorageService);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new IOException(e.getMessage(), e);
         }
     }
@@ -55,13 +54,13 @@ public class FileUploadUtils {
     /**
      * 文件上传
      *
-     * @param baseDir 相对应用的基目录
-     * @param file 上传的文件
+     * @param baseDir          相对应用的基目录
+     * @param file             上传的文件
      * @param allowedExtension 上传文件类型
      * @return 返回上传成功的文件名
-     * @throws FileSizeLimitExceededException 如果超出最大大小
+     * @throws FileSizeLimitExceededException       如果超出最大大小
      * @throws FileNameLengthLimitExceededException 文件名太长
-     * @throws InvalidExtensionException 文件校验异常
+     * @throws InvalidExtensionException            文件校验异常
      */
     public static String upload(String baseDir, MultipartFile file, String[] allowedExtension, FileStorageService fileStorageService)
             throws FileSizeLimitExceededException, FileNameLengthLimitExceededException, InvalidExtensionException {
@@ -100,12 +99,9 @@ public class FileUploadUtils {
      * @param allowedExtension
      * @return
      */
-    public static final boolean isAllowedExtension(String extension, String[] allowedExtension)
-    {
-        for (String str : allowedExtension)
-        {
-            if (str.equalsIgnoreCase(extension))
-            {
+    public static final boolean isAllowedExtension(String extension, String[] allowedExtension) {
+        for (String str : allowedExtension) {
+            if (str.equalsIgnoreCase(extension)) {
                 return true;
             }
         }
@@ -118,8 +114,7 @@ public class FileUploadUtils {
      * @param file 表单文件
      * @return 后缀名
      */
-    public static final String getExtension(MultipartFile file)
-    {
+    public static final String getExtension(MultipartFile file) {
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
         if (StrUtil.isEmpty(extension)) {
             extension = MimeTypeUtils.getExtension(Objects.requireNonNull(file.getContentType()));
@@ -127,8 +122,7 @@ public class FileUploadUtils {
         return extension;
     }
 
-    public static final String extractFileDir(String baseDir)
-    {
+    public static final String extractFileDir(String baseDir) {
         // baseDir/yyyy/MM/dd
         return baseDir + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")) + "/";
     }

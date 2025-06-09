@@ -1,7 +1,7 @@
 package com.lcx.campus.enums;
 
 /**
- * 审批状态 "0" 待审批 "1" 通过 ”2“ 驳回
+ * 审批状态 "0" 待审批 "1" 通过 ”2“ 驳回 "3" 撤销
  *
  * @author 刘传星
  * @since 2025-05-20
@@ -9,7 +9,8 @@ package com.lcx.campus.enums;
 public enum ApprovalStatus {
     PENDING("0", "待审批"),
     APPROVED("1", "通过"),
-    REJECTED("2", "驳回");
+    REJECTED("2", "驳回"),
+    CANCEL("3", "撤销");
 
     private final String code;
     private final String description;

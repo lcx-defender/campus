@@ -52,7 +52,7 @@ public class ChatAiConfig {
     }
 
     /**
-     * deepseek的聊天模型
+     * 千问多模态大模型
      */
     @Bean
     public ChatClient chatClient(AlibabaOpenAiChatModel model, ChatMemory chatMemory) {

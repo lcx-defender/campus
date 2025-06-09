@@ -1,5 +1,6 @@
 package com.lcx.campus.tools;
 
+import com.lcx.campus.domain.Dept;
 import com.lcx.campus.domain.DormitoryInfo;
 import com.lcx.campus.domain.User;
 import com.lcx.campus.service.IDeptService;
@@ -29,7 +30,7 @@ public class CampusTools {
     }
 
     @Tool(description = "查询当前用户的学校Id", returnDirect = false)
-    public Long getCurrentUserUniversityId() {
+    public Long getCurrentUserUniversityId(@ToolParam(description = "查询学校名称") Dept dept) {
         User user = SecurityUtils.getLoginUser().getUser();
         return deptService.getUniversityIdByUserId(user.getUserId());
     }
