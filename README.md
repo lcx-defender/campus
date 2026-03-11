@@ -1,84 +1,89 @@
-# 环境准备
+# Campus（后端）- 大学新生智慧迎新平台（Agent + 管理后台）
 
-## 补齐配置文件
+> 后端仓库：`lcx-defender/campus`  
+> 技术栈：Spring Boot / Spring Security / JWT / Redis / MyBatis-Plus / MySQL / Spring AI / x-file-storage
 
-```yml
-# application-dev.yml
-spring:
-  data:
-    redis:
-      host: Redis服务器IP
-      port: 6379
-      database: Redis数据库编号(默认为0)
-      password: Redis密码
-      timeout: 10s # 连接超时时间
-      lettuce:
-        pool:
-          enabled: true
-          max-active: 8
-          min-idle: 0
-          max-idle: 8
-          max-wait: -1ms
-  datasource:
-    type: com.alibaba.druid.pool.DruidDataSource 
-    driver-class-name: com.mysql.cj.jdbc.Driver # MySQL驱动
-    username: root # 数据库用户名
-    password: yourself_password # 数据库密码
-    url: jdbc:mysql://MySQL服务器IP:3306/campus?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
-    druid: # Druid连接池配置
-      initialSize: 2
-      minIdle: 2
-      maxActive: 20
-      maxWait: 60000
-      timeBetweenEvictionRunsMillis: 60000
-      minEvictableIdleTimeMillis: 300000
-      validationQuery: SELECT 1 FROM DUAL
-      testWhileIdle: true
-      testOnBorrow: false
-      testOnReturn: false
-      poolPreparedStatements: true
-      maxPoolPreparedStatementPerConnectionSize: 20
-      connectTimeout: 30000
-      socketTimeout: 60000
-  # spring-ai配置
-  ai:
-    openai:
-      api-key: # 连接所用 API密钥
-      base-url: https://dashscope.aliyuncs.com/compatible-mode # 连接模型所用 API地址
-      chat:
-        options:
-          model: qwen-max-latest # 聊天模型名称
-      # 向量模型
-      embedding:
-        options:
-          model: text-embedding-v3 # 选用的向量模型
-          dimensions: 1024 # 向量维度
-    ollama:
-      base-url: http://localhost:11434 # 配置的本地ollama服务地址(可自行修改)
-      chat:
-        model: deepseek-r1:1.5b # 聊天模型名称
+## 1. 项目简介
+Campus 是一个面向高校迎新与咨询场景的后台服务，提供账号登录、权限控制、迎新业务数据管理、文件上传与存储、登录/操作审计日志，以及基于大模型的智能问答/对话能力接入。
 
-dromara:
-  x-file-storage: #文件存储配置
-    default-platform: aliyun-oss-1 #默认使用的存储平台
-    thumbnail-suffix: ".min.jpg" #缩略图后缀，例如【.min.jpg】【.png】
-    #对应平台的配置写在这里，注意缩进要对齐
-    aliyun-oss:
-      - platform: aliyun-oss-1 # 存储平台标识
-        enable-storage: true  # 启用存储
-        access-key: # 阿里云OSS的AccessKeyId
-        secret-key: # 阿里云OSS的AccessKeySecret
-        end-point: # 阿里云OSS的Endpoint
-        bucket-name: # 阿里云OSS的BucketName
-        domain: https://your_bucket-name.your_end-point/ # 访问域名，注意“/”结尾，例如：https://abc.oss-cn-shanghai.aliyuncs.com/
-        base-path: upload/ # 基础路径
+## 2. 核心功能
+- 认证与鉴权：Spring Security + JWT；支持接口权限校验、在线用户与强制下线
+- 业务模块：迎新相关信息管理（学生、教师、部门/组织、宿舍等）
+- 文件服务：基于 x-file-storage 统一对接本地/OSS 等存储平台（支持头像/图片等上传）
+- 日志审计：
+    - 登录日志：记录登录/退出、IP、地点、浏览器/操作系统等
+    - 操作日志：基于 AOP + 自定义注解记录关键接口的请求/响应/异常/耗时等
+- AI 能力：通过 Spring AI 接入大模型（支持聊天模型与向量模型配置，为智能问答/Agent 做基础能力）
 
-# token配置
-token:
-  # 令牌自定义标识
-  header: Authorization
-  # 令牌密钥
-  secret: # 令牌加密盐
-  # 令牌有效期5小时(单位配置在JwtTokenServiceImpl)
-  expireTime: 5
-```
+## 3. 技术栈
+- Java / Spring Boot
+- Spring Security + JWT
+- Redis（登录态/在线用户/缓存等）
+- MyBatis-Plus + MyBatis XML Mapper
+- MySQL（Druid 连接池）
+- Spring AI（OpenAI compatible / Ollama）
+- x-file-storage（Aliyun OSS 等）
+- 其他：Lombok、Hutool、Fastjson2 等
+
+## 4. 目录结构（示例）
+
+- `src/main/java/com/lcx/campus`
+    - `controller/` 接口层
+    - `service/` 业务层
+    - `mapper/` 数据访问层（含 XML 对应）
+    - `domain/` 实体/DTO/VO
+    - `config/` 配置类（如 MyBatis-Plus 分页拦截器等）
+    - `aspect/` AOP 日志切面（操作审计）
+    - `handler/` 安全/异常处理（如退出处理器等）
+    - `utils/` 工具类（异步日志工厂、IP 解析等）
+- `src/main/resources`
+    - `mapper/` MyBatis XML
+    - `sql/` 数据库初始化脚本（如 `campus.sql`）
+
+## 5. 环境准备
+- JDK：17+（建议与项目实际 `pom.xml` 对齐）
+- Maven：3.8+
+- MySQL：8.x
+- Redis：6.x+
+- （可选）Ollama：本地模型服务（如果使用本地大模型）
+- （可选）阿里云 OSS：如果使用对象存储
+
+## 6. 配置文件（关键项）
+
+建议做法：
+1) 新建 `application-dev.yml`
+2) 在 `application.yml` 中激活 dev profile（如 `spring.profiles.active=dev`）
+3) 将 `appliaction-template.yml` 中的配置项复制到 `application-dev.yml`，并根据本地环境修改
+
+> 注意：密钥与密码不要提交到仓库。
+
+## 7. 数据库初始化
+1) 执行初始化脚本：
+- `src/main/resources/sql/campus.sql`
+
+## 8. 启动方式
+### 8.1 本地启动（推荐）
+1) 启动 Redis
+2) 启动 MySQL 并导入 SQL
+3) 配置 `application-dev.yml`
+4) 使用 IDE 运行 Spring Boot 主类
+
+### 8.2 常见端口
+- 后端服务：默认 8088（可在application.yml中修改）
+
+## 9. 接口联调说明
+- 前端通过代理访问后端（见前端仓库 `vite.config.js`）
+- 需要 token 的接口：前端在请求拦截器里统一加 `Authorization`
+
+## 10. 关键实现说明
+- 操作日志（AOP）：`@Log` 注解 + `LogAspect` 拦截并异步落库 `sys_operate_log`
+- 登录日志：`AsyncFactory.recordLoginInfo` 异步记录 `sys_login_info`
+- 在线用户：Redis 存储登录态，支持查询与强制下线
+- MyBatis-Plus：分页拦截器 + 业务分页查询
+
+## 11. 常见问题
+- 401 / 无权限：检查 token 是否携带、过期时间、后端权限配置
+- Redis 连接失败：检查 host/port/password 与防火墙
+- AI 调用失败：检查 API Key、base-url 是否可达、模型名是否正确
+- 文件上传失败：检查 x-file-storage 平台配置与 OSS 权限
+- 超级管理员 `360123` 密码为 `admin123456`（建议修改）

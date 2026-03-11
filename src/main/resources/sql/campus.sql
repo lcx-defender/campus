@@ -1,17 +1,6 @@
-/*
- Navicat Premium Data Transfer
-
- Source Server         : 字节云服务器数据库
- Source Server Type    : MySQL
- Source Server Version : 90100
- Source Schema         : campus
-
- Target Server Type    : MySQL
- Target Server Version : 90100
- File Encoding         : 65001
-
- Date: 16/05/2025 17:33:14
-*/
+DROP DATABASE IF EXISTS campus;
+CREATE DATABASE campus CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+USE campus;
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
@@ -365,7 +354,6 @@ CREATE TABLE `sys_user`  (
 -- Records of sys_user
 -- ----------------------------
 INSERT INTO `sys_user` VALUES (1, '360123', 'lcx_defender', 0, '123456@qq.com', '180000000', '0', 'https://greet-freshman.oss-cn-shanghai.aliyuncs.com/upload/avatar/2025/05/13/68236aea2051dbe1227172fb.png', '$2a$10$lyn4VN9u.SNX27iEOaCxX.vftSRQgjBQW7W4XfAk/hVfW40YZIyyq', '0', '127.0.0.1', '内网IP', '', '2025-03-05 22:03:23', '', '2025-05-16 15:59:39', '');
-INSERT INTO `sys_user` VALUES (2, '320123', '1688小便当火爆上市', 1, '', '', '1', 'https://greet-freshman.oss-cn-shanghai.aliyuncs.com/default-avatar.png', '$2a$10$nsmKiSdYZHxJy1p3ViXUyu5R/AQSAww5yT8fmV7eEKojhbyq/Swym', '0', '', '', '', '2025-05-09 00:27:17', '', NULL, '');
 
 -- ----------------------------
 -- Table structure for sys_user_role

@@ -72,5 +72,5 @@ public class LoginInfo extends PageQuery implements Serializable {
     /**
      * 访问时间
      */
-    private LocalDateTime createTime;
+    private LocalDateTime loginTime;
 }

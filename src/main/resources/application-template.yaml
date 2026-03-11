@@ -1,0 +1,34 @@
+# token配置
+token:
+  # 令牌自定义标识
+  header: Authorization
+  # 令牌密钥
+  secret: abcdefghijklmnopqrstuvwxyz
+  # 令牌有效期5小时
+  expireTime: 5
+
+campus:
+  db:
+    host: 192.168.88.6 # 数据库主机地址
+    port: 3306 # 数据库端口
+    database: campus # 数据库名称
+    username: root # 数据库用户名
+    password: 123456 # 数据库密码
+  redis:
+    host: 192.168.88.6 # Redis主机地址
+    port: 6379 # Redis端口
+    password: 123456 # Redis密码
+
+# 阿里千问模型平台接口配置
+aliyun-openai:
+  api-key:  # 阿里千问模型平台API密钥
+  base-url:  # 阿里千问模型平台基础URL
+
+# 阿里云OSS配置，用于文件上传
+aliyun-oss:
+  access-key:  # 阿里云OSS访问密钥ID
+  secret-key:  # 阿里云OSS访问密钥
+  end-point: # 阿里云OSS访问域名，例如：oss-cn-shanghai.aliyuncs.com
+  bucket-name: # 阿里云OSS存储空间名称
+  domain:  # 访问域名，注意“/”结尾，例如：https://abc.oss-cn-shanghai.aliyuncs.com/
+  base-path: upload/ # 基础路径

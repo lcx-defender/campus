@@ -1,5 +1,11 @@
 package com.lcx.campus.utils;
 
+/**
+ * 向量距离计算工具类
+ *
+ * @author 刘传星
+ * @since 2025-03-04
+ */
 public class VectorDistanceUtils {
     
     // 防止实例化

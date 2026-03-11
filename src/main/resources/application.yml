@@ -1,6 +1,5 @@
 server:
-  # 后端服务运行端口号
-  port: 8088
+  port: 8088 # 后端服务运行端口号
   tomcat:
     max-swallow-size: 20MB
 
@@ -11,6 +10,58 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+  data:
+    redis:
+      host: ${campus.redis.host}
+      port: ${campus.redis.port}
+      database: 1
+      password: ${campus.redis.password}
+      timeout: 10s
+      lettuce:
+        pool:
+          enabled: true
+          max-active: 8
+          min-idle: 0
+          max-idle: 8
+          max-wait: -1ms
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${campus.db.username}
+    password: ${campus.db.password}
+    url: jdbc:mysql://${campus.db.host}:${campus.db.port}/${campus.db.database}?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
+    druid:
+      initialSize: 2
+      minIdle: 2
+      maxActive: 20
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      connectTimeout: 30000
+      socketTimeout: 60000
+    # spring-ai配置
+  ai:
+    openai:
+      api-key: ${aliyun-openai.api-key}
+      base-url: ${aliyun-openai.base-url}
+      chat:
+        options:
+          model: qwen-max-latest
+        # 向量模型
+      embedding:
+        options:
+          model: text-embedding-v3
+          dimensions: 1024
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        model: deepseek-r1:1.5b
 mybatis-plus:
   mapperLocations: classpath*:mapper/**/*Mapper.xml
   typeAliasesPackage: com.lcx.domain
@@ -19,7 +70,17 @@ logging:
     com.lcx: debug
     org.springframework.ai: debug
 
-# Redis配置(已放入application-dev.yml)
-# MySQL配置(已放入application-dev.yml)
-# 文件存储配置(已放入application-dev.yml)
-# Token配置(已放入application-dev.yml)
+dromara:
+  x-file-storage: #文件存储配置
+    default-platform: aliyun-oss-1 #默认使用的存储平台
+    thumbnail-suffix: ".min.jpg" #缩略图后缀，例如【.min.jpg】【.png】
+    #对应平台的配置写在这里，注意缩进要对齐
+    aliyun-oss:
+      - platform: aliyun-oss-1 # 存储平台标识
+        enable-storage: true  # 启用存储
+        access-key: ${aliyun-oss.access-key}
+        secret-key: ${aliyun-oss.secret-key}
+        end-point: ${aliyun-oss.end-point} # 例如：oss-cn-shanghai.aliyuncs.com
+        bucket-name: ${aliyun-oss.bucket-name}
+        domain: ${aliyun-oss.domain} # 访问域名，注意“/”结尾，例如：https://abc.oss-cn-shanghai.aliyuncs.com/
+        base-path: ${aliyun-oss.base-path} # 基础路径,比如upload/，如果不需要可以留空

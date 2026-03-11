@@ -8,7 +8,8 @@ import java.util.concurrent.*;
 /**
  * 线程相关工具类.
  *
- * @author ruoyi
+ * @author 刘传星
+ * @since 2025-03-05
  */
 public class Threads {
     private static final Logger logger = LoggerFactory.getLogger(Threads.class);
