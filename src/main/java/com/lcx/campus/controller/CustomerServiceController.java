@@ -1,15 +1,8 @@
 package com.lcx.campus.controller;
 
-import com.lcx.campus.domain.User;
-import com.lcx.campus.domain.dto.StudentUser;
 import com.lcx.campus.domain.vo.Result;
-import com.lcx.campus.enums.UserType;
 import com.lcx.campus.repository.FileRepository;
 import com.lcx.campus.service.IDeptService;
-import com.lcx.campus.service.IStudentService;
-import com.lcx.campus.utils.FileUploadUtils;
-import com.lcx.campus.utils.MimeTypeUtils;
-import com.lcx.campus.utils.SecurityUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.x.file.storage.core.FileStorageService;

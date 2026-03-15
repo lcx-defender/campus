@@ -1,8 +1,8 @@
 package com.lcx.campus.tools;
 
-import com.lcx.campus.domain.Dept;
-import com.lcx.campus.domain.DormitoryInfo;
-import com.lcx.campus.domain.User;
+import com.lcx.campus.domain.po.Dept;
+import com.lcx.campus.domain.po.DormitoryInfo;
+import com.lcx.campus.domain.po.User;
 import com.lcx.campus.service.IDeptService;
 import com.lcx.campus.service.IDormitoryInfoService;
 import com.lcx.campus.utils.SecurityUtils;

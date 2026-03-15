@@ -4,19 +4,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lcx.campus.mapper.LeaveInfoMapper">
 
-    <resultMap id="BaseResultMap" type="com.lcx.campus.domain.LeaveInfo">
+    <resultMap id="BaseResultMap" type="com.lcx.campus.domain.po.LeaveInfo">
             <id property="leaveInfoId" column="leave_info_id" jdbcType="BIGINT"/>
             <result property="leaveType" column="leave_type" jdbcType="VARCHAR"/>
             <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
             <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
-            <result property="isOffCampus" column="is_off_campus" jdbcType="CHAR"/>
             <result property="emergencyContact" column="emergency_contact" jdbcType="VARCHAR"/>
             <result property="destination" column="destination" jdbcType="VARCHAR"/>
             <result property="reason" column="reason" jdbcType="VARCHAR"/>
-            <result property="attachmentUrl1" column="attachment_url1" jdbcType="VARCHAR"/>
-            <result property="attachmentUrl2" column="attachment_url2" jdbcType="VARCHAR"/>
-            <result property="attachmentUrl3" column="attachment_url3" jdbcType="VARCHAR"/>
-            <result property="attachmentUrl4" column="attachment_url4" jdbcType="VARCHAR"/>
             <result property="approver" column="approver" jdbcType="VARCHAR"/>
             <result property="approvalStatus" column="approval_status" jdbcType="CHAR"/>
             <result property="approvalTime" column="approval_time" jdbcType="TIMESTAMP"/>

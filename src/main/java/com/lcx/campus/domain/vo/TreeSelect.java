@@ -2,8 +2,8 @@ package com.lcx.campus.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.lcx.campus.constant.UserConstants;
-import com.lcx.campus.domain.Dept;
-import com.lcx.campus.domain.Menu;
+import com.lcx.campus.domain.po.Dept;
+import com.lcx.campus.domain.po.Menu;
 import com.lcx.campus.utils.StringUtils;
 import lombok.Data;
 

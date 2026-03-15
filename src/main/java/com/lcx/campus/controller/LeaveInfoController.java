@@ -1,25 +1,21 @@
 package com.lcx.campus.controller;
 
 import com.lcx.campus.annotation.Log;
-import com.lcx.campus.domain.LeaveInfo;
-import com.lcx.campus.domain.Student;
-import com.lcx.campus.domain.User;
+import com.lcx.campus.domain.po.LeaveInfo;
+import com.lcx.campus.domain.po.Student;
+import com.lcx.campus.domain.po.User;
 import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.enums.ApprovalStatus;
 import com.lcx.campus.enums.BusinessType;
-import com.lcx.campus.enums.LeaveType;
 import com.lcx.campus.enums.UserType;
 import com.lcx.campus.mapper.StudentMapper;
 import com.lcx.campus.service.LeaveInfoService;
 import com.lcx.campus.utils.SecurityUtils;
 import com.lcx.campus.utils.StringUtils;
 import jakarta.annotation.Resource;
-import org.apache.logging.log4j.message.ReusableMessage;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/leaveInfo")

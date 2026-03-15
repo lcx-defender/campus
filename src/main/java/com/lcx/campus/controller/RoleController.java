@@ -1,7 +1,7 @@
 package com.lcx.campus.controller;
 
 
-import com.lcx.campus.domain.Role;
+import com.lcx.campus.domain.po.Role;
 import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.vo.RoleMenusVo;
 import com.lcx.campus.service.IRoleService;

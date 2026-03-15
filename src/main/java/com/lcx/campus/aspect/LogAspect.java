@@ -2,8 +2,7 @@ package com.lcx.campus.aspect;
 
 import com.alibaba.fastjson2.JSON;
 import com.lcx.campus.annotation.Log;
-import com.lcx.campus.domain.OperateLog;
-import com.lcx.campus.domain.User;
+import com.lcx.campus.domain.po.OperateLog;
 import com.lcx.campus.domain.dto.LoginUser;
 import com.lcx.campus.enums.BusinessStatus;
 import com.lcx.campus.enums.HttpMethod;

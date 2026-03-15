@@ -20,8 +20,8 @@
         from sys_menu
     </sql>
 
-    <select id="selectMenuList" resultType="com.lcx.campus.domain.Menu"
-            parameterType="com.lcx.campus.domain.Menu">
+    <select id="selectMenuList" resultType="com.lcx.campus.domain.po.Menu"
+            parameterType="com.lcx.campus.domain.po.Menu">
         select * from sys_menu
         <where>
             <if test="menuName != null and menuName != ''">
@@ -33,7 +33,7 @@
         </where>
         order by parent_id, order_num
     </select>
-    <select id="selectMenuListByUserId" resultType="com.lcx.campus.domain.Menu">
+    <select id="selectMenuListByUserId" resultType="com.lcx.campus.domain.po.Menu">
         select m.menu_id,
         m.parent_id,
         m.menu_name,
@@ -70,7 +70,7 @@
         where m.menu_status = '0'
           and rm.role_id = #{roleId}
     </select>
-    <select id="selectMenuTreeAll" resultType="com.lcx.campus.domain.Menu">
+    <select id="selectMenuTreeAll" resultType="com.lcx.campus.domain.po.Menu">
         select distinct m.menu_id,
                         m.parent_id,
                         m.menu_name,
@@ -104,11 +104,11 @@
         where parent_id = #{menuId}
     </select>
 
-    <select id="checkMenuNameUnique" resultType="com.lcx.campus.domain.Menu">
+    <select id="checkMenuNameUnique" resultType="com.lcx.campus.domain.po.Menu">
         <include refid="selectMenuVo"/>
         where menu_name=#{menuName} and parent_id = #{parentId} limit 1
     </select>
-    <select id="selectAllMenuListByRoleId" resultType="com.lcx.campus.domain.Menu">
+    <select id="selectAllMenuListByRoleId" resultType="com.lcx.campus.domain.po.Menu">
         select m.menu_id,
                m.parent_id,
                m.menu_name,
@@ -129,7 +129,7 @@
         where rm.role_id = #{roleId}
         order by m.parent_id, m.order_num
     </select>
-    <select id="selectMenusByRoleId" resultType="com.lcx.campus.domain.Menu">
+    <select id="selectMenusByRoleId" resultType="com.lcx.campus.domain.po.Menu">
         select m.menu_id,
                m.parent_id,
                m.menu_name,

@@ -1,6 +1,6 @@
 package com.lcx.campus.service;
 
-import com.lcx.campus.domain.LeaveInfo;
+import com.lcx.campus.domain.po.LeaveInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lcx.campus.domain.vo.PageVo;
 

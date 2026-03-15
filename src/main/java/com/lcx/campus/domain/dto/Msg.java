@@ -1,4 +1,4 @@
-package com.lcx.campus.domain;
+package com.lcx.campus.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

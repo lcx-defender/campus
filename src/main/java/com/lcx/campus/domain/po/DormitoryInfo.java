@@ -1,4 +1,4 @@
-package com.lcx.campus.domain;
+package com.lcx.campus.domain.po;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 
-import com.lcx.campus.domain.dto.PageQuery;
+import com.lcx.campus.domain.query.PageQuery;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,6 +1,6 @@
 package com.lcx.campus.service.impl;
 
-import com.lcx.campus.domain.User;
+import com.lcx.campus.domain.po.User;
 import com.lcx.campus.domain.dto.LoginUser;
 import com.lcx.campus.enums.UserStatus;
 import com.lcx.campus.mapper.UserMapper;
@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Set;
 
 /**

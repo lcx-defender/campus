@@ -1,6 +1,6 @@
 package com.lcx.campus.service;
 
-import com.lcx.campus.domain.DictType;
+import com.lcx.campus.domain.po.DictType;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lcx.campus.domain.vo.Result;
 

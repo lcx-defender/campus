@@ -1,7 +1,7 @@
 package com.lcx.campus.controller;
 
 
-import com.lcx.campus.domain.DictType;
+import com.lcx.campus.domain.po.DictType;
 import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.service.IDictTypeService;
 import jakarta.annotation.Resource;

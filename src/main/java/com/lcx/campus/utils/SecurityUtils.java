@@ -2,7 +2,7 @@ package com.lcx.campus.utils;
 
 import com.lcx.campus.constant.Constants;
 import com.lcx.campus.constant.HttpStatus;
-import com.lcx.campus.domain.Role;
+import com.lcx.campus.domain.po.Role;
 import com.lcx.campus.domain.dto.LoginUser;
 import com.lcx.campus.exception.ServiceException;
 import org.springframework.security.core.Authentication;

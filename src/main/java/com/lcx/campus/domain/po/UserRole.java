@@ -1,18 +1,16 @@
-package com.lcx.campus.domain;
+package com.lcx.campus.domain.po;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
-
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 角色和菜单关联表
+ * 用户和角色关联表
  * </p>
  *
  * @author 刘传星
@@ -21,24 +19,21 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("sys_role_menu")
-public class RoleMenu implements Serializable {
+@TableName("sys_user_role")
+public class UserRole implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 角色ID
+     * 用户ID
      */
-
-    @NotNull(message = "角色ID不能为空")
-    private Long roleId;
+    @TableId(value = "user_id", type = IdType.NONE)
+    private Long userId;
 
     /**
-     * 菜单ID
+     * 角色ID
      */
-
-    @NotNull(message = "菜单ID不能为空")
-    private Long menuId;
+    private Long roleId;
 
 
 }

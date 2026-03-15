@@ -1,10 +1,9 @@
 package com.lcx.campus.mapper;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lcx.campus.domain.Student;
+import com.lcx.campus.domain.po.Student;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lcx.campus.domain.dto.StudentUser;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;

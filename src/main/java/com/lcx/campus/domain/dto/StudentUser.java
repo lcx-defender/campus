@@ -2,11 +2,7 @@ package com.lcx.campus.domain.dto;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.lcx.campus.domain.User;
+import com.lcx.campus.domain.query.PageQuery;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,7 +34,7 @@ public class StudentUser extends PageQuery implements Serializable {
     @ExcelProperty("用户昵称")
     private String nickname;
     /**
-     * 用户类型（0系统管理&程序员;1教师;2学生） 数据字典
+     * 用户类型（0 系统管理&程序员;1 教师;2 学生） 数据字典
      */
     @ExcelIgnore
     private String userType;
@@ -76,7 +72,7 @@ public class StudentUser extends PageQuery implements Serializable {
     @NotNull(message = "密码不能为空")
     private String password;
     /**
-     * 帐号状态（0正常 1封禁 2删除）数据字典
+     * 账号状态（0 正常 1 封禁 2 删除）数据字典
      */
     @ExcelProperty("帐号状态")
     private String userStatus;

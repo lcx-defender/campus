@@ -3,8 +3,8 @@ package com.lcx.campus.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lcx.campus.constant.Constants;
-import com.lcx.campus.domain.Role;
-import com.lcx.campus.domain.User;
+import com.lcx.campus.domain.po.Role;
+import com.lcx.campus.domain.po.User;
 import com.lcx.campus.domain.dto.LoginBody;
 import com.lcx.campus.domain.dto.LoginUser;
 import com.lcx.campus.domain.dto.PasswordBody;
@@ -208,7 +208,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 更新完之后需要退出，重新登录
         LoginUser loginUser = jwtTokenService.getLoginUser(request);
         if (StringUtils.isNotNull(loginUser)) {
-            String userName = loginUser.getUsername();
+            String userName = loginUser.getUsername(); // 这里的userName就是userId
             // 删除用户缓存记录
             jwtTokenService.delLoginUser(loginUser.getTokenUUID());
             // 记录用户退出日志

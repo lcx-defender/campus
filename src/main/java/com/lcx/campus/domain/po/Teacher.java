@@ -1,4 +1,4 @@
-package com.lcx.campus.domain;
+package com.lcx.campus.domain.po;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 
-import com.lcx.campus.domain.dto.PageQuery;
+import com.lcx.campus.domain.query.PageQuery;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

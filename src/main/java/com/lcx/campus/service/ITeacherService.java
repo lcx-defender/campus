@@ -1,8 +1,8 @@
 package com.lcx.campus.service;
 
-import com.lcx.campus.domain.Teacher;
+import com.lcx.campus.domain.po.Teacher;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.lcx.campus.domain.User;
+import com.lcx.campus.domain.po.User;
 import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.dto.TeacherUser;
 

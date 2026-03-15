@@ -1,7 +1,7 @@
 package com.lcx.campus.controller;
 
 
-import com.lcx.campus.domain.OperateLog;
+import com.lcx.campus.domain.po.OperateLog;
 import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.service.IOperateLogService;
 import jakarta.annotation.Resource;

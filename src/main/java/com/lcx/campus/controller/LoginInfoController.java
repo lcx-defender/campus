@@ -1,7 +1,7 @@
 package com.lcx.campus.controller;
 
 
-import com.lcx.campus.domain.LoginInfo;
+import com.lcx.campus.domain.po.LoginInfo;
 import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.service.ILoginInfoService;
 import jakarta.annotation.Resource;

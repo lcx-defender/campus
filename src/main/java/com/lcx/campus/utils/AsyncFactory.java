@@ -1,8 +1,8 @@
 package com.lcx.campus.utils;
 
 import com.lcx.campus.constant.Constants;
-import com.lcx.campus.domain.LoginInfo;
-import com.lcx.campus.domain.OperateLog;
+import com.lcx.campus.domain.po.LoginInfo;
+import com.lcx.campus.domain.po.OperateLog;
 import com.lcx.campus.service.ILoginInfoService;
 import com.lcx.campus.service.IOperateLogService;
 import eu.bitwalker.useragentutils.UserAgent;

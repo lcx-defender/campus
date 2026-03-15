@@ -1,4 +1,4 @@
-package com.lcx.campus.domain;
+package com.lcx.campus.domain.po;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;

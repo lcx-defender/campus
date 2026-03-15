@@ -1,6 +1,6 @@
 package com.lcx.campus.service;
 
-import com.lcx.campus.domain.UserOnline;
+import com.lcx.campus.domain.vo.UserOnline;
 import com.lcx.campus.domain.vo.Result;
 
 /**

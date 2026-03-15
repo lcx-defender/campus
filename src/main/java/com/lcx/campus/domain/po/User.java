@@ -1,4 +1,4 @@
-package com.lcx.campus.domain;
+package com.lcx.campus.domain.po;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-import com.lcx.campus.domain.dto.PageQuery;
+import com.lcx.campus.domain.query.PageQuery;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

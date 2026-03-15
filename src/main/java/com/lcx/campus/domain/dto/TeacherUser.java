@@ -1,9 +1,8 @@
 package com.lcx.campus.domain.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.lcx.campus.domain.Teacher;
-import com.lcx.campus.domain.User;
+import com.lcx.campus.domain.po.Teacher;
+import com.lcx.campus.domain.po.User;
+import com.lcx.campus.domain.query.PageQuery;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 

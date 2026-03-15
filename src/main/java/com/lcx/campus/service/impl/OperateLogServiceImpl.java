@@ -1,7 +1,7 @@
 package com.lcx.campus.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lcx.campus.domain.OperateLog;
+import com.lcx.campus.domain.po.OperateLog;
 import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.vo.PageVo;
 import com.lcx.campus.mapper.OperateLogMapper;

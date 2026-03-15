@@ -137,7 +137,7 @@
             </if>
         </where>
     </select>
-    <select id="selectStudentList" resultType="com.lcx.campus.domain.Student">
+    <select id="selectStudentList" resultType="com.lcx.campus.domain.po.Student">
         SELECT * FROM student
         <where>
             <if test="studentId != null and studentId != ''">
@@ -178,7 +178,7 @@
             </if>
         </where>
     </select>
-    <select id="selectStudent" resultType="com.lcx.campus.domain.Student">
+    <select id="selectStudent" resultType="com.lcx.campus.domain.po.Student">
         select * from student
         <where>
             <if test="studentId != null and studentId != ''">

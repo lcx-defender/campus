@@ -2,7 +2,7 @@ package com.lcx.campus.controller;
 
 
 import com.lcx.campus.annotation.Log;
-import com.lcx.campus.domain.User;
+import com.lcx.campus.domain.po.User;
 import com.lcx.campus.domain.dto.PasswordBody;
 import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.vo.UserRolesVo;

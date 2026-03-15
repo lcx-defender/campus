@@ -1,6 +1,6 @@
 package com.lcx.campus.mapper;
 
-import com.lcx.campus.domain.OperateLog;
+import com.lcx.campus.domain.po.OperateLog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

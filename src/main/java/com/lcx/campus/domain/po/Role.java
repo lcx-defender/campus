@@ -1,4 +1,4 @@
-package com.lcx.campus.domain;
+package com.lcx.campus.domain.po;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 
-import com.lcx.campus.domain.dto.PageQuery;
+import com.lcx.campus.domain.query.PageQuery;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 字典类型表
+ * 角色信息表
  * </p>
  *
  * @author 刘传星
@@ -23,53 +23,47 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("sys_dict_type")
-public class DictType extends PageQuery implements Serializable {
+@TableName("sys_role")
+public class Role extends PageQuery implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     /**
-     * 字典主键
+     * 角色ID
      */
-    @TableId(value = "dict_id", type = IdType.AUTO)
-    private Long dictId;
-
+    @TableId(value = "role_id", type = IdType.AUTO)
+    private Long roleId;
     /**
-     * 字典名称
+     * 角色名称
      */
-    @NotNull(message = "字典名称不能为空")
-    private String dictName;
-
+    @NotNull(message = "角色名称不能为空")
+    private String roleName;
     /**
-     * 字典类型
+     * 角色权限标识符
      */
-    @NotNull(message = "字典类型不能为空")
-    private String dictType;
-
+    @NotNull(message = "角色权限标识符不能为空")
+    private String roleKey;
+    /**
+     * 角色状态（0停用 1正常） 数据字典
+     */
+    private String roleStatus;
     /**
      * 创建者
      */
     private String createBy;
-
     /**
      * 创建时间
      */
     private LocalDateTime createTime;
-
     /**
      * 更新者
      */
     private String updateBy;
-
     /**
      * 更新时间
      */
     private LocalDateTime updateTime;
-
     /**
      * 备注
      */
     private String remark;
-
-
 }

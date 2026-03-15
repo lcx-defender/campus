@@ -1,10 +1,14 @@
-package com.lcx.campus.domain;
+package com.lcx.campus.domain.vo;
 
-import com.lcx.campus.domain.dto.PageQuery;
+import com.lcx.campus.domain.query.PageQuery;
 import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * 在线用户信息
+ * @since 2025-5-15
+ */
 @Data
 public class UserOnline extends PageQuery implements Serializable {
 

@@ -1,7 +1,7 @@
 package com.lcx.campus.domain.dto;
 
 import com.alibaba.fastjson2.annotation.JSONField;
-import com.lcx.campus.domain.User;
+import com.lcx.campus.domain.po.User;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,6 +1,6 @@
 package com.lcx.campus.mapper;
 
-import com.lcx.campus.domain.User;
+import com.lcx.campus.domain.po.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Select;
 

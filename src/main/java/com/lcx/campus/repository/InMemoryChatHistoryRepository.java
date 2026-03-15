@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.lcx.campus.domain.Msg;
+import com.lcx.campus.domain.dto.Msg;
 import com.lcx.campus.utils.SecurityUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;

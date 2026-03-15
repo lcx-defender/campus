@@ -1,6 +1,6 @@
 package com.lcx.campus.mapper;
 
-import com.lcx.campus.domain.LoginInfo;
+import com.lcx.campus.domain.po.LoginInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

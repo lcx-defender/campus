@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lcx.campus.mapper.DictTypeMapper">
 
-    <select id="selectByDictType" resultType="com.lcx.campus.domain.DictType" parameterType="java.lang.String">
+    <select id="selectByDictType" resultType="com.lcx.campus.domain.po.DictType" parameterType="java.lang.String">
         select * from sys_dict_type
         where dict_type = #{dictType}
     </select>

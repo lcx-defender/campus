@@ -4,7 +4,7 @@ package com.lcx.campus.controller;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson2.JSON;
 import com.lcx.campus.annotation.Log;
-import com.lcx.campus.domain.DormitoryInfo;
+import com.lcx.campus.domain.po.DormitoryInfo;
 import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.enums.BusinessType;
 import com.lcx.campus.listener.ExcelListener;

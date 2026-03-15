@@ -1,6 +1,6 @@
 package com.lcx.campus.service;
 
-import com.lcx.campus.domain.OperateLog;
+import com.lcx.campus.domain.po.OperateLog;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lcx.campus.domain.vo.Result;
 

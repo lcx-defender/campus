@@ -8,7 +8,7 @@
         where user_id = #{userId}
     </select>
 
-    <select id="selectDeptByUserId" resultType="com.lcx.campus.domain.Dept" parameterType="java.lang.Long">
+    <select id="selectDeptByUserId" resultType="com.lcx.campus.domain.po.Dept" parameterType="java.lang.Long">
         select d.*
         from sys_dept d
                  left join teacher t on d.dept_id = t.dept_id

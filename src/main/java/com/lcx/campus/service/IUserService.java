@@ -1,6 +1,6 @@
 package com.lcx.campus.service;
 
-import com.lcx.campus.domain.User;
+import com.lcx.campus.domain.po.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lcx.campus.domain.dto.LoginBody;
 import com.lcx.campus.domain.dto.PasswordBody;

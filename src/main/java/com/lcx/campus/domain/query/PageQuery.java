@@ -1,4 +1,4 @@
-package com.lcx.campus.domain.dto;
+package com.lcx.campus.domain.query;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.baomidou.mybatisplus.annotation.TableField;

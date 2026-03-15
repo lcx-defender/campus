@@ -1,6 +1,6 @@
 package com.lcx.campus.service;
 
-import com.lcx.campus.domain.LoginInfo;
+import com.lcx.campus.domain.po.LoginInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lcx.campus.domain.vo.Result;
 

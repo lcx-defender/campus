@@ -2,20 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lcx.campus.mapper.DormitoryInfoMapper">
 
-    <select id="selectDormitoryInfoByLocation" resultType="com.lcx.campus.domain.DormitoryInfo">
+    <select id="selectDormitoryInfoByLocation" resultType="com.lcx.campus.domain.po.DormitoryInfo">
         SELECT *
         FROM dormitory_info
         WHERE dormitory_id = #{dormitoryId}
           AND room_id = #{roomId}
           AND bed_id = #{bedId}
     </select>
-    <select id="selectDormitoryInfoByUserId" resultType="com.lcx.campus.domain.DormitoryInfo">
+    <select id="selectDormitoryInfoByUserId" resultType="com.lcx.campus.domain.po.DormitoryInfo">
         SELECT *
         FROM dormitory_info d
                  left join student s on s.student_id = d.student_id
         WHERE s.user_id = #{userId}
     </select>
-    <select id="selectDormitoryInfoList" resultType="com.lcx.campus.domain.DormitoryInfo">
+    <select id="selectDormitoryInfoList" resultType="com.lcx.campus.domain.po.DormitoryInfo">
         SELECT d.dormitory_id, d.room_id,d.bed_id, d.student_id, s.student_name
         FROM dormitory_info d
         LEFT JOIN student s ON d.student_id = s.student_id

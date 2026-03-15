@@ -201,7 +201,7 @@ public class JwtTokenServiceImpl {
     }
 
     /**
-     * 删除用户身份信息
+     * 从Redis缓存删除用户身份信息，即退出登录
      */
     public void delLoginUser(String tokenUUID) {
         if (StrUtil.isNotEmpty(tokenUUID)) {

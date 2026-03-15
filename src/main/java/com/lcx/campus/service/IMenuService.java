@@ -1,6 +1,6 @@
 package com.lcx.campus.service;
 
-import com.lcx.campus.domain.Menu;
+import com.lcx.campus.domain.po.Menu;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.vo.RouterVo;

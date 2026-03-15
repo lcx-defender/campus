@@ -3,7 +3,7 @@ package com.lcx.campus.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lcx.campus.constant.Constants;
 import com.lcx.campus.constant.UserConstants;
-import com.lcx.campus.domain.Menu;
+import com.lcx.campus.domain.po.Menu;
 import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.vo.MetaVo;
 import com.lcx.campus.domain.vo.RouterVo;

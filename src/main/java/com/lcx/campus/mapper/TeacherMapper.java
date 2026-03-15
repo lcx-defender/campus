@@ -1,11 +1,10 @@
 package com.lcx.campus.mapper;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lcx.campus.domain.Dept;
-import com.lcx.campus.domain.Teacher;
+import com.lcx.campus.domain.po.Dept;
+import com.lcx.campus.domain.po.Teacher;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lcx.campus.domain.dto.TeacherUser;
-import com.lcx.campus.domain.vo.PageVo;
 
 import java.util.List;
 

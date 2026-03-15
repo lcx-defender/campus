@@ -1,6 +1,6 @@
 package com.lcx.campus.mapper;
 
-import com.lcx.campus.domain.DictType;
+import com.lcx.campus.domain.po.DictType;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

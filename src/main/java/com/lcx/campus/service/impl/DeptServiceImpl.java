@@ -1,9 +1,9 @@
 package com.lcx.campus.service.impl;
 
-import com.lcx.campus.domain.Dept;
-import com.lcx.campus.domain.Student;
-import com.lcx.campus.domain.Teacher;
-import com.lcx.campus.domain.User;
+import com.lcx.campus.domain.po.Dept;
+import com.lcx.campus.domain.po.Student;
+import com.lcx.campus.domain.po.Teacher;
+import com.lcx.campus.domain.po.User;
 import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.vo.TreeSelect;
 import com.lcx.campus.enums.DeptLevel;

@@ -2,7 +2,7 @@ package com.lcx.campus.controller;
 
 
 import com.lcx.campus.annotation.Log;
-import com.lcx.campus.domain.Dept;
+import com.lcx.campus.domain.po.Dept;
 import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.enums.BusinessType;
 import com.lcx.campus.service.IDeptService;

@@ -1,7 +1,6 @@
 package com.lcx.campus.mapper;
 
-import com.lcx.campus.domain.RoleMenu;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.lcx.campus.domain.po.RoleMenu;
 
 import java.util.List;
 

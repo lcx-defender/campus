@@ -2,9 +2,9 @@ package com.lcx.campus.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lcx.campus.domain.Dept;
-import com.lcx.campus.domain.Student;
-import com.lcx.campus.domain.User;
+import com.lcx.campus.domain.po.Dept;
+import com.lcx.campus.domain.po.Student;
+import com.lcx.campus.domain.po.User;
 import com.lcx.campus.domain.vo.Result;
 import com.lcx.campus.domain.dto.StudentUser;
 import com.lcx.campus.domain.vo.PageVo;
