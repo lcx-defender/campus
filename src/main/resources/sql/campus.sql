@@ -6,24 +6,90 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for dormitory_info
+-- Table structure for dorm_bed
 -- ----------------------------
-DROP TABLE IF EXISTS `dormitory_info`;
-CREATE TABLE `dormitory_info`
+DROP TABLE IF EXISTS `dorm_bed`;
+CREATE TABLE `dorm_bed`
 (
-    `id`           bigint(0)                                                    NOT NULL,
-    `student_id`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '学号',
-    `dormitory_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '宿舍楼号',
-    `room_id`      varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '房间号',
-    `bed_id`       varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '床位号',
-    PRIMARY KEY (`id`) USING BTREE
+    `bed_id`      bigint(0)                                                     NOT NULL AUTO_INCREMENT COMMENT '床位ID，主键',
+    `room_id`     bigint(0)                                                     NOT NULL COMMENT '所属房间ID（关联 dorm_room 表）',
+    `bed_no`      int(0)                                                        NOT NULL COMMENT '床位号（如：1号床, 2号床, 3号床）',
+    `student_id`  bigint(0)                                                     NULL DEFAULT NULL COMMENT '入住学生ID（关联 sys_user 或 student 表的 userId，为空表示该床位未分配）',
+    `status`      char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci      NULL DEFAULT '0' COMMENT '床位状态（0空闲 1已入住 2被锁定/维修中）',
+    `del_flag`    char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci      NULL DEFAULT '0' COMMENT '删除标志（0代表存在 2代表逻辑删除）',
+    `create_by`   varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NULL DEFAULT '' COMMENT '创建者',
+    `create_time` datetime(0)                                                   NULL DEFAULT NULL COMMENT '创建时间',
+    `update_by`   varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NULL DEFAULT '' COMMENT '更新者',
+    `update_time` datetime(0)                                                   NULL DEFAULT NULL COMMENT '更新时间',
+    `remark`      varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注（如：上铺/下铺，靠窗等）',
+    PRIMARY KEY (`bed_id`) USING BTREE,
+    UNIQUE INDEX `uk_room_bed` (`room_id`, `bed_no`) USING BTREE COMMENT '同一房间下床位号必须唯一'
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '学生宿舍信息表'
+  COLLATE = utf8mb4_0900_ai_ci COMMENT = '宿舍床位表'
   ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of dormitory_info
+-- Records of dorm_bed
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for dorm_building
+-- ----------------------------
+DROP TABLE IF EXISTS `dorm_building`;
+CREATE TABLE `dorm_building`
+(
+    `building_id`     bigint(0)                                                     NOT NULL AUTO_INCREMENT COMMENT '楼栋ID，主键',
+    `university_id`   bigint(0)                                                     NOT NULL COMMENT '所属高校ID（关联 dept 院校表的主键）',
+    `building_name`   varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL COMMENT '楼栋名称（如：学一栋、梅苑A栋）',
+    `campus_name`     varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NULL DEFAULT '' COMMENT '所属校区（如：主校区、南校区，供同一高校有多个校区时使用）',
+    `building_gender` tinyint(0)                                                    NULL DEFAULT 0 COMMENT '楼栋性别限制（0:混住/未定, 1:男生宿舍, 2:女生宿舍）',
+    `total_floors`    int(0)                                                        NULL DEFAULT 1 COMMENT '总楼层数',
+    `status`          char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci      NULL DEFAULT '0' COMMENT '楼栋状态（0正常 1停用）',
+    `del_flag`        char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci      NULL DEFAULT '0' COMMENT '删除标志（0代表存在 2代表逻辑删除）',
+    `create_by`       varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NULL DEFAULT '' COMMENT '创建者',
+    `create_time`     datetime(0)                                                   NULL DEFAULT NULL COMMENT '创建时间',
+    `update_by`       varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NULL DEFAULT '' COMMENT '更新者',
+    `update_time`     datetime(0)                                                   NULL DEFAULT NULL COMMENT '更新时间',
+    `remark`          varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注（如：靠近南门、无电梯等）',
+    PRIMARY KEY (`building_id`) USING BTREE,
+    INDEX `idx_university_id` (`university_id`) USING BTREE COMMENT '高校ID索引，优化多租户场景下的查询速度'
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT = '宿舍楼栋表'
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of dorm_building
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for dorm_room
+-- ----------------------------
+DROP TABLE IF EXISTS `dorm_room`;
+CREATE TABLE `dorm_room`
+(
+    `room_id`     bigint(0)                                                     NOT NULL AUTO_INCREMENT COMMENT '房间ID，主键',
+    `building_id` bigint(0)                                                     NOT NULL COMMENT '所属楼栋ID（关联 dorm_building 表）',
+    `floor_num`   int(0)                                                        NOT NULL COMMENT '所在楼层号（如：1, 2, 3）',
+    `room_no`     varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL COMMENT '房间号（如：101、204B）',
+    `room_type`   int(0)                                                        NULL DEFAULT 4 COMMENT '房间类型/几人间（如：4代表四人间，6代表六人间）',
+    `status`      char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci      NULL DEFAULT '0' COMMENT '房间状态（0正常 1维修中 2停用）',
+    `del_flag`    char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci      NULL DEFAULT '0' COMMENT '删除标志（0代表存在 2代表逻辑删除）',
+    `create_by`   varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NULL DEFAULT '' COMMENT '创建者',
+    `create_time` datetime(0)                                                   NULL DEFAULT NULL COMMENT '创建时间',
+    `update_by`   varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NULL DEFAULT '' COMMENT '更新者',
+    `update_time` datetime(0)                                                   NULL DEFAULT NULL COMMENT '更新时间',
+    `remark`      varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注（如：向阳、带独立卫浴等）',
+    PRIMARY KEY (`room_id`) USING BTREE,
+    UNIQUE INDEX `uk_building_room` (`building_id`, `room_no`) USING BTREE COMMENT '同一楼栋下房间号必须唯一'
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT = '宿舍房间表'
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of dorm_room
 -- ----------------------------
 
 -- ----------------------------
